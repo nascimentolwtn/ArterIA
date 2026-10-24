@@ -5,6 +5,23 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (revisão dos commits bf374e4 e cd68b57)
+
+Dois commits de preparação de dados do ArterIA para SJC (roadmap P1.1/P1.2, fora desta trilha) têm reflexo direto no Capítulo 3 (Caracterização da Área) desta trilha e foram registrados no `outline.md`.
+
+**`bf374e4`** criou `cities/sjc/data-manifest.yaml` (inventário de todas as fontes de dados civis de Fase 1 para SJC — PlanMob, Plano Diretor, atlas e microdados da Pesquisa OD, estudos FGV, Linha Verde, GTFS, contagens de tráfego, planos semafóricos, dados de sinistros, rotas de emergência, cada um com agência, licença, visibilidade e status) e `cities/sjc/data-requests.md` (rascunhos de cartas de solicitação ao Ipplan e à SEMOB, ainda não enviadas).
+
+**`cd68b57`** registrou a decisão do responsável pelo projeto ArterIA de **não contatar nenhum órgão de SJC nesta etapa**. Todo item do manifesto que dependia de resposta municipal passou a `status: deferred`. Em substituição, para a malha viária de base, três fontes públicas de autoatendimento foram adicionadas (OpenStreetMap, portal Geosanja do Plano Diretor/zoneamento, Base de Faces de Logradouros do IBGE), sem necessidade de contato com qualquer agência — qualidade e completude ainda não verificadas por bloqueio de rede desta sessão remota, sinalizadas como pendência de mesa em `.claude/napkin.md`.
+
+Relevância específica para a trilha AO-EL:
+
+- **Nenhum dado operacional da FAB** foi levantado nestes commits — o escopo tratado é inteiramente civil (malha viária, trânsito, transporte público de SJC). Isso não altera o enquadramento operacional-militar proposto, mas é evidência concreta e rastreável de que a limitação da Seção 12 do pré-projeto ("dados sensíveis ou restritos... podem limitar a calibração do modelo a dados civis substitutos") permanece integralmente em aberto, e que nem mesmo o levantamento preliminar de disponibilidade de dados operacionais da FAB (próximo passo 3 do log anterior) foi iniciado.
+- **`emergency-routes`** (rotas e tempos de resposta de emergência) é explicitamente descrito no manifesto como "a fonte mais sensível e de obtenção mais difícil", com uma proxy sugerida (isócronas a partir de postos de bombeiros/SAMU conhecidos) caso o dado não seja obtido. Isso é diretamente relevante à métrica de "continuidade operacional" da Seção 10 do pré-projeto e ao próprio recorte logístico-militar: se essa fonte permanecer indisponível, a dissertação precisará se apoiar em proxy civil (isócronas) em vez de dado real de resposta a emergências no entorno ITA/DCTA-CTA.
+- **`crash-data`** aponta o Infosiga/Detran-SP como possível fonte pública agregada de sinistros, cobrindo SJC em nível estadual (detalhe municipal/por via ainda não confirmado). É um proxy civil plausível para as "métricas de segurança" já previstas na Seção 10 do pré-projeto, na ausência de dado de sinistralidade específico do entorno das instalações da FAB.
+- A decisão de **não contatar agências** nesta etapa é do projeto ArterIA como um todo, não uma decisão específica desta trilha de mestrado — mas, por ora, mantém o levantamento de dados desta dissertação limitado a fontes públicas e de autoatendimento (OSM, Geosanja, IBGE, Infosiga), o que é compatível com o Capítulo 3 do `outline.md` tal como está hoje (ainda não iniciado empiricamente).
+
+Nenhuma mudança de status, risco principal ou próximo passo anterior foi revertida por este registro; o risco de validação do enquadramento pelo orientador (ver entrada abaixo) permanece o item crítico, independentemente do avanço no levantamento de dados civis.
+
 ## 2026-10-24 (revisão do commit 62facb2)
 
 Commit `62facb2` ("docs(roadmap): reframe remote work as Claude app sessions, not GitHub Actions") revisado para esta trilha. Trata-se de reorganização do fluxo de trabalho de desenvolvimento do ArterIA (divisão de tarefas entre sessões em nuvem e desktop, escopo de ADR 0009/0010, IDs de features) — matéria de infraestrutura de execução do projeto de software, sem relação com o enquadramento operacional-militar, a formulação bi-nível, a metodologia ou o recorte geográfico que constituem o objeto desta dissertação. Nenhuma ação necessária; nenhum capítulo do `outline.md` é afetado.

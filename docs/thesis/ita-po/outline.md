@@ -5,7 +5,7 @@
 ## 1. Introdução
 
 Cobertura atual: o pré-projeto já traz problema de pesquisa, justificativa, contexto de SJC, recorte geográfico e objetivos (Seções 2–5, 7–8). Boa parte do texto introdutório pode ser adaptado diretamente dessas seções.
-Falta: redigir a narrativa de abertura (motivação em prosa, pergunta de pesquisa explícita em uma frase, estrutura da dissertação) e confirmar o corredor exato de estudo antes de fixar o recorte na versão final.
+Falta: redigir a narrativa de abertura (motivação em prosa, pergunta de pesquisa explícita em uma frase, estrutura da dissertação) e confirmar o corredor exato de estudo antes de fixar o recorte na versão final. TODO(decisão): a confirmação do corredor dependia de disponibilidade de dados de OD por zona; `cities/sjc/data-manifest.yaml` (commit `cd68b57`) marcou a Pesquisa OD (atlas e microdados) como `deferred` — sem ofício às agências de SJC nesta etapa — o que bloqueia esse critério de escolha até nova decisão (ver `progress.md`, entrada 2026-10-24 (3)).
 
 ## 2. Revisão de Literatura
 
@@ -15,12 +15,12 @@ Falta: revisão sistemática mais ampla (não apenas os ~5 trabalhos citados) co
 ## 3. Formulação / Metodologia
 
 Cobertura atual: formulação matemática bi-nível multiobjetivo já esboçada (Seção 6: variáveis de decisão, nível superior/inferior, funções objetivo $f_1$–$f_7$, restrições) e metodologia proposta já descrita (Seção 9: SUMO/TraCI, netconvert/netedit, três classes de otimizadores, surrogate GNN com amostragem ativa).
-Falta: formalizar a notação de forma definitiva (revisão com orientador), detalhar a arquitetura do surrogate (features de entrada/saída, função de perda, quantificação de incerteza), especificar o protocolo exato de validação cruzada e os critérios de parada dos otimizadores.
+Falta: formalizar a notação de forma definitiva (revisão com orientador), detalhar a arquitetura do surrogate (features de entrada/saída, função de perda, quantificação de incerteza), especificar o protocolo exato de validação cruzada e os critérios de parada dos otimizadores. TODO(evidência): a matriz de demanda $Q$ do nível inferior (Seção 6) depende da Pesquisa OD, hoje `deferred` em `cities/sjc/data-manifest.yaml`; sem ela, a metodologia precisa prever explicitamente um caminho de demanda sintética/indireta como alternativa, não só como risco de rodapé.
 
 ## 4. Desenvolvimento
 
 Cobertura atual: nenhum código ou experimento existe ainda (projeto ArterIA está em estágio pré-código, conforme `CLAUDE.md` do repositório); o catálogo de intervenções está descrito em alto nível (Seção 6) e o cronograma tentativo (Seção 14) prevê a sequência de construção.
-Falta: tudo — construção e calibração do modelo SUMO do corredor, definição formal e parametrizada do catálogo $\mathcal{I}$, geração do dataset de simulações, implementação do surrogate e dos três otimizadores do nível superior. Este será o capítulo mais extenso e depende de dados (OSM, Pesquisa OD, contagens).
+Falta: tudo — construção e calibração do modelo SUMO do corredor, definição formal e parametrizada do catálogo $\mathcal{I}$, geração do dataset de simulações, implementação do surrogate e dos três otimizadores do nível superior. Este será o capítulo mais extenso e depende de dados (OSM, Pesquisa OD, contagens). TODO(decisão): per `cities/sjc/data-manifest.yaml` (commits `bf374e4`/`cd68b57`), a construção da topologia $G$ tem caminho de autoatendimento viável (OSM/Geofabrik, Geosanja, IBGE Faces de Logradouros), mas a calibração contra contagens de tráfego, planos de tempo semafórico e a Pesquisa OD está `deferred` (sem ofício enviado); o objetivo específico 1 (Seção 8 do pré-projeto) pode precisar ser reescrito para refletir calibração por estimativas indiretas/dados sintéticos como cenário-padrão, não excepcional.
 
 ## 5. Resultados
 

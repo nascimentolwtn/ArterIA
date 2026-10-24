@@ -15,7 +15,7 @@
 ## 3. Estudo de Caso de São José dos Campos
 
 **Coberto no pré-projeto:** caracterização do polo aeroespacial de SJC (ITA, DCTA/CTA, IAE, IEAv, infraestrutura aérea militar), contexto do PlanMob (Lei Complementar 576/2016) e do Plano Diretor (Lei 612/2018), justificativa da escolha do caso (seção 4) e recorte provisório da zona de interesse (seção 5).
-**Falta:** levantamento documental detalhado (histórico de obras, ocorrências, enchentes, eventos que afetaram os corredores de acesso), delimitação final e validada do perímetro da "zona de interesse" com apoio do orientador, e eventual verificação de quais dados exigem interlocução formal com a FAB.
+**Falta:** levantamento documental detalhado (histórico de obras, ocorrências, enchentes, eventos que afetaram os corredores de acesso), delimitação final e validada do perímetro da "zona de interesse" com apoio do orientador, e eventual verificação de quais dados exigem interlocução formal com a FAB. O inventário técnico em `cities/sjc/data-manifest.yaml` (não produzido por esta trilha, mas pelo lado de engenharia do ArterIA) mostra que, por decisão do responsável pelo repositório, nenhuma agência municipal (Ipplan/SEMOB) será contatada nesta fase — logo, dados como OD microdados, estudos FGV, contagens de tráfego e rotas de emergência continuam indisponíveis por ora (`status: deferred`), o que é consistente com o risco de "acesso a dados e atores institucionais" já descrito na seção 12 do pré-projeto, ainda que se trate de agências municipais e não da FAB. TODO(evidência): decidir, junto ao orientador, se e quando essa interlocução (municipal e/ou com a FAB) deve ser retomada para a etapa qualitativa.
 
 ## 4. Metodologia Mista
 
@@ -25,7 +25,7 @@
 ## 5. Modelagem de Resiliência (Instrumento ArterIA)
 
 **Coberto no pré-projeto:** descrição do nível instrumental (seção 6), métricas de avaliação propostas — tempo de acesso sob interdição, rotas alternativas, pontos únicos de falha, tempo de resposta/recuperação (seção 10) — e a ressalva explícita de que a simulação é evidência de apoio, não o resultado principal (seção 13).
-**Falta:** especificação técnica de como adaptar o modelo ArterIA/SUMO (hoje orientado a otimização de pacotes de intervenção) para gerar cenários de interdição em vez de cenários de melhoria; definição dos cenários de interdição a simular (bloqueios, obras, eventos climáticos) para a zona de interesse de SJC.
+**Falta:** especificação técnica de como adaptar o modelo ArterIA/SUMO (hoje orientado a otimização de pacotes de intervenção) para gerar cenários de interdição em vez de cenários de melhoria; definição dos cenários de interdição a simular (bloqueios, obras, eventos climáticos) para a zona de interesse de SJC. Nível puramente instrumental (não altera o núcleo teórico do Capítulo 2): o inventário `cities/sjc/data-manifest.yaml` passou a apontar fontes de malha viária autosserviço, sem necessidade de contato institucional — extrato OSM, portal Geosanja (Plano Diretor/zoneamento) e Base de Faces de Logradouros do IBGE —, mas a cobertura dessas fontes para SJC especificamente ainda não foi verificada (ver notas do próprio manifesto); dado de crash (Infosiga/Detran-SP) aparece como possível substituto público agregado para a métrica de resposta/recuperação, também não verificado. TODO(evidência): confirmar essas fontes antes de citá-las como base de dado de entrada do modelo de resiliência.
 
 ## 6. Achados e Diretrizes de Planejamento Urbano-Militar
 

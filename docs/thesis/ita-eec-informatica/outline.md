@@ -21,6 +21,7 @@
 
 - **Já coberto no pré-projeto**: cronograma tentativo por semestre (Seção 14), métricas de avaliação definidas (Seção 10), baselines propostos (regras fixas, metaheurísticas, configuração atual de SJC) e intervenção real de referência (Linha Verde) (Seções 8, 11).
 - **Falta pesquisar/escrever**: desenho experimental detalhado (protocolo de treino/validação/teste, número de seeds/repetições, cenários de demanda específicos a simular, critérios de parada); construção e calibração efetiva do modelo SUMO do corredor escolhido; definição final do corredor/subárea dentro de SJC.
+- **Nota de rastreio (2026-10-24)**: `cities/sjc/data-manifest.yaml` (commits `bf374e4`/`cd68b57`) é o artefato que acompanha a lacuna de dados de calibração desta trilha — contagens de tráfego, planos de tempo semafórico, GTFS e microdados de OD estão todos `status: deferred` (nenhuma solicitação enviada a Ipplan/SEMOB); apenas a topologia da malha viária tem fonte de autoatendimento confirmada (OSM/Geosanja/IBGE). TODO(evidência): revisitar este capítulo quando o manifesto mudar de status.
 
 ## 5. Resultados
 
