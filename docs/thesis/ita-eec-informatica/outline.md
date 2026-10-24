@@ -16,6 +16,7 @@
 
 - **Já coberto no pré-projeto**: desenho conceitual em quatro componentes — pipeline de dados, ambiente de treinamento via TraCI, arquitetura de agentes + GNN compartilhada, infraestrutura de experimentação (Seção 9); integração prevista com a estrutura `cities/sjc/` do ArterIA.
 - **Falta pesquisar/escrever**: especificação técnica detalhada (diagramas de componentes, contratos de interface observação/ação/recompensa, escolha concreta de framework de RL e de GNN, formato de dados/versionamento de experimentos); decisões de arquitetura que mereçam ADR formal.
+- **Nota de rastreio (2026-10-24, commit `eefc81c`)**: `arteria/provenance.py` (`RunManifest`: git SHA, versão do SUMO, seed, hash de config, checksums de entrada, gravado em `runs/<cidade>/<run_id>/manifest.json`) é o primeiro artefato real endereçando a lacuna "versionamento de experimentos" acima, mencionada no Objetivo específico 4 do pré-projeto (Seção 8). Ainda é código de biblioteca sem nenhum comando de execução chamando-o (integração prevista para as Fases 3/4/7 do roteiro); não cobre checkpoints de modelo, trajetórias de treinamento nem métricas de convergência. TODO(evidência): revisitar quando algum comando de treinamento/avaliação passar a gravar esse manifesto de fato.
 
 ## 4. Experimentos
 
