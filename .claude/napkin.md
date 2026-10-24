@@ -32,8 +32,11 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-24] Send SJC data requests (roadmap P1.2)** (blocks P3/P4, long lead time)
-   Do instead: send early; they gate demand and calibration data.
+1. **[2026-10-24] Owner: actually send the SJC data requests** (blocks P3/P4, long lead time)
+   Do instead: drafts are logged in `cities/sjc/data-requests.md` (Ipplan, SEMOB) and
+   tracked in `cities/sjc/data-manifest.yaml` — a remote session can't send email, so
+   fill in `[NOME]`/contact, verify the agency details noted in that file, send, then
+   flip each item's `status` in the manifest and the tracker table.
 2. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
    Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
 3. **[2026-10-24] Pick the code license** (small)

@@ -1,0 +1,162 @@
+# SJC data-source manifest (roadmap P1.1 / P1.2).
+#
+# Shape follows the data-manifest schema drafted in docs/adr/0003-city-config-and-data-schema.md
+# (Status: Proposed, not yet accepted) — expect fields to shift once that ADR is reviewed.
+# `sha256` stays null until a file is actually received and checked into ARTERIA_DATA/ARTERIA_PRIVATE;
+# per ADR 0004, no restricted file's bytes or checksum are ever committed to this repo.
+#
+# status values: public_available (no request needed) | to_request (draft exists, not yet sent) |
+#                 requested (sent, awaiting reply) | received | unavailable
+#
+# Last reviewed: 2026-10-24.
+
+sources:
+  - id: planmob-diagnostico-prognostico
+    name: "PlanMob SJC — Diagnóstico e Prognóstico"
+    description: >
+      Diagnostic and prognostic reports of the official Urban Mobility Plan
+      (PlanMob SJC, Municipal Complementary Law 576/2016): demand, road
+      hierarchy, public transport, cycling and pedestrian mobility baselines.
+    roadmap_ref: P1.1
+    agency: "Ipplan / Secretaria de Mobilidade Urbana (SEMOB)"
+    license: "unknown — likely public municipal document; confirm terms on receipt"
+    visibility: public
+    sha256: null
+    status: to_request
+    notes: >
+      Referenced in docs/research-brief-sjc.md [74]; exact current URL not
+      verified by this session — locate via sjc.sp.gov.br or request the PDF
+      directly from Ipplan/SEMOB rather than guessing a link.
+
+  - id: master-plan-lc612-2018
+    name: "Plano Diretor — Lei Complementar 612/2018"
+    description: >
+      Current Master Plan; defines road macrostructure, road hierarchy and
+      cycling network based on PlanMob.
+    roadmap_ref: P1.1
+    agency: "Prefeitura de São José dos Campos"
+    license: "public law text"
+    visibility: public
+    sha256: null
+    status: to_request
+    notes: >
+      Referenced in docs/research-brief-sjc.md [72][75]. Municipal legislation
+      is published at servicos.sjc.sp.gov.br/Legislacao — confirmed for other
+      laws (e.g. LC 576/2000 creating Ipplan:
+      https://servicos.sjc.sp.gov.br/Legislacao/Arquivos/Leis/2000/LE_2000_00005680.pdf);
+      search that portal for "LC 612/2018" rather than guessing the exact file path.
+
+  - id: od-survey-atlas
+    name: "Atlas da Pesquisa Origem-Destino (aggregated)"
+    description: "Published atlas/aggregated results of the OD survey, cited in Ipplan's own bibliography."
+    roadmap_ref: P1.1
+    agency: Ipplan
+    license: "unknown — confirm on receipt"
+    visibility: public
+    sha256: null
+    status: to_request
+    notes: "Likely public per Ipplan's Plano Diretor bibliography; request a copy or current URL."
+
+  - id: od-survey-microdata
+    name: "Pesquisa Origem-Destino (OD) — microdata"
+    description: >
+      Household/trip-level OD microdata used for demand estimation in the
+      "Mobilidade do Futuro" project (roadmap P3.1-P3.3 demand generation).
+    roadmap_ref: P1.1, P3.2
+    agency: Ipplan
+    license: "TBD — expect data-sharing terms restricting redistribution"
+    visibility: restricted
+    sha256: null
+    status: to_request
+    notes: >
+      Referenced in docs/research-brief-sjc.md [73]. If unreleased, fall back
+      to the open-data-only path (roadmap P1.2 risk, P10.2) with synthetic
+      demand. Keep under ARTERIA_PRIVATE if received (ADR 0004/0010).
+
+  - id: fgv-transit-tender-studies
+    name: "FGV studies for the public-transport tender"
+    description: "Supply/demand analysis and projections for the proposed transit network."
+    roadmap_ref: P1.1
+    agency: "SEMOB (commissioned FGV)"
+    license: "TBD — confirm on receipt"
+    visibility: restricted
+    sha256: null
+    status: to_request
+    notes: "Referenced in docs/research-brief-sjc.md [70]."
+
+  - id: linha-verde-project
+    name: "Projeto Linha Verde"
+    description: "Municipal mobility project aligned with the Master Plan; relevant for bus-lane/corridor candidates."
+    roadmap_ref: P1.1, P5.3
+    agency: SEMOB
+    license: "unknown — likely public project documentation"
+    visibility: public
+    sha256: null
+    status: to_request
+    notes: "Referenced in docs/research-brief-sjc.md [82]."
+
+  - id: gtfs-feed
+    name: "GTFS feed (SJC public transport)"
+    description: "Route/stop/frequency data for the transit layer (roadmap P2.6) and transit demand (P3.4)."
+    roadmap_ref: P2.6, P3.4
+    agency: "SEMOB / transit operator"
+    license: "TBD — confirm on receipt"
+    visibility: public
+    sha256: null
+    status: to_request
+    notes: >
+      Transit is run by Consórcio 123 (named operators found: Expresso
+      Maringá, Joseense Transporte, plus a third not confirmed by this
+      session) under SEMOB. A 2021 bidding process to replace the concession
+      was reported annulled; current operator/contract status needs
+      confirming with SEMOB before this request is sent, since it may have
+      changed since.
+
+  - id: traffic-counts
+    name: "Contagens volumétricas de tráfego"
+    description: "Link/turning-movement counts by hour and direction, for calibration (roadmap P4.1-P4.2)."
+    roadmap_ref: P1.1, P4.1
+    agency: "SEMOB / Urbam"
+    license: "TBD"
+    visibility: restricted
+    sha256: null
+    status: to_request
+    notes: "Urbam (Urbanizadora Municipal) runs road signage/signals in SJC and may hold or coordinate count data."
+
+  - id: signal-timing-plans
+    name: "Planos de tempo semafórico"
+    description: "Field signal timing programs for calibration (roadmap P3.5)."
+    roadmap_ref: P1.1, P3.5
+    agency: "SEMOB / Urbam"
+    license: "TBD"
+    visibility: restricted
+    sha256: null
+    status: to_request
+    notes: "Without this, SUMO-guessed programs are used and flagged uncalibrated per P3.5."
+
+  - id: crash-data
+    name: "Dados de sinistros/acidentes de trânsito"
+    description: "Crash records for safety-proxy metrics (roadmap P6.2) and corridor scoring (P1.3)."
+    roadmap_ref: P1.1, P6.2
+    agency: "SEMOB; state-level: Detran-SP (Infosiga)"
+    license: "TBD for municipal detail; state aggregate data appears to be published"
+    visibility: restricted
+    sha256: null
+    status: to_request
+    notes: >
+      Detran-SP's Infosiga platform publishes sinistro/fatality statistics
+      covering all São Paulo municipalities, including SJC, but this session
+      did not confirm a municipal-level open-data export (format/license) —
+      verify on the Detran-SP site before relying on it as the public
+      fallback; request link/crash-level detail from SEMOB separately.
+
+  - id: emergency-routes
+    name: "Rotas e tempos de resposta de emergência"
+    description: "Emergency-service routes/response-time data for the emergency-access constraint and metric (roadmap P5.1, P6.2)."
+    roadmap_ref: P1.1, P5.1, P6.2
+    agency: "SEMOB / Corpo de Bombeiros / SAMU"
+    license: "TBD"
+    visibility: restricted
+    sha256: null
+    status: to_request
+    notes: "Likely the most sensitive/hardest-to-obtain source; a documented proxy (e.g. isochrones from known station locations) may substitute if unavailable."
