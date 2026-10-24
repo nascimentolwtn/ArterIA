@@ -38,13 +38,11 @@ None open.
    Do instead: decide before first public release; record in an ADR if non-trivial.
 3. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
-4. **[2026-10-24] Owner review of ADR 0002** (Status: Proposed, awaiting your decision)
-   Do instead: ADR 0004 is now Accepted (confirmed local-disk-only, no LFS, no external
-   object store) and ADR 0003 is unchanged/unreviewed. For ADR 0002 (repo layout, nox,
-   single `arteria` CLI), you asked for more detail — given in chat 2026-10-24. The
-   layout (`arteria/` + `cities/<city>/`) is the expensive-to-reverse part; nox and the
-   CLI choice are cheap to swap later. Decide (or ask follow-ups) before more code
-   depends on the layout specifically.
+4. **[2026-10-24] Owner review of ADR 0003** (Status: Proposed, unreviewed)
+   Do instead: ADR 0002 and 0004 are now both Accepted. ADR 0003 (city.yaml/data-manifest
+   schema) hasn't been raised yet — it's already implemented (`arteria/config.py`) and
+   exercised against real SJC files, so review is a formality unless something there
+   needs to change.
 5. **[2026-10-24] Desk: run `nox -s smoke` for real**
    Do instead: this session's `nox -s smoke` only confirmed it skips cleanly with no
    `sumo` binary (correct for remote). At the desk, with SUMO installed, confirm it
