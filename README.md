@@ -1,37 +1,37 @@
 # ArterIA
 
-AI-assisted decision support for street-network planning, designed to be reusable in any city. Streets are the city's arteries, and ArterIA helps test which changes actually improve them.
+Apoio à decisão com IA para o planejamento de redes viárias, projetado para ser reutilizável em qualquer cidade. As ruas são as artérias da cidade, e o ArterIA ajuda a testar quais mudanças realmente as melhoram.
 
-ArterIA does not "invent streets". It searches a constrained catalog of feasible interventions (one-way conversions, reversible lanes, bus lanes, lane reallocation, protected bike and pedestrian corridors, turn restrictions, a few new connectors) and evaluates each package against a calibrated baseline simulation.
+O ArterIA não "inventa ruas". Ele pesquisa um catálogo restrito de intervenções viáveis (conversão para mão única, faixas reversíveis, faixas de ônibus, realocação de faixas, corredores protegidos para bicicletas e pedestres, restrições de conversão, alguns novos trechos de ligação) e avalia cada pacote em relação a uma simulação de base calibrada.
 
-## How it works
+## Como funciona
 
-1. **Baseline:** build the study area from OpenStreetMap in SUMO, then calibrate with local traffic counts, travel times and origin-destination data.
-2. **Candidates:** define interventions with cost, legal limits, safety, emergency access and equity notes.
-3. **Optimization:** an upper-level optimizer (genetic algorithm, Bayesian optimization or RL, with GNN surrogates later) picks packages. SUMO acts as the lower level and returns the traffic response.
-4. **Before/after:** compare vehicle-hours, 95th-percentile travel time, bus reliability, emissions, safety proxies and equity by neighborhood.
-5. **Communication:** optional visual storytelling for stakeholders (for example with Cities: Skylines), not used as quantitative evidence.
+1. **Linha de base:** construir a área de estudo a partir do OpenStreetMap no SUMO e, em seguida, calibrar com contagens de tráfego, tempos de viagem e dados de origem-destino locais.
+2. **Candidatas:** definir as intervenções com custo, limites legais, segurança, acesso de emergência e observações de equidade.
+3. **Otimização:** um otimizador de nível superior (algoritmo genético, otimização bayesiana ou RL, com substitutos baseados em GNN no futuro) escolhe os pacotes. O SUMO atua como nível inferior e retorna a resposta do tráfego.
+4. **Antes/depois:** comparar veículos-hora, tempo de viagem no percentil 95, confiabilidade do transporte por ônibus, emissões, indicadores indiretos de segurança e equidade por bairro.
+5. **Comunicação:** narrativa visual opcional para as partes interessadas (por exemplo, com o Cities: Skylines), sem uso como evidência quantitativa.
 
-## Using it in your city
+## Usando na sua cidade
 
-Each city lives in its own folder under `cities/<city-name>/` with its own data, calibration and scenarios, while the optimizer and evaluation code stay shared. To add a city, you need an OSM extract of the study area, some traffic counts or travel times, and any available demand data.
+Cada cidade fica em sua própria pasta em `cities/<nome-da-cidade>/`, com seus próprios dados, calibração e cenários, enquanto o código do otimizador e da avaliação é compartilhado. Para adicionar uma cidade, você precisa de um extrato do OSM da área de estudo, algumas contagens de tráfego ou tempos de viagem e quaisquer dados de demanda disponíveis.
 
-## Pilots
+## Pilotos
 
-- **São José dos Campos, SP, Brazil** (first pilot, in progress)
+- **São José dos Campos, SP, Brasil** (primeiro piloto, em andamento)
 
-## Stack
+## Tecnologias
 
-SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl or custom optimizers.
+SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl ou otimizadores customizados.
 
 ## Status
 
-Early stage, version 0.1 (planning). Next steps: build the first pilot baseline and define the city-agnostic project structure. See `CHANGELOG.md` for what's changed.
+Fase inicial, versão 0.1 (planejamento). Próximos passos: construir a linha de base do primeiro piloto e definir a estrutura do projeto independente de cidade. Veja o `CHANGELOG.md` para o que mudou.
 
-## Data and credits
+## Dados e créditos
 
-Map data © OpenStreetMap contributors (ODbL). Each city's local sources are credited in its own folder.
+Dados de mapa © colaboradores do OpenStreetMap (ODbL). As fontes locais de cada cidade são creditadas em sua própria pasta.
 
-## License
+## Licença
 
-TBD
+A definir
