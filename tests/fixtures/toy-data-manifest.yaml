@@ -1,0 +1,22 @@
+sources:
+  - id: toy-public-source
+    name: "Toy public source"
+    description: "A fixture-only source for schema tests."
+    roadmap_ref: P0.2
+    agency: "Test fixture"
+    license: "public"
+    visibility: public
+    sha256: null
+    status: public_available
+    notes: "Not real data."
+
+  - id: toy-restricted-source
+    name: "Toy restricted source"
+    description: "A fixture-only restricted source, to exercise data_safety checks."
+    roadmap_ref: P0.2
+    agency: "Test fixture"
+    license: "TBD"
+    visibility: restricted
+    sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+    status: deferred
+    notes: "Placeholder checksum, chosen not to match any real file, for the schema fixture."

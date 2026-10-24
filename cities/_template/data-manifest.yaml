@@ -1,0 +1,18 @@
+# Template for cities/<city>/data-manifest.yaml (ADR 0003). One entry per
+# data source. See cities/sjc/data-manifest.yaml for a filled-in example and
+# arteria/config.py (DataManifestEntry) for the validated field list.
+
+sources: []
+
+# Example entry (copy, uncomment, and fill in):
+# sources:
+#   - id: example-source
+#     name: "Example source"
+#     description: "What this is and what it's used for."
+#     roadmap_ref: P1.1
+#     agency: "Who holds it"
+#     license: "TBD"
+#     visibility: public  # or restricted
+#     sha256: null        # filled in once a file is actually received
+#     status: deferred    # public_available | deferred | requested | received | unavailable
+#     notes: "Anything that needs verifying before relying on this."

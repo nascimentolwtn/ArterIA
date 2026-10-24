@@ -1,0 +1,11 @@
+# Template for cities/<city>/city.yaml (ADR 0003). Copy this directory to
+# cities/<city>/, fill in every <PLACEHOLDER>, and validate with
+# `arteria.config.load_city_config` (exercised in tests/test_config.py).
+
+name: <city-slug>
+crs: "<EPSG code, e.g. EPSG:32723 for UTM 23S>"
+sumo_version: "<pinned SUMO version, e.g. 1.20.0>"
+# bounding_polygon: GeoJSON geometry of the study area (roadmap P1.4). Omit
+# until the corridor is chosen; network builds can't start without it.
+time_windows: {}
+data_manifest: data-manifest.yaml

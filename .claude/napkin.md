@@ -39,8 +39,15 @@ None open.
 3. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
 4. **[2026-10-24] Owner review of ADRs 0002-0004** (Status: Proposed, awaiting acceptance)
-   Do instead: accept, reject, or request changes before P0 implementation starts against them.
-5. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
+   Do instead: accept, reject, or request changes. P0 code already builds on them (your
+   call to start P0 read as go-ahead for the design), but the ADR files themselves are
+   still `Status: Proposed` — flip them to `Accepted` once you're sure, or ask for changes.
+5. **[2026-10-24] Desk: run `nox -s smoke` for real**
+   Do instead: this session's `nox -s smoke` only confirmed it skips cleanly with no
+   `sumo` binary (correct for remote). At the desk, with SUMO installed, confirm it
+   actually passes against a real toy network — the roadmap's P0 exit criterion needs
+   both halves.
+6. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
    Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
    remote session's network policy. At the desk: confirm Geosanja still serves Master
    Plan/zoning layers and check for a distinct road-network layer; confirm IBGE's Base

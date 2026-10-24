@@ -1,0 +1,14 @@
+# SJC city config stub (roadmap P0.2 / P0 deliverable). Values here are
+# placeholders where the real decision is still open; see docs/roadmap.md
+# Phase 1 (study-area selection) before treating `time_windows` or a future
+# `bounding_polygon` as final.
+
+name: sjc
+crs: "EPSG:32723" # UTM zone 23S, covers São José dos Campos (~45.88°W, 23°S)
+sumo_version: "1.20.0" # TBD: confirm the actual pinned version at the desk when SUMO is installed (L1)
+# bounding_polygon: not set yet — the pilot corridor/buffer is still open (roadmap P1.3/P1.4)
+time_windows:
+  am-peak:
+    start: "07:00" # TBD: confirm against PlanMob/field data once available (roadmap P1.1)
+    end: "09:00"
+data_manifest: data-manifest.yaml

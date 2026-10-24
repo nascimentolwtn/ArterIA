@@ -2,6 +2,17 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/) once the project has a first runnable release; before that, versions mark planning milestones.
 
+## [0.2] - 2026-10-24
+
+### Added
+
+- First code: the `arteria` Python package skeleton (`network/`, `demand/`, `calibration/`, `interventions/`, `optimize/`, `evaluate/`, `report/`), per ADR 0002. Each subpackage is still an empty placeholder — real content lands with its roadmap phase.
+- The `arteria` CLI (Typer), starting with `arteria doctor`: reports the Python version, whether `SUMO_HOME`/`sumo`/`netconvert`/`osmium` are available, and whether `ARTERIA_DATA`/`ARTERIA_PRIVATE` are set and writable.
+- Validated `city.yaml` and `data-manifest.yaml` schemas (`arteria/config.py`, per ADR 0003), exercised against `cities/sjc/`'s real files, `cities/_template/`, and toy fixtures.
+- `cities/_template/` (copyable starting point for a new city) and a `cities/sjc/city.yaml` stub (placeholders for the still-open bounding polygon and time windows).
+- A pre-commit safety net (`arteria/data_safety.py`, per ADR 0004): refuses to commit a file whose bytes match a `visibility: restricted` data-manifest checksum.
+- `nox -s lint tests` (ruff, mypy, pytest) passing in this remote session, and `nox -s smoke` correctly skipping here (no real SUMO binary) rather than failing — the P0 exit criterion from `docs/roadmap.md`.
+
 ## [0.1] - 2026-10-24
 
 ### Added

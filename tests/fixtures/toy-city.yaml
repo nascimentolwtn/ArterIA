@@ -1,0 +1,8 @@
+name: toy
+crs: "EPSG:32723"
+sumo_version: "1.20.0"
+time_windows:
+  am-peak:
+    start: "07:00"
+    end: "09:00"
+data_manifest: data-manifest.yaml

@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+dist/
+build/
+
+# ArterIA data policy (ADR 0004): large/raw/private data never lives in git.
+# This is a safety net, not the only control — see the pre-commit hook.
+cities/*/private/
+**/raw/
+*.fcd.xml
+outputs/
+.env

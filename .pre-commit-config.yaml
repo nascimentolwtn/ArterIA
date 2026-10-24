@@ -1,0 +1,15 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: arteria-data-safety
+        name: Refuse restricted-data checksums (ADR 0004)
+        entry: python -m arteria.data_safety
+        language: system
+        pass_filenames: true
