@@ -33,7 +33,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 
 **Features**
 - P1.1 Source inventory: PlanMob SJC diagnostic/prognostic, Master Plan (LC 612/2018), OD survey, FGV transit-tender studies, Linha Verde, GTFS (if available), counts, signal plans, crash data, emergency routes. Record availability, format, license and contact in the city data manifest.
-- P1.2 Data requests to the municipality (Ipplan, Secretaria de Mobilidade Urbana, Urbam) and transit operator; track status.
+- P1.2 Data requests to the municipality (Ipplan, Secretaria de Mobilidade Urbana, Urbam) and transit operator; track status. **Deferred 2026-10-24:** the owner chose not to contact any agency at this stage; drafts are logged in `cities/sjc/data-requests.md` for later. The street-network need this partly covered is no longer blocked by it — see P2.1.
 - P1.3 Corridor scoring matrix using the brief's criteria (congestion, commute flow, bus corridors, active-mode demand, low land acquisition, count/signal availability).
 - P1.4 Study-area polygon(s) and buffer zone (for boundary effects and diverted traffic).
 - P1.5 Problem statement per corridor (which research questions 1-7 it addresses).
@@ -48,7 +48,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 **Goals:** a clean, reproducible SUMO network of the study area built from OSM, with local corrections kept as code/patches rather than manual one-off edits.
 
 **Features**
-- P2.1 OSM extraction: clip by polygon from Geofabrik/Overpass, pinned snapshot date and checksum.
+- P2.1 OSM extraction: clip by polygon from Geofabrik/Overpass, pinned snapshot date and checksum. No municipal contact needed; cross-check completeness/road hierarchy against Geosanja's self-service Master Plan/zoning layers and IBGE's Base de Faces de Logradouros (both public, no request required — see `cities/sjc/data-manifest.yaml`), and against satellite imagery, before trusting raw OSM alone for a corridor with no field verification.
 - P2.2 `netconvert` pipeline with versioned options (typemaps, junction joining, ramp guessing, TLS guessing, sidewalks/bike lanes, public transport stops from OSM).
 - P2.3 Network corrections as patch files (`.nod/.edg/.con/.tll` plain XML or `netconvert` patch inputs) applied on top of the generated net, so rebuilds from new OSM are reproducible.
 - P2.4 Manual inspection and fixes in `netedit` for complex junctions, exported back into patch files.

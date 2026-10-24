@@ -5,12 +5,89 @@
 # `sha256` stays null until a file is actually received and checked into ARTERIA_DATA/ARTERIA_PRIVATE;
 # per ADR 0004, no restricted file's bytes or checksum are ever committed to this repo.
 #
-# status values: public_available (no request needed) | to_request (draft exists, not yet sent) |
+# status values: public_available (no request needed, self-service download) |
+#                 deferred (a request draft exists in data-requests.md, but the owner
+#                 chose not to contact any agency at this stage of the work) |
 #                 requested (sent, awaiting reply) | received | unavailable
+#
+# 2026-10-24: the owner decided not to contact SJC agencies at this point in the
+# work. Every item below that still needs an agency reply is marked `deferred`
+# (see cities/sjc/data-requests.md). The street-network need that originally
+# motivated part of this list is covered instead by the public, self-service
+# sources listed first (osm-network-extract, geosanja-plano-diretor-zoneamento,
+# ibge-faces-logradouros) — no contact with anyone required for those.
 #
 # Last reviewed: 2026-10-24.
 
 sources:
+  - id: osm-network-extract
+    name: "OpenStreetMap road network extract"
+    description: >
+      Street geometry, names, lane counts, one-way status and turn
+      restrictions where tagged, clipped to the SJC study area. The primary,
+      no-contact source for the network build (roadmap P2.1-P2.2).
+    roadmap_ref: P2.1, P2.2
+    agency: "OpenStreetMap contributors (via Geofabrik regional extract or Overpass API)"
+    license: "ODbL"
+    visibility: public
+    sha256: null
+    status: public_available
+    notes: >
+      Self-service: Geofabrik publishes a daily `sudeste` (southeast Brazil)
+      PBF extract; clip to the study-area polygon with `osmium extract`, or
+      query Overpass directly for a small pilot corridor. No municipal
+      contact needed. Coverage/completeness for SJC specifically has not
+      been measured by this session (outbound access to
+      overpass-api.de/nominatim.openstreetmap.org is blocked from this
+      remote session's network policy) — check it at the desk, e.g. via
+      JOSM/QGIS against satellite imagery, or the public Kontur OSM Road
+      Completeness map, before relying on raw OSM alone for a corridor with
+      no field verification.
+
+  - id: geosanja-plano-diretor-zoneamento
+    name: "Geosanja — Plano Diretor and Zoneamento map layers"
+    description: >
+      The city's own open geodata portal. Its first stage (launched 2019)
+      published downloadable map layers for the Master Plan (LC 612/2018)
+      and the land-use/zoning law (LC 623/2019) — the same road-hierarchy
+      and macrostructure content `master-plan-lc612-2018` below needed a
+      request for, now obtainable by self-service download instead.
+    roadmap_ref: P1.1, P2.5
+    agency: "Prefeitura de São José dos Campos (self-service portal, no contact needed)"
+    license: "unknown — confirm on download"
+    visibility: public
+    sha256: null
+    status: public_available
+    notes: >
+      Portal: sjc.sp.gov.br/geosanja, per the city's own 2019 announcement
+      (shapefile download via a "geo-metadados" tab). This session could not
+      fetch the portal directly to confirm it still carries a distinct
+      "sistema viário" (street-network) layer beyond the Master
+      Plan/zoning maps, or today's exact download steps — browsing and
+      downloading it is self-service and needs no request, just do it at
+      the desk and update this entry's notes with what's actually there.
+
+  - id: ibge-faces-logradouros
+    name: "IBGE — Base de Faces de Logradouros do Brasil"
+    description: >
+      Nationwide street-face/centerline layer per municipality from the
+      Census, with street type/name and address-count attributes. Useful to
+      cross-check OSM street names and completeness for SJC independently
+      of any OSM editing gaps.
+    roadmap_ref: P2.5
+    agency: "IBGE (self-service download, no contact needed)"
+    license: "public (IBGE open data)"
+    visibility: public
+    sha256: null
+    status: public_available
+    notes: >
+      2022 edition ("Resultados Preliminares" as of the source found):
+      shp/json, organized by UF/município, via the product page at
+      ibge.gov.br ("Malhas Territoriais" > "Base de Faces de Logradouros do
+      Brasil"). Confirm it has moved past "preliminary" status before citing
+      it as ground truth, and check the exact download path at the desk —
+      this session could not fetch ibge.gov.br directly to confirm it.
+
   - id: planmob-diagnostico-prognostico
     name: "PlanMob SJC — Diagnóstico e Prognóstico"
     description: >
@@ -22,7 +99,7 @@ sources:
     license: "unknown — likely public municipal document; confirm terms on receipt"
     visibility: public
     sha256: null
-    status: to_request
+    status: deferred
     notes: >
       Referenced in docs/research-brief-sjc.md [74]; exact current URL not
       verified by this session — locate via sjc.sp.gov.br or request the PDF
@@ -38,13 +115,15 @@ sources:
     license: "public law text"
     visibility: public
     sha256: null
-    status: to_request
+    status: public_available
     notes: >
-      Referenced in docs/research-brief-sjc.md [72][75]. Municipal legislation
-      is published at servicos.sjc.sp.gov.br/Legislacao — confirmed for other
-      laws (e.g. LC 576/2000 creating Ipplan:
-      https://servicos.sjc.sp.gov.br/Legislacao/Arquivos/Leis/2000/LE_2000_00005680.pdf);
-      search that portal for "LC 612/2018" rather than guessing the exact file path.
+      Referenced in docs/research-brief-sjc.md [72][75]. The law text is at
+      servicos.sjc.sp.gov.br/Legislacao (search "LC 612/2018"; a 2000-era law
+      confirms the path pattern:
+      https://servicos.sjc.sp.gov.br/Legislacao/Arquivos/Leis/2000/LE_2000_00005680.pdf).
+      The map layers it defines (road hierarchy, macrostructure) are also on
+      Geosanja (see `geosanja-plano-diretor-zoneamento`) — no request needed
+      for either; self-service download covers this entry.
 
   - id: od-survey-atlas
     name: "Atlas da Pesquisa Origem-Destino (aggregated)"
@@ -54,7 +133,7 @@ sources:
     license: "unknown — confirm on receipt"
     visibility: public
     sha256: null
-    status: to_request
+    status: deferred
     notes: "Likely public per Ipplan's Plano Diretor bibliography; request a copy or current URL."
 
   - id: od-survey-microdata
@@ -67,7 +146,7 @@ sources:
     license: "TBD — expect data-sharing terms restricting redistribution"
     visibility: restricted
     sha256: null
-    status: to_request
+    status: deferred
     notes: >
       Referenced in docs/research-brief-sjc.md [73]. If unreleased, fall back
       to the open-data-only path (roadmap P1.2 risk, P10.2) with synthetic
@@ -81,7 +160,7 @@ sources:
     license: "TBD — confirm on receipt"
     visibility: restricted
     sha256: null
-    status: to_request
+    status: deferred
     notes: "Referenced in docs/research-brief-sjc.md [70]."
 
   - id: linha-verde-project
@@ -92,7 +171,7 @@ sources:
     license: "unknown — likely public project documentation"
     visibility: public
     sha256: null
-    status: to_request
+    status: deferred
     notes: "Referenced in docs/research-brief-sjc.md [82]."
 
   - id: gtfs-feed
@@ -103,7 +182,7 @@ sources:
     license: "TBD — confirm on receipt"
     visibility: public
     sha256: null
-    status: to_request
+    status: deferred
     notes: >
       Transit is run by Consórcio 123 (named operators found: Expresso
       Maringá, Joseense Transporte, plus a third not confirmed by this
@@ -120,7 +199,7 @@ sources:
     license: "TBD"
     visibility: restricted
     sha256: null
-    status: to_request
+    status: deferred
     notes: "Urbam (Urbanizadora Municipal) runs road signage/signals in SJC and may hold or coordinate count data."
 
   - id: signal-timing-plans
@@ -131,7 +210,7 @@ sources:
     license: "TBD"
     visibility: restricted
     sha256: null
-    status: to_request
+    status: deferred
     notes: "Without this, SUMO-guessed programs are used and flagged uncalibrated per P3.5."
 
   - id: crash-data
@@ -142,7 +221,7 @@ sources:
     license: "TBD for municipal detail; state aggregate data appears to be published"
     visibility: restricted
     sha256: null
-    status: to_request
+    status: deferred
     notes: >
       Detran-SP's Infosiga platform publishes sinistro/fatality statistics
       covering all São Paulo municipalities, including SJC, but this session
@@ -158,5 +237,5 @@ sources:
     license: "TBD"
     visibility: restricted
     sha256: null
-    status: to_request
+    status: deferred
     notes: "Likely the most sensitive/hardest-to-obtain source; a documented proxy (e.g. isochrones from known station locations) may substitute if unavailable."

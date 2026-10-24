@@ -1,10 +1,22 @@
 # SJC data requests (roadmap P1.2)
 
+**Deferred — 2026-10-24.** The owner chose not to contact any SJC agency at this
+point in the work. Nothing below should be sent until that changes. The drafts
+stay here, ready, for whenever the owner decides to proceed with them.
+
+This no longer blocks the street network specifically: the network-import need
+that originally motivated part of this list is now covered by open, self-service
+sources that need no contact with anyone — see `osm-network-extract`,
+`geosanja-plano-diretor-zoneamento` and `ibge-faces-logradouros` in
+`cities/sjc/data-manifest.yaml`. What's still deferred below is everything that has no open-data substitute: OD
+microdata, FGV tender studies, traffic counts, signal timing, crash/emergency
+detail, and the GTFS feed/transit-operator contact.
+
 Tracks what's logged in `cities/sjc/data-manifest.yaml` and drafts the actual outbound
 requests. A remote Claude session can draft and log these (roadmap feature R3) but
-cannot send them — no email/contact channel is available here. **The owner sends
-these from their own email/contact channel**, then updates the status table below
-and the matching `status` field in `data-manifest.yaml`.
+cannot send them even once deferral lifts — no email/contact channel is available
+here. **The owner sends these from their own email/contact channel**, then updates
+the status table below and the matching `status` field in `data-manifest.yaml`.
 
 Drafts are in Brazilian Portuguese since that's the language the recipients use;
 everything else in this repo stays in English per `CLAUDE.md`.
@@ -13,8 +25,13 @@ everything else in this repo stays in English per `CLAUDE.md`.
 
 | Manifest id(s) | Agency | Status | Sent on | Notes |
 |---|---|---|---|---|
-| `planmob-diagnostico-prognostico`, `od-survey-atlas`, `od-survey-microdata` | Ipplan | to_request | — | Draft below |
-| `master-plan-lc612-2018`, `linha-verde-project`, `fgv-transit-tender-studies`, `gtfs-feed`, `traffic-counts`, `signal-timing-plans`, `crash-data`, `emergency-routes` | SEMOB | to_request | — | Draft below; SEMOB can route specific items to Urbam, the transit operator, or Corpo de Bombeiros/SAMU |
+| `planmob-diagnostico-prognostico`, `od-survey-atlas`, `od-survey-microdata` | Ipplan | deferred | — | Draft below; not to be sent until the owner lifts the deferral |
+| `linha-verde-project`, `fgv-transit-tender-studies`, `gtfs-feed`, `traffic-counts`, `signal-timing-plans`, `crash-data`, `emergency-routes` | SEMOB | deferred | — | Draft below (now without item 1, the Master Plan text — see note); SEMOB can route specific items to Urbam, the transit operator, or Corpo de Bombeiros/SAMU |
+
+`master-plan-lc612-2018` is no longer on this list: it moved to
+`status: public_available` in the manifest (self-service via Geosanja/the
+legislation portal), so Draft 2 below should have item 1 dropped before it is
+ever sent.
 
 Update this table (and the manifest) the moment a request is actually sent or a reply
 arrives — this file is a to-do, not a log of what happened.
@@ -84,22 +101,21 @@ directly; confirm current details before using them:
 > recomendação (detalhes adicionais disponíveis caso sejam úteis).
 >
 > Gostaria de solicitar orientação sobre como obter, ou ser direcionado(a) ao setor
-> responsável por:
+> responsável por (o texto do Plano Diretor e os mapas de zoneamento já foram
+> obtidos via Geosanja, sem necessidade de solicitação):
 >
-> 1. O texto vigente do **Plano Diretor (Lei Complementar 612/2018)**, caso o link
->    oficial atual seja diferente do que encontro publicamente;
-> 2. Documentação do **Projeto Linha Verde**;
-> 3. Os **estudos da FGV** para o edital do novo transporte público (resultados de
+> 1. Documentação do **Projeto Linha Verde**;
+> 2. Os **estudos da FGV** para o edital do novo transporte público (resultados de
 >    oferta/demanda e projeções da rede proposta);
-> 4. O **feed GTFS** (ou dados equivalentes de linhas, pontos e frequências) do
+> 3. O **feed GTFS** (ou dados equivalentes de linhas, pontos e frequências) do
 >    transporte público, e quem o mantém atualmente;
-> 5. **Contagens volumétricas de tráfego** (por hora/sentido) em vias e cruzamentos
+> 4. **Contagens volumétricas de tráfego** (por hora/sentido) em vias e cruzamentos
 >    do município, mesmo que parciais ou de anos anteriores;
-> 6. **Planos de tempo semafórico** (programação de sinais) de interseções
+> 5. **Planos de tempo semafórico** (programação de sinais) de interseções
 >    sinalizadas, ao menos nas vias de maior movimento;
-> 7. **Dados de sinistros/acidentes de trânsito** em nível de via/cruzamento, além
+> 6. **Dados de sinistros/acidentes de trânsito** em nível de via/cruzamento, além
 >    das estatísticas agregadas já públicas pelo Infosiga/Detran-SP;
-> 8. Dados ou contato responsável por **rotas e tempos de resposta de emergência**
+> 7. Dados ou contato responsável por **rotas e tempos de resposta de emergência**
 >    (bombeiros/SAMU), caso a Secretaria tenha essa informação ou possa indicar o
 >    órgão responsável.
 >

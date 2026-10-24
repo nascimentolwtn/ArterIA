@@ -32,21 +32,28 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-24] Owner: actually send the SJC data requests** (blocks P3/P4, long lead time)
-   Do instead: drafts are logged in `cities/sjc/data-requests.md` (Ipplan, SEMOB) and
-   tracked in `cities/sjc/data-manifest.yaml` — a remote session can't send email, so
-   fill in `[NOME]`/contact, verify the agency details noted in that file, send, then
-   flip each item's `status` in the manifest and the tracker table.
-2. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
+1. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
    Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
-3. **[2026-10-24] Pick the code license** (small)
+2. **[2026-10-24] Pick the code license** (small)
    Do instead: decide before first public release; record in an ADR if non-trivial.
-4. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
+3. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
-5. **[2026-10-24] Owner review of ADRs 0002-0004** (Status: Proposed, awaiting acceptance)
+4. **[2026-10-24] Owner review of ADRs 0002-0004** (Status: Proposed, awaiting acceptance)
    Do instead: accept, reject, or request changes before P0 implementation starts against them.
+5. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
+   Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
+   remote session's network policy. At the desk: confirm Geosanja still serves Master
+   Plan/zoning layers and check for a distinct road-network layer; confirm IBGE's Base
+   de Faces de Logradouros (2022) has moved past "preliminary"; spot-check OSM road
+   completeness for the SJC area (Kontur's OSM Road Completeness map, or JOSM/QGIS vs.
+   satellite) before relying on it for the pilot corridor. Update
+   `cities/sjc/data-manifest.yaml` notes with what's actually found.
 
 ## User Directives
 
 1. **[2026-10-24] Keep responses concise; avoid trailing summaries**
    Do instead: State results directly and focus on relevant updates only.
+2. **[2026-10-24] Don't contact SJC agencies yet**
+   Do instead: use open/self-service data (OSM, Geosanja, IBGE — see
+   `cities/sjc/data-manifest.yaml`) for now; the drafts in
+   `cities/sjc/data-requests.md` stay unsent until the owner says otherwise.
