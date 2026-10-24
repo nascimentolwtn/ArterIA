@@ -13,7 +13,8 @@ Early stage, pre-code. The repository currently holds planning and reference doc
 - `README.md` — project pitch, workflow, stack.
 - `docs/research-brief-sjc.md` — research brief and methodology for the first pilot (São José dos Campos, SP, Brazil).
 - `docs/adr/` — Architecture Decision Records for significant, hard-to-reverse decisions (see `docs/adr/README.md` for format and when to write one).
-- `.claude/napkin.md` — running runbook of scratch notes, backlog, and open items; re-prioritize it on every read per its own curation rules.
+- `.claude/napkin.md` — running runbook of scratch notes, backlog, and open items only; completed items move to `CHANGELOG.md` and are removed from here.
+- `CHANGELOG.md` — user-facing log of completed work, versioned starting at 0.1.
 
 There are no build, lint, or test commands yet because there is no code yet.
 
@@ -29,4 +30,5 @@ Per the recommended method in `docs/research-brief-sjc.md` and `docs/adr/0001-tr
 ## Working conventions
 
 - Record any significant, hard-to-reverse decision (simulator/library choice, project structure, data schema) as a new ADR in `docs/adr/`, numbered sequentially.
-- Keep `.claude/napkin.md` current: re-prioritize on read, cap at ~10 items per category, log only recurring/high-value notes (not completed work).
+- Keep `.claude/napkin.md` current: re-prioritize on read, cap at ~10 items per category, log only open/recurring/high-value notes (not completed work).
+- When work finishes, move it out of `.claude/napkin.md` and into `CHANGELOG.md` as a user-facing entry (plain language, under the current version), bumping the version if the change is release-worthy.

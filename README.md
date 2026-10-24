@@ -26,7 +26,7 @@ SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl or custom optimi
 
 ## Status
 
-Early stage. Next steps: build the first pilot baseline and define the city-agnostic project structure.
+Early stage, version 0.1 (planning). Next steps: build the first pilot baseline and define the city-agnostic project structure. See `CHANGELOG.md` for what's changed.
 
 ## Data and credits
 

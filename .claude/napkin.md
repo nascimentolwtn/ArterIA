@@ -5,7 +5,7 @@
 - Keep recurring, high-value notes only.
 - Max 10 items per category.
 - Each item includes date + "Do instead".
-- Completed work is NOT logged here — it lives in the project's docs/ADRs.
+- Only open/unresolved items are kept here. The moment an item is done, remove it from this file — it belongs in `CHANGELOG.md` (user-facing) and/or `docs/adr/` (architectural record), not here.
 
 ## Execution & Validation (Highest Priority)
 
