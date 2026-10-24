@@ -12,6 +12,7 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 - `cities/_template/` (copyable starting point for a new city) and a `cities/sjc/city.yaml` stub (placeholders for the still-open bounding polygon and time windows).
 - A pre-commit safety net (`arteria/data_safety.py`, per ADR 0004): refuses to commit a file whose bytes match a `visibility: restricted` data-manifest checksum.
 - `nox -s lint tests` (ruff, mypy, pytest) passing in this remote session, and `nox -s smoke` correctly skipping here (no real SUMO binary) rather than failing — the P0 exit criterion from `docs/roadmap.md`.
+- ADR 0004 (data storage and versioning) accepted: confirmed local-disk-only, no Git LFS, no external object store.
 
 ## [0.1] - 2026-10-24
 

@@ -1,7 +1,7 @@
 # 0004. Data storage and versioning
 
 Date: 2026-10-24
-Status: Proposed
+Status: Accepted (2026-10-24: confirmed local-disk-only — no LFS, no external object store)
 
 ## Context
 
