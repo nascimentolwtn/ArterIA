@@ -5,6 +5,22 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (revisão do commit `dcf417b`)
+
+Commit `dcf417b` responde, por decisão do próprio responsável pelo projeto (não de um(a) orientador(a) — nenhum(a) foi contatado(a) ainda), à "decisão pendente" registrada na entrada anterior desta trilha (revisão do commit `cdbdb01`): **SJC permanece a única cidade por ora.** A ADR 0002 (`docs/adr/0002-city-agnostic-project-structure.md`) foi editada para declarar isso explicitamente: nem a ADR nem o comando `arteria city new` constituem compromisso de ampliar o escopo da dissertação; essa decisão pertence ao responsável (e, quando existir, a seu/sua orientador(a)), não a essa escolha de engenharia.
+
+A capacidade multi-cidade continua disponível como opção de infraestrutura (a emenda da ADR 0002 registrada na entrada anterior não foi revertida) — mas agora está explicitamente classificada como opção, não como plano. O responsável poderá exercê-la por conta própria mais adiante, conforme o projeto evoluir, ou oferecê-la a um(a) orientador(a) depois de aceito(a) em um programa, caso esse/essa orientador(a) julgue necessária validação multi-caso.
+
+**Relevância para esta trilha:**
+
+- **Decisão pendente resolvida (por ora)**: a pergunta registrada na entrada de `cdbdb01` — se o escopo experimental desta dissertação deve permanecer em um único corredor/cidade (Seção 5 do pré-projeto) ou ser ampliado para validação multi-cidade — está respondida enquanto não houver orientador(a): permanece em SJC apenas. O enquadramento de caso único do pré-projeto (Seção 5) e do `outline.md` (Capítulos 4 e 6) segue válido sem alteração.
+- **Ressalva de honestidade da entrada anterior, agora moot**: a ressalva de que uma eventual segunda cidade, sob o regime "somente dados abertos", traria dados mais diversos porém ainda sintéticos quanto à demanda — não resolvendo o risco de overfitting/viés de demanda sintética da Seção 12 do pré-projeto — deixa de se aplicar por não haver, por ora, segunda cidade nenhuma. Nenhuma alegação de generalização entre cidades deve ser escrita em nenhum capítulo até que essa opção seja de fato exercida.
+- **Natureza da decisão**: é uma decisão do responsável pelo projeto sobre escopo de produto/infraestrutura, não uma decisão acadêmica tomada em nome desta trilha — mas fixa, para fins de planejamento desta dissertação, que o Capítulo 4 (Experimentos) e o Capítulo 5 (Resultados) podem ser planejados em torno de um único corredor/subárea de SJC sem risco iminente de o escopo mudar por força de infraestrutura.
+
+As notas de rastreio adicionadas ao Capítulo 4 e ao Capítulo 6 do `outline.md` na entrada de `cdbdb01` foram atualizadas para refletir esta resolução (não removidas, para preservar o histórico de que a opção existe e por que foi considerada). Nenhuma prosa de capítulo além dessas notas foi alterada.
+
+**Próximo passo associado**: nenhum passo novo para esta trilha além dos já listados (contato com orientador(a) ainda pendente). Caso um(a) orientador(a) seja contatado(a) e questione o escopo de caso único, esta entrada e a ADR 0002 são a referência de que a decisão de permanecer em SJC foi deliberada pelo responsável do projeto, não uma omissão.
+
 ## 2026-10-24 (revisão do commit `cdbdb01`)
 
 Commit `cdbdb01` aceitou e emendou a ADR 0002 (`docs/adr/0002-city-agnostic-project-structure.md`), que trata da estrutura de projeto do ArterIA. A emenda, motivada pelo próprio responsável do projeto: um(a) futuro(a) orientador(a) ou o método de pesquisa em si pode exigir validar a abordagem do ArterIA contra mais de uma cidade antes da Fase 10 do roteiro ("segunda cidade depois"). Três pontos da emenda:

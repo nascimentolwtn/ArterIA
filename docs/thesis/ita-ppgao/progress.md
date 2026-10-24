@@ -5,6 +5,16 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (revisão do commit dcf417b)
+
+Commit `dcf417b` traz a resposta do responsável pelo projeto ArterIA à pergunta aberta registrada na entrada anterior (abaixo, revisão do commit `cdbdb01`): o recorte geográfico permanece único. **SJC continua sendo a única cidade por ora.** A capacidade de validar contra mais de uma cidade (emenda à ADR 0002, comando `arteria city new`) permanece disponível na ferramenta, mas é tratada explicitamente como **capacidade, não plano**: o próprio texto emendado da ADR 0002 passou a registrar que "nem esta ADR, nem o comando `arteria city new`, constituem um compromisso de ampliar o escopo da dissertação; essa decisão pertence ao responsável do projeto (e, uma vez que exista, a seu orientador), não a esta escolha de engenharia".
+
+**Natureza da decisão:** trata-se de uma decisão do responsável pelo projeto de software sobre o escopo do ArterIA como produto, não de uma indicação de orientador — nenhum orientador do PPGAO foi contatado até o momento. Um eventual segundo recorte (possivelmente perto de outra instalação da FAB) permanece uma possibilidade que o próprio responsável do projeto poderá exercer mais adiante, ou oferecer a um futuro orientador caso este queira validação multi-caso, uma vez que a trilha seja aceita em algum programa.
+
+**Relevância para a trilha AO-EL:** isso resolve, por ora, a pergunta aberta registrada na entrada de `cdbdb01` sobre se o recorte geográfico da Seção 5 do `pre-projeto.md` precisaria ou não considerar um segundo recorte FAB-adjacente. Enquanto o escopo do produto ArterIA mantiver SJC como única cidade, o Capítulo 1 (Introdução e Enquadramento Operacional) e o Capítulo 3 (Caracterização da Área) do `outline.md` podem seguir assumindo um único recorte geográfico — o entorno ITA/DCTA-CTA em SJC, conforme já proposto. Isso **não é**, entretanto, uma validação do enquadramento operacional/FAB em si: a decisão é do responsável pelo projeto de software sobre o escopo de validação do ArterIA, e pode ser revista por um futuro orientador do PPGAO, a quem continua cabendo a palavra final sobre o recorte, as métricas e até o tema desta dissertação.
+
+Nenhuma mudança de status é feita por este registro. O risco principal — validação do enquadramento operacional/FAB por um orientador do PPGAO/AO-EL — permanece integralmente em aberto e não é tocado por esta decisão de escopo do produto.
+
 ## 2026-10-24 (revisão do commit cdbdb01)
 
 Commit `cdbdb01` aceitou e emendou a ADR 0002 (estrutura do projeto ArterIA). A emenda não é uma decisão desta trilha, mas tem duas implicações que valem registro no `outline.md`.
