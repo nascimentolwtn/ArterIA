@@ -32,16 +32,16 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-24] Draft ADRs 0002-0004 before any code** (high impact, ~1 day)
-   Do instead: write them per `docs/roadmap.md` planned ADR index, then start P0.
-2. **[2026-10-24] Send SJC data requests (roadmap P1.2)** (blocks P3/P4, long lead time)
+1. **[2026-10-24] Send SJC data requests (roadmap P1.2)** (blocks P3/P4, long lead time)
    Do instead: send early; they gate demand and calibration data.
-3. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
+2. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
    Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
-4. **[2026-10-24] Pick the code license** (small)
+3. **[2026-10-24] Pick the code license** (small)
    Do instead: decide before first public release; record in an ADR if non-trivial.
-5. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
+4. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
+5. **[2026-10-24] Owner review of ADRs 0002-0004** (Status: Proposed, awaiting acceptance)
+   Do instead: accept, reject, or request changes before P0 implementation starts against them.
 
 ## User Directives
 
