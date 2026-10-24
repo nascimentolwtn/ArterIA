@@ -5,6 +5,10 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (nota)
+
+Commit `62facb2` ("docs(roadmap): reframe remote work as Claude app sessions, not GitHub Actions") foi avaliado e considerado fora do escopo desta trilha: trata da divisão operacional de trabalho de desenvolvimento do ArterIA entre sessões em nuvem e desktop (fixtures de teste, ADRs, revisão de PR vs. SUMO em dados reais, ferramentas GUI), não da literatura de segurança/defesa, do caso de SJC, da metodologia mista ou do instrumento de modelagem de resiliência em si. Não há decisão de simulador, método de IA ou escopo de cidade/dados envolvida. Nenhuma edição de conteúdo foi feita em `outline.md` nesta entrada.
+
 ## 2026-10-24
 
 O pré-projeto detalhado (`pre-projeto.md`) já existe e está completo em sua estrutura: título, resumo, problema de pesquisa reformulado para a linha "Poder Aeroespacial Brasileiro, Segurança e Defesa", contexto de SJC, metodologia mista, métricas de resiliência, limitações/riscos e cronograma tentativo de 4 semestres. Nesta sessão foram criados `outline.md` (esqueleto de capítulos da dissertação, mapeando o que já está coberto pelo pré-projeto e o que falta pesquisar/escrever em cada capítulo) e este arquivo de progresso.

@@ -5,6 +5,10 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (revisão do commit 62facb2)
+
+Commit `62facb2` ("docs(roadmap): reframe remote work as Claude app sessions, not GitHub Actions") revisado: trata da divisão de trabalho entre sessões de desenvolvimento em nuvem e desktop do próprio processo de engenharia do ArterIA (não é RL multiagente nem GNN aplicados ao domínio de tráfego, que é o objeto desta trilha). Sem relevância para o pré-projeto ou para `outline.md` — nenhuma edição de conteúdo feita nesta entrada.
+
 ## 2026-10-24
 
 O pré-projeto detalhado (`pre-projeto.md`) já existe e cobre título provisório, resumo, problema de pesquisa, contexto de São José dos Campos, recorte geográfico, fundamentação inicial em IA (RL multiagente + GNN), objetivos, metodologia/arquitetura proposta, métricas, resultado esperado, limitações, cronograma tentativo de 4 semestres e lista inicial de referências.

@@ -5,6 +5,10 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (2)
+
+Commit `62facb2` ("docs(roadmap): reframe remote work as Claude app sessions, not GitHub Actions") apenas reorganiza a divisão de tarefas entre sessões de nuvem e desktop do Claude Code no projeto ArterIA (infraestrutura/processo de desenvolvimento) e rescopa ADRs de execução remota. Não toca em escolha de simulador, formulação de otimização bi-nível/multiobjetivo nem no recorte de dados de SJC, e o pré-projeto desta trilha não aborda o fluxo de trabalho de pesquisa/engenharia como parte do seu objeto de estudo. Sem relevância para esta trilha; nenhuma edição de conteúdo foi feita.
+
 ## 2026-10-24
 
 O pré-projeto detalhado (`pre-projeto.md`) já existia, cobrindo título provisório, resumo, problema de pesquisa, contexto de São José dos Campos, recorte geográfico, formulação matemática bi-nível multiobjetivo, objetivos, metodologia, métricas before/after, limitações, cronograma tentativo e referências iniciais. Nesta sessão foram criados `outline.md` (esqueleto dos oito capítulos da dissertação, mapeando o que já está coberto pelo pré-projeto e o que ainda falta pesquisar/escrever em cada um) e este arquivo de progresso.
