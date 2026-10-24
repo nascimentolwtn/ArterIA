@@ -1,0 +1,43 @@
+# Esqueleto de Capítulos — Dissertação PPGCA/UNIFA
+
+> Este documento é um esqueleto, não um rascunho. Cada capítulo traz 2-4 linhas indicando o que já está coberto em `pre-projeto.md` e o que ainda falta pesquisar/escrever. Serve de ponte entre o pré-projeto (já detalhado) e a escrita futura da dissertação.
+
+## 1. Introdução e Problema de Segurança
+
+**Coberto no pré-projeto:** título provisório, resumo, problema de pesquisa reformulado para a linha de Segurança e Defesa (seção 3), justificativa em três pontos, objetivo geral e objetivos específicos (seções 7-8).
+**Falta:** redigir a introdução narrativa propriamente dita (contextualização histórica do poder aeroespacial brasileiro, gancho inicial), e explicitar por escrito, já na abertura, a distinção entre "instrumento" (ArterIA/simulação) e "núcleo" (segurança/defesa) para orientar a leitura do restante do texto.
+
+## 2. Revisão de Literatura em Infraestrutura Crítica, Military Mobility e Defesa
+
+**Coberto no pré-projeto:** menção à iniciativa de Military Mobility da OTAN/UE (2018) como referência institucional, menção à Política Nacional de Defesa e Estratégia Nacional de Defesa do Brasil, e o reconhecimento explícito (seção 16, observação final) de que essa revisão **não é sistemática** e depende de busca bibliográfica dedicada.
+**Falta — maior lacuna do projeto:** revisão bibliográfica sistemática em bases de Relações Internacionais/Segurança sobre *critical infrastructure protection*, *dual-use infrastructure* e *military mobility* (literatura além dos documentos institucionais já citados); situar o debate brasileiro de estudos estratégicos aeroespaciais frente a essa literatura internacional; nivelamento teórico-conceitual em Ciência Política/RI (ver risco disciplinar na seção 12 do pré-projeto).
+
+## 3. Estudo de Caso de São José dos Campos
+
+**Coberto no pré-projeto:** caracterização do polo aeroespacial de SJC (ITA, DCTA/CTA, IAE, IEAv, infraestrutura aérea militar), contexto do PlanMob (Lei Complementar 576/2016) e do Plano Diretor (Lei 612/2018), justificativa da escolha do caso (seção 4) e recorte provisório da zona de interesse (seção 5).
+**Falta:** levantamento documental detalhado (histórico de obras, ocorrências, enchentes, eventos que afetaram os corredores de acesso), delimitação final e validada do perímetro da "zona de interesse" com apoio do orientador, e eventual verificação de quais dados exigem interlocução formal com a FAB.
+
+## 4. Metodologia Mista
+
+**Coberto no pré-projeto:** desenho de método misto (seção 9) — revisão documental/teórica, estudo de caso único incorporado, modelagem quantitativa de resiliência via SUMO/ArterIA, e coleta qualitativa complementar condicional (entrevistas sujeitas a aprovação ética).
+**Falta:** detalhamento operacional da etapa qualitativa (protocolo de entrevista, critérios de seleção de atores, submissão a comitê de ética), e nivelamento metodológico em métodos qualitativos de estudos estratégicos — o pré-projeto já sinaliza isso como necessidade de formação no 1º semestre (cronograma, seção 14).
+
+## 5. Modelagem de Resiliência (Instrumento ArterIA)
+
+**Coberto no pré-projeto:** descrição do nível instrumental (seção 6), métricas de avaliação propostas — tempo de acesso sob interdição, rotas alternativas, pontos únicos de falha, tempo de resposta/recuperação (seção 10) — e a ressalva explícita de que a simulação é evidência de apoio, não o resultado principal (seção 13).
+**Falta:** especificação técnica de como adaptar o modelo ArterIA/SUMO (hoje orientado a otimização de pacotes de intervenção) para gerar cenários de interdição em vez de cenários de melhoria; definição dos cenários de interdição a simular (bloqueios, obras, eventos climáticos) para a zona de interesse de SJC.
+
+## 6. Achados e Diretrizes de Planejamento Urbano-Militar
+
+**Coberto no pré-projeto:** expectativa de resultado (seção 11) — diagnóstico de política de defesa fundamentado empiricamente — e exemplos provisórios de diretrizes (critérios de priorização de obras, protocolos de rota alternativa) na seção 8 (objetivo específico 7).
+**Falta:** os achados em si, que dependem da execução dos cenários de simulação e da coleta qualitativa (ainda não realizadas); tratamento cuidadoso do nível de detalhe divulgável sobre vulnerabilidades específicas, conforme alerta da seção 13 do pré-projeto.
+
+## 7. Conclusão
+
+**Coberto no pré-projeto:** síntese implícita no resumo e na seção 11 (contribuição pretendida: preencher lacuna no debate brasileiro de estudos estratégicos aeroespaciais).
+**Falta:** redação da conclusão propriamente dita, a ser escrita só depois dos achados; deve recapitular explicitamente os limites assumidos nas seções 12-13 do pré-projeto (risco disciplinar, dependência de aceitação do enquadramento, sensibilidade do tema).
+
+## 8. Referências
+
+**Coberto no pré-projeto:** lista inicial de 9 referências (seção 16), incluindo documentos institucionais (UE/OTAN, Política e Estratégia Nacional de Defesa), a base de Pesquisa Operacional já usada nos pré-projetos de ITA (Miandoabchi et al. 2011 e correlatos), e documentos municipais de SJC.
+**Falta:** a revisão bibliográfica sistemática de RI/Segurança (mesma lacuna do Capítulo 2); consolidação de todas as referências em formato acadêmico final (ABNT ou norma exigida pelo PPGCA).
