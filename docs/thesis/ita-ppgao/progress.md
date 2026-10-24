@@ -1,6 +1,7 @@
 # Log de Progresso — Trilha PPGAO/ITA (AO-EL)
 
 Status: ativo
+Profundidade: leve
 
 ---
 

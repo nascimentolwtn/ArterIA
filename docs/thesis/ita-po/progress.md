@@ -1,6 +1,7 @@
 # Log de progresso — Mestrado ITA PG/PO
 
 Status: ativo
+Profundidade: leve
 
 ---
 
