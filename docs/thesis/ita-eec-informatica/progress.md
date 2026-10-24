@@ -5,6 +5,23 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (revisão do commit `cdbdb01`)
+
+Commit `cdbdb01` aceitou e emendou a ADR 0002 (`docs/adr/0002-city-agnostic-project-structure.md`), que trata da estrutura de projeto do ArterIA. A emenda, motivada pelo próprio responsável do projeto: um(a) futuro(a) orientador(a) ou o método de pesquisa em si pode exigir validar a abordagem do ArterIA contra mais de uma cidade antes da Fase 10 do roteiro ("segunda cidade depois"). Três pontos da emenda:
+
+1. O layout já existente de pasta-por-cidade (`cities/<nome>/` como dados+config, nunca código, dissociado do pacote compartilhado `arteria/`) já tornava isso barato em princípio — nenhuma mudança de arquitetura foi necessária.
+2. O que faltava era um comando de scaffolding, agora entregue como `arteria city new <nome>` (copia `cities/_template/` para uma nova `cities/<nome>/`, validada contra o esquema da ADR 0003).
+3. O caminho "somente dados abertos" (roteiro P10.2: OSM + GTFS + contagens públicas + demanda sintética, sem pesquisa OD) passa a ser tratado como de primeira classe, não como alternativa de contingência — porque toda cidade integrada até agora (SJC) já começa em modo somente-dados-abertos, já que o responsável decidiu não contatar nenhuma agência municipal (ver entrada anterior sobre `cd68b57`/`bf374e4`). Uma alternativa mais pesada (empacotar cada cidade como plugin instalável) foi considerada e explicitamente rejeitada como overhead desnecessário.
+
+**Relevância para esta trilha:** a própria ADR nomeia esta trilha como motivação ("Consequences": "directly useful if generalizability across cases becomes part of the thesis's evidence"), portanto a relevância é direta, não inferida.
+
+- **Para o Objetivo específico 7 e o Capítulo 6 (Discussão) do `outline.md`**: o pré-projeto (Seção 8, objetivo 7) já previa avaliar generalização apenas *entre cenários de demanda* dentro do mesmo recorte de SJC (pico/fora de pico, dias atípicos) — não entre cidades. A Seção 5 do pré-projeto restringe deliberadamente o escopo experimental a um único corredor/subárea, e a Seção 12 já trata overfitting a um único corredor/cidade como limitação explícita, não como generalização implícita. A ADR 0002 emendada torna tecnicamente barato, no nível de infraestrutura do ArterIA, escalonar uma segunda cidade de validação a qualquer momento — o que muda o cálculo de custo/benefício de ampliar o escopo experimental desta dissertação para incluir mais de um caso, caso um(a) orientador(a) (ainda não contatado(a), ver próximos passos) julgue isso necessário para sustentar alegações de generalização da política de RL e/ou do surrogate em GNN. Isso não é uma decisão tomada — é uma opção agora mais barata, a ser avaliada junto com a orientação.
+- **Ressalva de honestidade que deve acompanhar essa opção**: uma segunda cidade de validação, sob o regime "somente dados abertos" já descrito como padrão (e não excepcional) pela ADR, significaria dados de treinamento *mais diversos, porém ainda sintéticos* quanto à demanda (sem pesquisa OD em nenhuma das cidades) — o que não resolve, e pode até mascarar, o risco já identificado na Seção 12 do pré-projeto ("dados de treinamento limitados" e "risco de overfitting") de depender de cenários de demanda sintéticos com viés desconhecido. Qualquer alegação de generalização entre cidades construída só sobre cenários sintéticos de demanda deve ser apresentada no Capítulo 6 (Discussão) com essa ressalva explícita, não como evidência externa independente.
+
+**Decisão pendente registrada**: se o escopo experimental desta dissertação deve permanecer em um único corredor/cidade (conforme Seção 5 do pré-projeto) ou ser ampliado para validação multi-cidade agora que o custo de infraestrutura caiu — questão que depende da escolha de orientador(a) (ainda não contatado(a)) e não deve ser decidida unilateralmente nesta trilha.
+
+Nenhuma prosa de capítulo foi reescrita; foram adicionadas linhas de rastreio ao Capítulo 4 (Experimentos) e ao Capítulo 6 (Discussão) do `outline.md` apontando a ADR 0002 emendada como opção de infraestrutura relevante a uma futura decisão sobre escopo multi-cidade.
+
 ## 2026-10-24 (revisão dos commits `bf374e4` e `cd68b57`)
 
 Dois commits da branch `ccr-b47695cc-ik89jg` revisados em conjunto (a execução anterior do `thesis-orchestrator` para eles não chegou a concluir por erro de ferramenta).

@@ -5,6 +5,20 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (revisão do commit cdbdb01)
+
+Commit `cdbdb01` aceitou e emendou a ADR 0002 (estrutura do projeto ArterIA). A emenda não é uma decisão desta trilha, mas tem duas implicações que valem registro no `outline.md`.
+
+**Conteúdo da emenda:** (1) a estrutura já existente de pasta por cidade (`cities/<nome>/` como dados+configuração, nunca código, dissociada do pacote compartilhado `arteria/`) já tornava barata, em princípio, a validação contra mais de uma cidade — nenhuma mudança de arquitetura foi necessária; (2) a peça que faltava era um comando de scaffolding, agora disponível como `arteria city new <nome>` (copia `cities/_template/` para uma nova pasta `cities/<nome>/` validada por schema); (3) o caminho de dados abertos apenas (roadmap P10.2: OSM + GTFS + contagens públicas + demanda sintética, sem pesquisa OD própria) passa a ser tratado como via de primeira classe, não mais como *fallback* — porque toda cidade incorporada até agora (SJC) já começa em modo dados-abertos-apenas, visto que o responsável pelo projeto decidiu adiar o contato com qualquer agência municipal (ver entrada de `bf374e4`/`cd68b57` abaixo). Uma alternativa mais pesada (empacotar cada cidade como plugin instalável) foi considerada e explicitamente rejeitada como *overhead* desnecessário.
+
+**Relevância específica para a trilha AO-EL:**
+
+- O próprio texto da decisão do responsável pelo ArterIA registra que um orientador, ou o método em si, pode exigir validar o ArterIA contra mais de uma cidade — "possivelmente uma mais próxima de uma base da FAB, se esse ângulo ainda estiver em jogo" — bem antes da Fase 10 do roadmap. Isso toca diretamente o recorte geográfico proposto na Seção 5 do `pre-projeto.md` (entorno ITA/DCTA-CTA em SJC) e é, por ora, apenas uma possibilidade mencionada pelo responsável do projeto de software, **não uma decisão ou indicação de um orientador do PPGAO** — nenhum orientador foi contatado até o momento (ver risco principal, abaixo). Registra-se como pergunta aberta a levar à conversa com um futuro orientador: o enquadramento operacional-militar desta dissertação deve seguir restrito a um único recorte em SJC, ou a própria validação metodológica do ArterIA pode exigir um segundo recorte (eventualmente perto de outra instalação da FAB), o que mudaria substancialmente o escopo e o cronograma do Capítulo 3 e 5 do `outline.md`.
+- Tecnicamente, o fato de o scaffolding por cidade (`arteria city new`) já existir torna um eventual segundo recorte mais barato de montar no nível de ferramenta — mas isso não resolve, nem atenua, o problema específico desta trilha: a disponibilidade de dados operacionais da FAB (Seção 12 do pré-projeto) é uma limitação por cidade, não por arquitetura de software, e teria de ser levantada de novo para qualquer segunda instalação candidata.
+- A promoção do caminho "dados abertos apenas" (P10.2) de *fallback* a via de primeira classe é consistente com, e reforça, o registro já feito na entrada de `bf374e4`/`cd68b57` abaixo: o levantamento de dados desta dissertação, enquanto nenhum orientador validar o enquadramento FAB nem nenhuma agência for contatada, permanece limitado a fontes civis públicas de autoatendimento. Não há, neste commit, qualquer avanço ou retrocesso no levantamento de dados operacionais da FAB propriamente dito.
+
+Nenhuma mudança de status ou de próximo passo anterior é revertida por este registro. O risco principal continua sendo a validação do enquadramento por um orientador do PPGAO; a este risco soma-se agora, como pergunta aberta explícita, se esse orientador (ou o método) exigirá considerar mais de um recorte geográfico/instalação.
+
 ## 2026-10-24 (revisão dos commits bf374e4 e cd68b57)
 
 Dois commits de preparação de dados do ArterIA para SJC (roadmap P1.1/P1.2, fora desta trilha) têm reflexo direto no Capítulo 3 (Caracterização da Área) desta trilha e foram registrados no `outline.md`.
