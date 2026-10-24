@@ -2,6 +2,12 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/) once the project has a first runnable release; before that, versions mark planning milestones.
 
+## [Unreleased]
+
+### Added
+
+- Run provenance manifests (`arteria/provenance.py`, roadmap P0.7): a reusable schema and helper functions so that every future simulation, calibration, or optimizer run (`arteria sim run`, `arteria calibrate ...`, `arteria optimize run` — desk-only, Phases 3/4/7) can write a `manifest.json` recording the git commit, SUMO version, random seed, a hash of the config used, and checksums of its input files, matching the `runs/<city>/<run-id>/` layout in `docs/roadmap.md`. Tested on toy fixtures only; no command calls it yet.
+
 ## [0.2] - 2026-10-24
 
 ### Added
