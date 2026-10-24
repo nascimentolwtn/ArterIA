@@ -17,15 +17,15 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 - P0.2 City config schema (`cities/<city>/city.yaml`): bounding polygon, CRS/UTM zone, time windows (e.g. AM peak), data-source manifest with licenses and credits, SUMO version pin. **[ADR 0003: city config and data schema]**
 - P0.3 Python environment: pinned dependencies (`pyproject.toml`, `uv` or `pip-tools`), SUMO version pin and `SUMO_HOME` discovery, `sumolib`/`traci` (or `libsumo`) usage.
 - P0.4 Quality gates: `ruff`, `mypy` (lenient at first), `pytest`, pre-commit hooks.
-- P0.5 Quality-gate runner: `nox -s lint tests smoke` (lint + unit tests + a tiny toy-network SUMO smoke test), run at the desk and in remote Claude sessions (R1). Hosted CI is optional and deferred (Open question 12).
+- P0.5 Quality-gate runner: `nox -s lint tests` (lint + unit tests on toy fixtures, real SUMO calls stubbed behind an adapter per ADR 0009), run at the desk and in remote Claude sessions (R1); a separate `nox -s smoke` toy-network SUMO run (real `sumo`/`netconvert` binary) is desktop-only. Hosted CI/GitHub Actions is decided against, not deferred: remote sessions plus the desktop cover every check (ADR 0009).
 - P0.6 Data policy: what is committed (configs, small fixtures, manifests, checksums) vs. kept out of git (raw OSM, OD microdata, large outputs); optional Git LFS or external storage (DVC/object storage). **[ADR 0004: data storage and versioning]**
 - P0.7 Run provenance: every simulation/optimization run writes a manifest (git SHA, SUMO version, seed, config hash, input checksums).
 - P0.8 License decision for code (TBD in README) and data attribution (ODbL for OSM).
 
 **Dependencies:** none.
-**Deliverables:** skeleton package, `cities/sjc/city.yaml` stub, `cities/_template/`, `nox -s lint tests smoke` passing on a toy network, ADRs 0002-0004.
-**Exit criteria:** `pytest` and a toy SUMO run pass locally and in a remote Claude session; a contributor can create `cities/<new>/` from the template in under 30 minutes.
-**Risks:** over-engineering before real data is seen (mitigate: keep schemas minimal, version them); SUMO version drift between local Windows and Linux (WSL2, remote sessions) (mitigate: pin version, test both).
+**Deliverables:** skeleton package, `cities/sjc/city.yaml` stub, `cities/_template/`, `nox -s lint tests` passing both at the desk and in a remote Claude session, `nox -s smoke` (real toy-network SUMO run) passing at the desk, ADRs 0002-0004.
+**Exit criteria:** `pytest` passes locally and in a remote Claude session (no real SUMO binary needed there); a toy SUMO run (`nox -s smoke`) passes at the desk; a contributor can create `cities/<new>/` from the template in under 30 minutes.
+**Risks:** over-engineering before real data is seen (mitigate: keep schemas minimal, version them); SUMO version drift between local Windows and Linux (WSL2) (mitigate: pin version, test both; remote sessions never run real SUMO, so they carry no drift risk).
 
 ### Phase 1 - Study-area selection (pilot SJC)
 
@@ -212,10 +212,9 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 | 0006 | Intervention catalog schema | P5.1 |
 | 0007 | Metric definitions and objective set | P6 |
 | 0008 | Optimization architecture | P7.1 |
-| 0009 | Remote-session boundary: what a Claude app cloud session may read, run, commit and push vs. desktop-only work; toy-fixture outputs are never evidence; SUMO calls sit behind an adapter so the rest of `arteria/` tests without real data. Replaces the earlier "CI/CD, runner topology, self-hosted runner security" scope (no Actions runners are planned) and absorbs 0010. Kept as an ADR, not just a rule, because the adapter/fixture split shapes the package architecture | P0.1, P0.5, cross-cutting |
-| 0010 | *Merged into 0009: AI-agent scope and permissions are the same boundary now that remote work is Claude sessions. Number left unused so references to 0011/0012 stay stable* | - |
-| 0011 | Non-public data handling: storage, encryption, retention, publishable derived data | P0.6, P1.2, P4.1 |
-| 0012 | Cities: Skylines edition, mod set, and "illustrative" labelling | P8.3 |
+| 0009 | Remote-session boundary: what a Claude app cloud session may read, run, commit and push vs. desktop-only work; toy-fixture outputs are never evidence; SUMO calls sit behind an adapter so the rest of `arteria/` tests without real data, no `sumo`/`netconvert` binary required remotely. Replaces the earlier "CI/CD, runner topology, self-hosted runner security" scope (no Actions runners, no hosted CI are planned) and absorbs the AI-agent scope/permissions question that was going to be its own ADR (same boundary, now that remote work is Claude sessions, so no separate number was needed). Kept as an ADR, not just a rule, because the adapter/fixture split shapes the package architecture | P0.1, P0.5, cross-cutting |
+| 0010 | Non-public data handling: storage, encryption, retention, publishable derived data | P0.6, P1.2, P4.1 |
+| 0011 | Cities: Skylines edition, mod set, and "illustrative" labelling | P8.3 |
 
 ## Remote features
 
@@ -229,7 +228,7 @@ Remote features are tasks the owner types into the Claude app and gets done end-
 |---|---|
 | Read, write and refactor committed files; answer questions about them | See anything not committed: `ARTERIA_DATA`, `ARTERIA_PRIVATE`, the owner's PC |
 | Run `ruff`, `mypy`, `pytest`, `nox` against committed toy fixtures | Run `sumo-gui`, `netedit`, Cities: Skylines or any GUI |
-| Run headless `sumo`/`netconvert` from the pinned `eclipse-sumo` pip wheel on toy networks (checked 2026-10-24: the 1.20.0 wheel, ~72 MB, installs and runs a 2-node toy net in a cloud session) | Build or simulate real city networks: pinned OSM snapshots, demand and observations live outside git |
+| Write and unit-test `arteria/network` and transform code against toy XML fixtures, with real SUMO calls stubbed behind an adapter (ADR 0009) | Install or run the real `sumo`/`netconvert` binary, or build/simulate real city networks: pinned OSM snapshots, demand and observations live outside git |
 | Write YAML schemas and configs and validate them | Run calibration or optimizer batches (hours to days, L16-L18) |
 | Draft ADRs, docs, CHANGELOG, napkin, roadmap and thesis-track updates | Produce numbers that back a recommendation: only desktop runs with a manifest (P0.7) count as results |
 | Commit, push a branch, open/comment on a PR, file an issue | Keep state: the container is discarded after the session |
@@ -238,7 +237,7 @@ Remote features are tasks the owner types into the Claude app and gets done end-
 
 | ID | Task (what the owner types) | What the session does / delivers | Was (Actions framing) | Roadmap IDs |
 |---|---|---|---|---|
-| R1 | "Run the checks on `<branch>` and fix what fails." | `nox -s lint tests smoke` (ruff, mypy, pytest, toy-net SUMO smoke via the pinned wheel); fixes, commits, pushes | CI on push/PR | P0.3, P0.4, P0.5, P10.4 |
+| R1 | "Run the checks on `<branch>` and fix what fails." | `nox -s lint tests` (ruff, mypy, pytest on toy fixtures, SUMO calls stubbed via the adapter — no real `sumo` binary installed remotely); fixes, commits, pushes | CI on push/PR | P0.3, P0.4, P0.5, P10.4 |
 | R3 | "Log a data request to Ipplan for signal plans." / "Add catalog candidate: bus lane on Av. X." / "Record workshop feedback: ..." | Adds or updates the entry in `cities/<city>/data-manifest.yaml` (status, contact, license), the catalog backlog or a GitHub issue; napkin line if it blocks work | Issue forms + labels | P1.1, P1.2, P5.6, P8.4 |
 | R4 | "Add a patch making edge X one-way." / "Write the network validation checks." | `netconvert.cfg`, typemaps, `patches/*.xml`, `arteria/network` validation and diff code, tested on a hand-written toy net; the real build and visual check stay at the desk (L9-L11) | Hosted network rebuild | P2.2, P2.3, P2.5, P2.7 |
 | R6 | "Queue a calibration run for sjc am-peak." / "Queue 10 seeds of package `bus-lanes-a`." | Napkin item with the exact `arteria`/`nox` command, inputs, expected outputs and what to commit back (aggregated report path); nothing runs remotely | ChatOps `/run` (R5) + run-request form | P4, P6.1, P7 (handoff to L15-L18) |
@@ -253,7 +252,7 @@ Remote features are tasks the owner types into the Claude app and gets done end-
 | R16 | "Onboard city `<name>`." | `cities/<name>/` from `cities/_template/` with stub `city.yaml` and data manifest, validated against the schema, on a branch/PR | Onboarding issue form | P10.1-P10.3 |
 | R17 | "Draft the city config schema and validate `cities/sjc/city.yaml`." | Schemas (JSON Schema or pydantic) for `city.yaml`, data manifest, intervention catalog and scenarios, plus validator code and tests | new | P0.2, P0.6, P3.6, P5.1, P5.3 |
 | R18 | "Create the `arteria/` skeleton with `arteria doctor`." / "Implement the turn-restriction transform with tests." | Package code (Typer CLI, modules per P0.1) and unit tests on toy fixtures; SUMO calls stay behind an adapter so everything else tests without real data | new | P0.1, P0.3, P0.4, P0.7, P5.2, P5.4, P6.2, P10.3 |
-| R19 | "Update the thesis tracks for the last commit." | Runs `thesis-orchestrator` on the `Status: ativo` tracks under `docs/thesis/<track>/`, then commits as `docs(thesis)` | `@claude` Action (thesis part) | P9.3 |
+| R19 | "Update the thesis tracks for the last commit." | Runs `thesis-orchestrator` on the `Status: ativo` tracks under `docs/thesis/<track>/`, then commits as `docs(thesis)`; skipped for a purely administrative or pure dev-process/tooling commit (CLAUDE.md) | `@claude` Action (thesis part) | P9.3 |
 | R20 | "What would break if I change X?" / "Explain how a package is applied." | Answers from the repo; commits nothing unless asked | new | any |
 | R21 | "Draft the corridor scoring matrix." / "Outline the policy report." | Planning text from committed sources: scoring note, problem statements, workshop kit, policy-report and equity sections, with numbers marked TBD until desk results exist | new | P1.3, P1.5, P8.4, P9.1, P9.2 |
 
@@ -281,7 +280,7 @@ Remote features are tasks the owner types into the Claude app and gets done end-
 **Rules**
 1. A remote session sees only committed files, and private data never enters the repo or the chat. As a safety net, `.gitignore` still covers `cities/*/private/`, `**/raw/`, `*.fcd.xml`, `outputs/`, `.env`.
 2. Data manifest (P0.2, P0.6): each input has `license`, `visibility: public|restricted`, `sha256`. A pre-commit hook (run at the desk and by R1) fails if a `restricted` file's checksum appears in the git index.
-3. Remote sessions work on a branch and push; the owner reviews and merges. Commit messages follow CLAUDE.md; after a code, docs or ADR commit, R19 runs the thesis update.
+3. Remote sessions work on a branch and push; the owner reviews and merges. Commit messages follow CLAUDE.md; after a code, docs or ADR commit, R19 runs the thesis update, except for a purely administrative or pure dev-process/tooling commit (CLAUDE.md) — those need no thesis update.
 4. `gitleaks` in pre-commit; GitHub secret scanning and push protection on the repo.
 5. Anything the table above blocks becomes an R6 napkin item for the next desk session.
 6. The results site publishes only from `results/published/`, filled by an owner-reviewed PR checked against the manifest.
@@ -307,7 +306,7 @@ This section covers work on the developer's Windows 11 machine: tool installatio
 
 - **One CLI, `arteria`** (Typer, installed from `pyproject.toml`). Every subcommand takes `--city <name>`, reads `cities/<city>/city.yaml`, writes a run manifest (P0.7) and is idempotent (skips a step when input checksums are unchanged).
 - **`scripts/win/*.ps1`** only for Windows-specific setup that needs the OS (registry, Defender, Task Scheduler); no domain logic.
-- **`noxfile.py`** as the cross-platform task runner, so the same commands run on Windows, WSL2 and Linux (remote Claude sessions run only the toy-sized sessions, R1): `nox -s lint tests smoke build-sjc calibrate-sjc` (recorded in ADR 0002; avoids make/just on Windows).
+- **`noxfile.py`** as the cross-platform task runner, so the same commands run on Windows, WSL2 and Linux: `nox -s lint tests smoke build-sjc calibrate-sjc` (recorded in ADR 0002; avoids make/just on Windows). Remote Claude sessions only ever run `lint tests` (R1); `smoke` (real SUMO binary) and everything past it stays desktop-only.
 - **`ARTERIA_DATA`** points at the large-data root outside git; **`ARTERIA_PRIVATE`** at the mounted encrypted volume.
 
 ### Recommended local directory layout (outside git)
@@ -370,14 +369,14 @@ Resource handling: workers default to physical cores - 1; per-worker RAM cap fro
 |---|---|---|---|---|---|
 | L20 | Screenshots/video capture | Auto (headless), Semi (curated views) | P8.2, P6.6 | `arteria media capture --city sjc --scenario <s> --views views.yaml` (sumo-gui settings file, `--start --quit-on-end`, TraCI `gui.screenshot`, `ffmpeg`) | -> PNG/MP4, side-by-side baseline/package video |
 | L21 | C:S heightmap and map prep | Semi | P8.3 | `arteria cs prepare-map --city sjc` (DEM -> 1081x1081 16-bit PNG, OSM road export for importer mod) | -> `cs/sjc/heightmap.png`, `roads.osm`, README noting the ~17.28 km playable square |
-| L22 | C:S build and package recreation | Manual | P8.3, P8.5 | Procedure in `docs/local/cities-skylines.md`: import map, fix roads, recreate packages with TM:PE, Move It and a pinned road-importer mod; one save per package; screenshots get an "illustrative" overlay **[ADR 0012]** | -> `cs/sjc/*.crp`, `mods.lock.txt` (Workshop IDs/versions) committed |
+| L22 | C:S build and package recreation | Manual | P8.3, P8.5 | Procedure in `docs/local/cities-skylines.md`: import map, fix roads, recreate packages with TM:PE, Move It and a pinned road-importer mod; one save per package; screenshots get an "illustrative" overlay **[ADR 0011]** | -> `cs/sjc/*.crp`, `mods.lock.txt` (Workshop IDs/versions) committed |
 | L23 | C:S vs SUMO comparison | Semi | P8.5 | `arteria cs compare --city sjc --package <id>` (manually logged C:S observations vs SUMO metrics) | -> table for research question 7 |
 
 ### Non-public municipal data
 
 | ID | Item | Mode | Roadmap | Entry point |
 |---|---|---|---|---|
-| L24 | Encrypted private store | Manual (setup), Auto (checks) | P0.6, P1.2, P4.1 | VeraCrypt container or `age`-encrypted files (Windows 11 Home lacks BitLocker management); `arteria data check-private` verifies mount and that no private path is under the repo; pre-commit blocks files matching private-manifest checksums **[ADR 0011]** |
+| L24 | Encrypted private store | Manual (setup), Auto (checks) | P0.6, P1.2, P4.1 | VeraCrypt container or `age`-encrypted files (Windows 11 Home lacks BitLocker management); `arteria data check-private` verifies mount and that no private path is under the repo; pre-commit blocks files matching private-manifest checksums **[ADR 0010]** |
 | L25 | Derived/public outputs | Auto | P9.1, P9.4 | `arteria data publish-derived --city sjc` (OD aggregated to zone totals, hourly counts, k-anonymity threshold) -> files safe to commit/release |
 
 Data-sharing terms from the municipality override these defaults.
@@ -403,19 +402,20 @@ Suggested minimum: 8 cores/16 threads, 32 GB RAM, 200 GB free SSD for `ARTERIA_D
 5. Network work: `arteria network build` + `validate`; netedit fixes only through L10; commit patches, never `.net.xml`.
 6. Before long runs: L7, then schedule (L18) or launch with `--workers` and checkpoints.
 7. Dismount the private volume; confirm `git status` shows no data files.
-8. Commit aggregated results and reports that remote sessions should read (R8, R11); commit per the commit rules, invoke the `thesis-orchestrator` agent, move finished napkin items to `CHANGELOG.md`.
+8. Commit aggregated results and reports that remote sessions should read (R8, R11); commit per the commit rules, invoke the `thesis-orchestrator` agent (skip for a purely administrative or pure dev-process/tooling commit, CLAUDE.md), move finished napkin items to `CHANGELOG.md`.
 
 ## Open questions
 
-1. **Data access:** will the SJC municipality (Ipplan / Mobilidade Urbana / Urbam) and the transit operator share OD survey microdata, counts, signal plans and GTFS, and under what terms? This decides between the full and the open-data-only path (P1.2, P10.2, ADR 0011).
+1. **Data access:** will the SJC municipality (Ipplan / Mobilidade Urbana / Urbam) and the transit operator share OD survey microdata, counts, signal plans and GTFS, and under what terms? This decides between the full and the open-data-only path (P1.2, P10.2, ADR 0010).
 2. **Pilot area:** which corridor(s) win the P1.3 scoring, and how large a buffer is tractable for microsimulation versus mesoscopic?
 3. **Calibration thresholds:** accept the GEH < 5 on 85% of links convention, or looser thresholds given sparse data (ADR 0005)?
 4. **Objectives:** which objectives are primary (person-delay, transit reliability, safety, emissions, equity), and who signs off on equity metrics and income-group data (ADR 0007)?
-5. **Repo visibility:** public or private GitHub repo? With remote sessions pushing branches directly, a public repo publishes every pushed branch at once; visibility also decides results-site exposure and outside contributions (ADR 0009, ADR 0011).
+5. **Repo visibility:** public or private GitHub repo? With remote sessions pushing branches directly, a public repo publishes every pushed branch at once; visibility also decides results-site exposure and outside contributions (ADR 0009, ADR 0010).
 6. **Compute:** is the current dev PC enough (8+ cores, 32 GB RAM), or is a university cluster/cloud budget available for P7 optimization batches?
 7. **Code license:** still TBD in the README; needed before the first release (P0.8).
-8. **Cities: Skylines edition:** C:S 1 (mature mods: TM:PE, Move It, importers) or C:S II (less mod support)? Licensing for workshop use (ADR 0012).
+8. **Cities: Skylines edition:** C:S 1 (mature mods: TM:PE, Move It, importers) or C:S II (less mod support)? Licensing for workshop use (ADR 0011).
 9. **RL track:** is the dynamic lane-allocation RL experiment (P7.5) in thesis scope or deferred?
 10. **Second city:** which city for P10 (a nearby Vale do Paraíba city, or one with strong open data)?
-11. **Remote session limits:** what CPU, RAM and time a Claude app session gets in practice, and does the toy SUMO smoke (pip `eclipse-sumo`) stay fast enough to run on every R1 (ADR 0009)?
-12. **Hosted CI:** with R1 run on demand in remote sessions and at the desk, is a minimal hosted lint + pytest workflow still wanted as a merge gate, or deferred until there are outside contributors (P0.5)?
+11. **Remote session limits:** what CPU, RAM and time a Claude app session gets in practice, and whether `nox -s lint tests` stays fast enough to run on every R1 (ADR 0009)?
+
+**Decided:** hosted CI (GitHub Actions) is off the table — R1 (`nox -s lint tests`, run on demand in remote sessions and at the desk) and the desktop's `nox -s smoke` cover every check; no `.github/workflows/` file is planned (ADR 0009).
