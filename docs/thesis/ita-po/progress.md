@@ -5,6 +5,16 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (6)
+
+Commit `eefc81c` ("feat: run provenance manifests (roadmap P0.7)") acrescentou `arteria/provenance.py`: um `RunManifest` (SHA do git, versão do SUMO, seed, hash da configuração, checksums dos arquivos de entrada) gravado em `runs/<city>/<run_id>/manifest.json` por execução de simulação/calibração/otimização, conforme o leiaute de `docs/roadmap.md`. É código de biblioteca puro, testado só em fixtures de brinquedo (toy fixtures); nenhum comando de execução o invoca ainda — isso chega só nas Fases 3/4/7 do roadmap (`arteria sim run`, `arteria calibrate`, `arteria optimize run`), isto é, é trabalho de bancada (desk-only) por ora.
+
+**Por que isso importa para a trilha PG/PO:** a formulação bi-nível (Seção 6 do pré-projeto) e a metodologia proposta (Seção 9) dependem de rodadas repetíveis de simulação SUMO e de execução dos três otimizadores do nível superior para gerar o dataset de treino do surrogate e, depois, a fronteira de Pareto reportada no Capítulo 5. Até agora não havia, no próprio ArterIA, nenhum mecanismo formal para registrar com qual seed, qual versão do SUMO, qual configuração e quais insumos cada rodada foi gerada — uma lacuna relevante para a reprodutibilidade que qualquer banca de PO vai cobrar na seção de resultados (Capítulo 5) e no detalhamento do protocolo de validação cruzada (Capítulo 3, já listado como "falta" no outline). Este commit não gera nenhuma rodada real nem altera a formulação ou o cronograma — é infraestrutura de bancada que só passa a ser exercida quando os comandos de execução (Fases 3/4/7) existirem — mas fixa, desde já, o formato em que a proveniência de cada rodada futura (seed do otimizador, hash de configuração, versão do SUMO usada na calibração) será registrada. Isso é relevante o suficiente para anotar no outline como insumo disponível para os Capítulos 3 e 4, mas não muda nenhuma afirmação de escopo, formulação ou dado já registrada nas entradas anteriores.
+
+`outline.md` recebeu uma nota breve nos Capítulos 3 e 4 citando essa infraestrutura como disponível para quando o protocolo de reprodutibilidade dessas rodadas for escrito; nenhuma edição foi feita em `pre-projeto.md`.
+
+**Próximos passos:** sem alteração em relação à entrada anterior (2026-10-24 (5)).
+
 ## 2026-10-24 (5)
 
 Commit `dcf417b` respondeu — por decisão do próprio responsável pelo ArterIA, não de um(a) orientador(a) — a pergunta explicitamente deixada em aberto na entrada anterior (2026-10-24 (4)): **SJC permanece, por ora, a única cidade do projeto.** A ADR 0002 foi editada para registrar isso diretamente: "Neither this ADR nor the `arteria city new` command is a commitment to widen the thesis's scope; that decision belongs to the owner (and, once one exists, their advisor), not to this engineering choice." A capacidade multi-cidade em si não foi revertida — a emenda da ADR 0002 registrada no commit `cdbdb01` (estrutura por pasta já dissociada de código, mais o comando `arteria city new`) continua de pé — mas fica explícito que essa capacidade **não é um plano**: o responsável pode vir a exercê-la por conta própria mais adiante, ou oferecê-la a um(a) orientador(a) depois de aceito(a) em um programa, caso esse(a) orientador(a) queira validação multi-caso. Até lá, não há ampliação de escopo.

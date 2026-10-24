@@ -36,6 +36,8 @@ Já coberto: metodologia proposta em 6 passos (delimitação/coleta, construçã
 
 Falta: detalhamento técnico de cada etapa (parâmetros de calibração, algoritmo de otimização de nível superior a ser efetivamente escolhido — hoje em aberto entre heurísticas evolutivas, otimização bayesiana ou programação estocástica), desenho experimental formal e plano de validação do modelo de simulação.
 
+Atualização (commit `eefc81c`): o ArterIA passou a ter um mecanismo de proveniência de execução (`arteria/provenance.py`, `RunManifest` com SHA do git, versão do SUMO, seed, hash de configuração e checksums de entrada, gravado em `runs/<cidade>/<run_id>/manifest.json`), ainda não ligado a nenhum comando de execução (previsto para as Fases 3/4/7 do roadmap). É infraestrutura de rastreabilidade, não dado ou resultado; relevante como futuro componente do "plano de validação do modelo de simulação" acima e como suporte à promessa de resultados "reprodutíveis" da Seção 11 do pré-projeto, mas não há ainda experimento real a documentar com ele.
+
 ## 5. Cenários e Resultados
 
 Já coberto: tipologia qualitativa de cenários de interdição (obra, acidente, alagamento, evento de grande porte, emergência simplificada) e lista de estratégias logísticas a comparar (Seções 6 e 9).

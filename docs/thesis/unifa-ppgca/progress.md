@@ -5,6 +5,16 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (nota: manifesto de proveniência de execução — instrumental, não wired)
+
+Commit `eefc81c` ("feat: run provenance manifests (roadmap P0.7)") adicionou `arteria/provenance.py`: uma `RunManifest` (SHA do git, versão do SUMO, seed, hash de configuração, checksums de entrada) gravada em `runs/<city>/<run_id>/manifest.json`, conforme o layout já previsto em `docs/roadmap.md`. É código de biblioteca puro, testado apenas contra fixtures de brinquedo (toy fixtures); nenhum comando de execução o invoca ainda — a integração está prevista para as Fases 3/4/7 do roadmap do ArterIA, ou seja, é trabalho de mesa (desk-only) por ora.
+
+**Por que importa (pouco, por ora) para esta trilha:** este é exatamente o tipo de commit que a instrução desta trilha já antecipa como "instrumento de mensuração, não núcleo" — não toca na literatura de segurança/defesa, no caso de SJC, na metodologia mista nem no enquadramento teórico. Não há decisão de escopo, de dado ou de método envolvida. A única relevância, ainda indireta, é para o Capítulo 5 (Modelagem de Resiliência): proveniência de execução (SHA, versão do simulador, seed, hash de config, checksums de entrada) é precisamente o tipo de metadado que sustentaria a rastreabilidade de qualquer cenário de interdição futuro gerado pelo instrumento ArterIA — reforça, em nível de ferramenta, a cautela já registrada na seção 13 do pré-projeto de que a simulação é evidência de apoio (não o resultado principal) e deve, portanto, ser auditável. Mas como nenhum comando de execução ainda chama esse código, isso é puramente prospectivo: não há cenário de interdição real sendo gerado, logo não há nada a citar como evidência nem a incorporar em prosa de capítulo.
+
+**Impacto na tese:** `outline.md`, capítulo 5, recebeu uma frase curta registrando a existência do mecanismo de proveniência como ferramenta de rastreabilidade ainda não conectada a nenhuma execução real. Nenhuma outra edição de conteúdo foi feita; o núcleo teórico-conceitual (Capítulo 2) e o problema de pesquisa (seção 3 do pré-projeto) não são afetados.
+
+**Decisão pendente:** nenhuma nova. As pendências já registradas (validação de orientador do PPGCA; nivelamento metodológico em estudos estratégicos; decisão sobre caso único vs. multi-caso) seguem inalteradas.
+
 ## 2026-10-24 (ADR 0002: escopo permanece SJC-único — decisão do responsável pelo repositório, não de orientador)
 
 Commit `dcf417b` respondeu a pergunta em aberto deixada pela entrada anterior desta trilha (commit `cdbdb01`, abaixo): se um eventual segundo caso seria FAB-adjacente, e se essa escolha é uma decisão de engenharia ou uma decisão teórico-metodológica de Ciência Política/RI (desenho de estudo de caso comparativo vs. incorporado único).

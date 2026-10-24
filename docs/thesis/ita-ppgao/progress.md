@@ -5,6 +5,14 @@ Profundidade: leve
 
 ---
 
+## 2026-10-24 (revisão do commit eefc81c)
+
+Commit `eefc81c` ("feat: run provenance manifests (roadmap P0.7)") adicionou `arteria/provenance.py`: um `RunManifest` que registra, por execução, SHA do git, versão do SUMO, seed, hash de configuração e checksums dos arquivos de entrada, gravado em `runs/<cidade>/<run_id>/manifest.json` conforme o layout já descrito em `docs/roadmap.md`. É código de biblioteca puro, testado apenas contra fixtures de bancada (*toy fixtures*); nenhum comando de execução o invoca ainda — a integração está prevista para as Fases 3/4/7 do roadmap do ArterIA, ainda não alcançadas.
+
+**Relevância específica para a trilha AO-EL:** é infraestrutura de rastreabilidade de experimentos, não dado operacional, civil ou de enquadramento. Tem relevância direta, porém ainda só prospectiva, para dois pontos já previstos no `pre-projeto.md` e no `outline.md`: (1) a Seção 11 do pré-projeto promete um sistema que permita avaliar estratégias "de forma quantitativa e **reprodutível**" — um manifesto de proveniência por execução (seed, versão do simulador, hash de configuração, checksums de entrada) é exatamente o tipo de mecanismo que sustentaria essa promessa quando os experimentos existirem; (2) o Capítulo 4 (Metodologia) do `outline.md` já lista como pendência o "desenho experimental formal e plano de validação do modelo de simulação" — rastreabilidade de proveniência é um componente desse plano, a citar quando o capítulo for de fato redigido. Nenhuma prosa foi escrita ainda no Capítulo 4 além do esqueleto já existente, porque não há, até este commit, nenhum experimento real do recorte ITA/DCTA-CTA para documentar — apenas a capacidade de, no futuro, documentá-lo de forma rastreável. Registra-se uma nota breve no `outline.md` para não perder a referência ao commit quando o capítulo crescer.
+
+Nenhuma mudança de status. O risco principal (validação do enquadramento operacional/FAB por um orientador do PPGAO) não é tocado por este commit, que é puramente de infraestrutura de software do ArterIA.
+
 ## 2026-10-24 (revisão do commit dcf417b)
 
 Commit `dcf417b` traz a resposta do responsável pelo projeto ArterIA à pergunta aberta registrada na entrada anterior (abaixo, revisão do commit `cdbdb01`): o recorte geográfico permanece único. **SJC continua sendo a única cidade por ora.** A capacidade de validar contra mais de uma cidade (emenda à ADR 0002, comando `arteria city new`) permanece disponível na ferramenta, mas é tratada explicitamente como **capacidade, não plano**: o próprio texto emendado da ADR 0002 passou a registrar que "nem esta ADR, nem o comando `arteria city new`, constituem um compromisso de ampliar o escopo da dissertação; essa decisão pertence ao responsável do projeto (e, uma vez que exista, a seu orientador), não a esta escolha de engenharia".
