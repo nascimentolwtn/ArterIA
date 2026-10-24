@@ -13,7 +13,7 @@ None yet.
 
 ## Roadmap & Status
 
-See `README.md` for current status, `docs/roadmap.md` for the phased plan (P0-P10, remote R1-R16, local L1-L25), and `docs/` for research material.
+See `README.md` for current status, `docs/roadmap.md` for the phased plan (P0-P10, remote R1-R21 = tasks for Claude app sessions, local L1-L25), and `docs/` for research material.
 
 ## Reference Documentation
 
@@ -36,8 +36,8 @@ None open.
    Do instead: write them per `docs/roadmap.md` planned ADR index, then start P0.
 2. **[2026-10-24] Send SJC data requests (roadmap P1.2)** (blocks P3/P4, long lead time)
    Do instead: send early; they gate demand and calibration data.
-3. **[2026-10-24] Decide repo visibility** (drives Actions limits and runner security)
-   Do instead: decide before setting up any workflow or self-hosted runner.
+3. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
+   Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
 4. **[2026-10-24] Pick the code license** (small)
    Do instead: decide before first public release; record in an ADR if non-trivial.
 5. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)

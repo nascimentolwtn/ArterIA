@@ -11,3 +11,4 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 - Architecture Decision Record process (`docs/adr/`), with ADR 0001 recording the choice of SUMO as the project's traffic simulator.
 - Project guidance file (`CLAUDE.md`) for AI-assisted development sessions.
 - Working notes convention (`.claude/napkin.md`) for tracking open items during development.
+- Phased roadmap (`docs/roadmap.md`): "remote" work is now a list of tasks the owner can hand to Claude from the phone app (drafting, coding against small test fixtures, reviews, docs), while simulation runs, GUI tools and private data stay on the desktop. The earlier plan built around GitHub Actions runners was dropped.
