@@ -1,6 +1,7 @@
 # Progresso — Trilha de Mestrado ITA PG/EEC (Área Informática)
 
 Status: ativo
+Profundidade: leve
 
 ---
 

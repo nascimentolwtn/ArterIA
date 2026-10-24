@@ -1,6 +1,7 @@
 # Progresso — Trilha UNIFA/PPGCA
 
 Status: ativo
+Profundidade: leve
 
 ---
 
