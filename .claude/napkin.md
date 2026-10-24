@@ -65,3 +65,8 @@ None open.
    Do instead: use open/self-service data (OSM, Geosanja, IBGE — see
    `cities/sjc/data-manifest.yaml`) for now; the drafts in
    `cities/sjc/data-requests.md` stay unsent until the owner says otherwise.
+3. **[2026-10-24] Scope stays SJC-only; multi-city is an option, not a plan**
+   Do instead: `arteria city new` (ADR 0002) makes a second city cheap to add, but don't
+   onboard one unprompted. The owner decides if/when — either on their own as the
+   project evolves, or to offer an advisor once accepted into a program. Don't treat
+   any thesis track's "should this widen to N cities?" open question as answered.

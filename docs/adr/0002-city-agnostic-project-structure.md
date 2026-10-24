@@ -16,6 +16,8 @@ Two sub-decisions follow from this: how the repo is laid out, and what runs the 
 
 A heavier alternative — packaging each city as its own installable plugin (entry points, versioned on PyPI) — was considered and rejected: it adds packaging/distribution overhead a thesis-validation city doesn't need, for a decoupling the folder convention already provides (`arteria/` never imports anything from `cities/`).
 
+**Scope stays SJC-only (owner decision, 2026-10-24).** This ADR builds the *capability* to add a city cheaply; it does not decide to use it. For now, SJC is the only city, and the thesis's evidence base is scoped accordingly — consistent with the pre-projeto's current single-case framing across all four tracks. Multi-city stays an option the owner can exercise on their own, later, as the project evolves, or one to offer an advisor once accepted into a program, if that advisor wants multi-case validation. Neither this ADR nor the `arteria city new` command is a commitment to widen the thesis's scope; that decision belongs to the owner (and, once one exists, their advisor), not to this engineering choice.
+
 ## Decision
 
 - **Repository layout:**

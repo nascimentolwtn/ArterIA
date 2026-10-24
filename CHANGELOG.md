@@ -14,6 +14,7 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 - `nox -s lint tests` (ruff, mypy, pytest) passing in this remote session, and `nox -s smoke` correctly skipping here (no real SUMO binary) rather than failing — the P0 exit criterion from `docs/roadmap.md`.
 - ADR 0004 (data storage and versioning) accepted: confirmed local-disk-only, no Git LFS, no external object store.
 - ADR 0002 (project structure) accepted, amended for multi-city flexibility: a thesis advisor or the method itself may call for validating ArterIA against more than one city, sooner than Phase 10. Pulls the city-scaffolding command and the open-data-only path forward from Phase 10 into P0 scope. Ships `arteria city new <name>`, which copies `cities/_template/` into a new, schema-validated `cities/<name>/`.
+- ADR 0002 scope clarified: SJC stays the only city for now, by the owner's own decision. Multi-city is a capability kept available, not a plan — the owner decides later, on their own or with an advisor, whether to use it.
 
 ## [0.1] - 2026-10-24
 
