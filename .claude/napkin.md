@@ -13,7 +13,7 @@ None yet.
 
 ## Roadmap & Status
 
-See `README.md` for current status and `docs/` for research and planning material.
+See `README.md` for current status, `docs/roadmap.md` for the phased plan (P0-P10, remote R1-R16, local L1-L25), and `docs/` for research material.
 
 ## Reference Documentation
 
@@ -32,7 +32,16 @@ None open.
 
 ## Backlog Features
 
-None yet.
+1. **[2026-10-24] Draft ADRs 0002-0004 before any code** (high impact, ~1 day)
+   Do instead: write them per `docs/roadmap.md` planned ADR index, then start P0.
+2. **[2026-10-24] Send SJC data requests (roadmap P1.2)** (blocks P3/P4, long lead time)
+   Do instead: send early; they gate demand and calibration data.
+3. **[2026-10-24] Decide repo visibility** (drives Actions limits and runner security)
+   Do instead: decide before setting up any workflow or self-hosted runner.
+4. **[2026-10-24] Pick the code license** (small)
+   Do instead: decide before first public release; record in an ADR if non-trivial.
+5. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
+   Do instead: check before committing to local calibration/optimizer run plans.
 
 ## User Directives
 
