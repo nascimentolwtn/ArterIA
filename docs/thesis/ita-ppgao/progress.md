@@ -5,6 +5,24 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão do commit bf725e9)
+
+Commit `bf725e9` ("docs: owner decision — all 4 SJC candidates in scope, priority B > D > C > A") registra duas decisões do responsável pelo projeto ArterIA sobre `cities/sjc/candidate-corridors.md`, lido diretamente na seção "Decision (2026-10-25)" no topo do arquivo:
+
+1. **Identidade do Candidato D confirmada**: "bolinho caipira" é apelido próprio do responsável do projeto (pela forma do traçado) para a rotatória do Jardim Colinas / desvio elevado da Ponte Estaiada — **confirmado sem relação com o ângulo FAB/defesa**, é apelido puramente de forma, não codinome operacional. Isso fecha, sem ambiguidade, a dúvida que a entrada anterior (revisão de `71638f1`, abaixo) havia deixado em aberto sobre o próprio nome do candidato D.
+2. **Todos os quatro candidatos agora em escopo**, nesta ordem de prioridade: 1) B (Av. Andrômeda ↔ DCTA/Jardim Satélite), 2) D (rotatória do Jardim Colinas), 3) C (malha de mão única do centro), 4) A (Anel Viário). Isso substitui a recomendação anterior do próprio arquivo de priorizar C por menor custo/risco.
+3. Como o próprio arquivo deixa explícito, esta é uma **decisão qualitativa de prioridade do responsável do projeto**, não a matriz de pontuação P1.3 com dados (contagens/OD seguem `deferred`); nenhum polígono de recorte existe ainda para qualquer das quatro áreas.
+
+**Relevância específica para a trilha AO-EL:**
+
+O fato que mais importa aqui é a mudança de status do Candidato B: de "um candidato entre três/quatro, nenhum selecionado" (entrada de `71638f1`, abaixo) para **prioridade #1 confirmada das quatro**, por decisão do próprio responsável do projeto. Isso reforça — mas não resolve — o ponto já registrado nos Capítulos 1 e 2 do `outline.md`: o Candidato B continua sendo a instância concreta mais próxima do enquadramento proposto na Seção 5 do `pre-projeto.md` (corredor de acesso único a uma instalação do Comando da Aeronáutica), e agora é, adicionalmente, o candidato que o próprio responsável do ArterIA pretende atacar primeiro como produto. Isso é, porém, **ainda uma decisão de priorização de engenharia de produto** (qual recorte o ArterIA tentará resolver primeiro, e em que ordem), não uma decisão de recorte desta dissertação, nem — e aqui cabe repetir com a mesma ênfase de sempre — qualquer forma de validação do enquadramento operacional/FAB por um orientador do PPGAO. Nenhum orientador foi contatado até o momento.
+
+Vale registrar explicitamente, por ser a leitura própria desta trilha e não a herdada da revisão prévia do orquestrador: esta trilha (AO-EL, análise operacional) já havia identificado que a conexão de acesso à DCTA é mais central ao escopo de dissertação da trilha `unifa-ppgca` (Poder Aeroespacial, Segurança e Defesa) especificamente — ver nota já registrada na entrada de `71638f1`, abaixo, qualificando a inclusão da DCTA como "thesis-scope call for the owner/an advisor". Nada neste commit altera esse julgamento: a priorização de produto do responsável do ArterIA é uma decisão de engenharia de software sobre em que ordem construir os quatro recortes de SJC, não uma escolha de tema ou de estudo de caso para qualquer dissertação específica. Para esta trilha, o item permanece secundário — relevante apenas como lembrete de que, se e quando um orientador do PPGAO validar o enquadramento FAB, o Candidato B (agora com maior probabilidade de ser efetivamente construído primeiro no ArterIA, por decisão independente do responsável do produto) pode se tornar o recorte técnico mais naturalmente disponível para apoiar esta dissertação — sem que isso implique, hoje, nenhuma decisão de escopo da dissertação em si.
+
+Os Candidatos A, C e D permanecem, como já registrado, problemas de mobilidade urbana geral sem relação com acesso à FAB — a confirmação de que "bolinho caipira" é apenas apelido de forma (item 1 acima) reforça essa leitura para o Candidato D especificamente, fechando a única ambiguidade residual que o nome do candidato ainda carregava.
+
+Nenhuma mudança de status. O risco principal — validação do enquadramento operacional/FAB por um orientador do PPGAO — permanece integralmente em aberto e não é tocado por esta decisão de priorização de produto do responsável do ArterIA.
+
 ## 2026-10-25 (revisão do commit 71638f1)
 
 Commit `71638f1` ("docs: log 3 owner-proposed SJC candidate corridors (P1.3/P1.5)") adicionou `cities/sjc/candidate-corridors.md`: três recortes-candidatos de Fase 1 do ArterIA propostos pelo responsável do projeto a partir de experiência direta de dirigir nessas áreas (não de contagens ou dados de Pesquisa OD, que seguem `deferred`), mais um quarto candidato ainda não confirmado. **Nenhum dos quatro foi selecionado** — o próprio arquivo é explícito: é levantamento preliminar de enunciado de problema (P1.5), não a matriz de pontuação real (P1.3), que ainda depende de dado hoje indisponível.
