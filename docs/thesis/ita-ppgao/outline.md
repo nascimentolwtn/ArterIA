@@ -28,6 +28,8 @@ Atualização (commits `bf374e4`/`cd68b57`, `cities/sjc/data-manifest.yaml`): pa
 
 Atualização (commit `cdbdb01`): o ArterIA agora oferece um comando de scaffolding por cidade (`arteria city new <nome>`), o que tornaria tecnicamente mais barato montar um segundo recorte, caso isso um dia fosse necessário. Isso não resolveria, de todo modo, a limitação de dados operacionais da FAB por cidade (Seção 12 do pré-projeto), que teria de ser levantada de novo para qualquer segunda instalação candidata; é apenas uma facilidade de ferramenta, não um avanço de evidência.
 
+Atualização (commit `396caf7`): o ArterIA passou a ter checagens de validação de malha de rede (`arteria/network/validate.py` — conectividade, becos sem saída, contagem de faixas, mão única, consistência de conexões, limites de velocidade, presença de semáforo), testadas apenas contra fixtures toy `.net.xml`. É uma pré-condição técnica útil para quando a malha real do recorte ITA/DCTA-CTA for extraída do OpenStreetMap, mas não constitui, ainda, qualquer avanço na extração ou análise efetiva dos dados desse recorte (que permanece pendente, ver acima).
+
 Atualização (commit `dcf417b`): o responsável pelo projeto de software decidiu manter SJC como única cidade por ora; um segundo recorte não está no plano, embora a capacidade de ferramenta acima permaneça disponível para uso futuro (pelo próprio responsável, ou por um orientador que venha a exigir validação multi-caso). O recorte geográfico desta trilha pode seguir assumindo um único caso (entorno ITA/DCTA-CTA em SJC), sujeito a revisão por um futuro orientador do PPGAO.
 
 ## 4. Metodologia
@@ -38,11 +40,19 @@ Falta: detalhamento técnico de cada etapa (parâmetros de calibração, algorit
 
 Atualização (commit `eefc81c`): o ArterIA passou a ter um mecanismo de proveniência de execução (`arteria/provenance.py`, `RunManifest` com SHA do git, versão do SUMO, seed, hash de configuração e checksums de entrada, gravado em `runs/<cidade>/<run_id>/manifest.json`), ainda não ligado a nenhum comando de execução (previsto para as Fases 3/4/7 do roadmap). É infraestrutura de rastreabilidade, não dado ou resultado; relevante como futuro componente do "plano de validação do modelo de simulação" acima e como suporte à promessa de resultados "reprodutíveis" da Seção 11 do pré-projeto, mas não há ainda experimento real a documentar com ele.
 
+Atualização (commit `cbb53da`): o ArterIA passou a ter métricas de qualidade de ajuste de calibração (`arteria/calibration/goodness_of_fit.py` — estatística GEH por elo com a convenção "GEH<5 em 85% dos elos", RMSE/MAPE de tempo de viagem, resumo combinado passa/falha), testadas só contra contagens e tempos de viagem sintéticos feitos à mão. É exatamente a classe de estatística que o "plano de validação do modelo de simulação" (pendência já listada acima) precisará citar, mas é ferramenta de fidelidade da simulação — distinta das métricas de avaliação operacional da Seção 10 do pré-projeto (tempo de acesso, resiliência, custo logístico, continuidade operacional) — e ainda sem qualquer dado observado do recorte ITA/DCTA-CTA.
+
+Atualização (commit `396caf7`): ver nota equivalente no Capítulo 3 — a validação de malha também apoia o passo 2 (construção/calibração) desta metodologia, como pré-condição técnica antes de calibrar, ainda só testada contra fixtures toy.
+
+Atualização (commit `563d679`): o ArterIA passou a ter uma transformação de restrição de conversão (`arteria/interventions/turn_restriction.py`), que remove uma conexão de uma rede toy e verifica por BFS se os elos afetados permanecem conectados por outro caminho. É a implementação concreta de um item do catálogo de intervenções já citado na Seção 6 e no Objetivo específico 2 do pré-projeto ("restrições de conversão"), mas é infraestrutura de catálogo compartilhada entre cidades do ArterIA, sem relação ainda com o recorte de SJC ou com um cenário de interdição específico; a checagem de conectividade por BFS usada aqui serve para validar a intervenção, não para modelar resiliência (ver nota no Capítulo 5 sobre a distinção).
+
 ## 5. Cenários e Resultados
 
 Já coberto: tipologia qualitativa de cenários de interdição (obra, acidente, alagamento, evento de grande porte, emergência simplificada) e lista de estratégias logísticas a comparar (Seções 6 e 9).
 
 Falta: todo o trabalho empírico — construção da malha SUMO, calibração, parametrização quantitativa dos cenários, execução dos experimentos e cálculo das métricas da Seção 10; nenhum resultado existe ainda, pois o ArterIA está em estágio pré-código.
+
+Atualização (commit `563d679`): o ArterIA passou a ter uma primeira implementação de intervenção de catálogo (restrição de conversão, `arteria/interventions/turn_restriction.py`), com checagem de conectividade por BFS após remover a conexão — útil, no futuro, para a mecânica de aplicar intervenções, mas **não** é modelagem de cenário de interdição nem resultado de resiliência: a checagem serve para validar se a própria intervenção proposta deixa a malha conectada, não para medir degradação de acesso sob um evento de interdição (obra, acidente, alagamento etc., Seção 6 do pré-projeto). Nenhum cenário de interdição real foi parametrizado ou executado por este commit.
 
 ## 6. Recomendações Operacionais
 

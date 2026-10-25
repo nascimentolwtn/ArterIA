@@ -5,6 +5,26 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão dos commits `cbb53da`, `396caf7`, `563d679`)
+
+Três commits da branch `ccr-b47695cc-ik89jg` revisados em conjunto — todos itens já previstos no roteiro do ArterIA (R8/P4.5, R4/P2.5, R18/P5.2), sem nova ADR envolvida.
+
+- `cbb53da` adicionou `arteria/calibration/goodness_of_fit.py` (roadmap R8/P4.5): estatística GEH por elo (convenção GEH<5 em 85% dos elos), RMSE/MAPE de tempo de viagem, e um auxiliar de resumo passa/não-passa combinado. Testado apenas contra contagens e tempos de viagem sintéticos construídos à mão (fronteira de sessão remota da ADR 0009) — nenhum dado observado real, nenhum gerador de relatório ainda.
+- `396caf7` adicionou `arteria/network/validate.py` (roadmap R4/P2.5): checagens de conectividade, becos sem saída, contagem de faixas, marcadores de mão única, consistência de conexões, limites de velocidade e presença de semáforo, usando `ElementTree` da biblioteca padrão contra fixtures toy de `.net.xml` escritas à mão — sem `sumolib`, sem SUMO real.
+- `563d679` adicionou `arteria/interventions/turn_restriction.py` (roadmap R18/P5.2): transformação que remove uma conexão de uma rede toy via `ElementTree` e verifica por BFS se os elos afetados permanecem conectados por outro caminho.
+
+**Relevância para esta trilha:** os três commits são blocos de infraestrutura de avaliação/dados do ArterIA, não RL/GNN em si, mas cada um alimenta um ponto específico já identificado em `outline.md`:
+
+- **`396caf7` (validação de rede) → Capítulo 3 / Objetivo específico 1 (Seção 8 do pré-projeto)**: a representação formal da rede viária como grafo heterogêneo e dinâmico (nós = interseções/segmentos, arestas = faixas/sentidos, atributos = capacidade, fluxo, mão única) depende de a rede de entrada ser minimamente consistente antes de se tornar entrada de GNN. `arteria/network/validate.py` é o primeiro artefato rastreável que checa exatamente esses atributos (contagem de faixas, marcadores de mão única, conectividade) na malha de origem — um "portão de qualidade de dados" a montante da representação em grafo, não a representação em si. Ainda roda só contra fixtures toy escritas à mão, não contra a rede real de SJC derivada de OSM/Geosanja (cujas fontes seguem `status: deferred` ou de autoatendimento, ver entrada de `bf374e4`/`cd68b57`).
+- **`563d679` (restrição de conversão) → Capítulo 3 / Objetivo específico 2 (espaço de ação multiagente)**: é uma entrada concreta do catálogo de intervenções citado na Seção 13 do pré-projeto ("conversões de mão única, faixas reversíveis, faixas de ônibus, realocação de faixas, etc.") e, por isso, um candidato a primitiva do espaço de ação dos agentes de RL desta trilha — mas apenas isso: uma transformação de grafo toy com checagem de conectividade por BFS, sem nenhuma ligação ainda ao ambiente TraCI, à função de recompensa ou a qualquer agente de RL.
+- **`cbb53da` (GEH/RMSE/MAPE) → Capítulo 3 (pipeline de avaliação) e cronograma do Semestre 1 (Seção 14 do pré-projeto, "calibração inicial")**: são exatamente o tipo de métrica de aderência que uma calibração de SUMO desta dissertação precisaria reportar antes de o ambiente servir de fonte de recompensa para RL ou de dados de treinamento para o surrogate em GNN. Testado só com contagens/tempos de viagem sintéticos — nenhum dado observado de SJC (todos `deferred`, ver `bf374e4`/`cd68b57`) foi usado ainda.
+
+**Ressalva de honestidade (vale para os três):** nenhum dos três artefatos toca SUMO real, TraCI, RL ou GNN; todos operam sobre fixtures/redes toy escritas à mão para fins de teste de unidade da própria biblioteca `arteria`. Não constituem evidência de calibração, de espaço de ação funcional nem de qualidade da malha real de SJC — são pré-condições de engenharia que, quando (e se) conectadas a dados e execuções reais, passam a alimentar os Capítulos 3 e 4. Continuam válidas as lacunas já registradas: dados de calibração de SJC `deferred` (entrada `bf374e4`/`cd68b57`) e nenhuma execução real registrada por `RunManifest` (entrada `eefc81c`).
+
+Notas de rastreio foram adicionadas ao Capítulo 3 do `outline.md` apontando os três artefatos; nenhuma prosa de capítulo foi reescrita.
+
+**Próximo passo associado:** nenhum passo novo além dos já listados; observar, em revisões futuras, quando `validate.py` passar a rodar contra a rede real de SJC, quando `turn_restriction.py` (ou irmãos do catálogo) for de fato exposto como ação a um agente de RL, e quando `goodness_of_fit.py` for aplicado a dados de calibração reais (hoje inexistentes, ver `status: deferred`).
+
 ## 2026-10-24 (revisão do commit `eefc81c`)
 
 Commit `eefc81c` ("feat: run provenance manifests (roadmap P0.7)") adicionou `arteria/provenance.py`: uma classe `RunManifest` que registra proveniência de execução — hash do commit git, versão do SUMO, seed, hash de configuração e checksums dos arquivos de entrada — gravada em `runs/<cidade>/<run_id>/manifest.json`, conforme o leiaute já previsto em `docs/roadmap.md`. Nenhum comando de execução chama essa função ainda; a integração está prevista para as Fases 3/4/7 do roteiro do ArterIA (treinamento, avaliação e consolidação), portanto o commit é "de gaveta" (desk-only) por ora. É código de biblioteca puro, testado apenas contra fixtures sintéticas (toy fixtures), sem nenhuma execução real de SUMO ou de treinamento envolvida.

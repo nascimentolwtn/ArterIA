@@ -5,6 +5,26 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25
+
+Três commits no ramo `ccr-b47695cc-ik89jg` implementam funcionalidades já previstas no roadmap do ArterIA (R8/P4.5, R4/P2.5, R18/P5.2); nenhuma delas envolve uma ADR nova.
+
+1. `cbb53da` — métricas de aderência de calibração (goodness-of-fit): GEH por link com a convenção GEH<5 em 85% dos links, RMSE/MAPE de tempo de viagem, e um helper combinado de pass/fail (`arteria/calibration/goodness_of_fit.py`). Testado apenas em contagens/tempos de viagem sintéticos feitos à mão (ADR 0009, fronteira de sessão remota) — sem dados observados, sem gerador de relatório ainda.
+2. `396caf7` — checagens de validação de rede (`arteria/network/validate.py`): conectividade, becos sem saída, contagem de faixas, marcadores de sentido único, consistência de conexões, limites de velocidade, presença de semáforo; parseado com ElementTree da stdlib contra fixtures `.net.xml` de brinquedo escritas à mão, sem sumolib/SUMO real.
+3. `563d679` — transformação de restrição de giro (`arteria/interventions/turn_restriction.py`): remove uma conexão de uma rede de brinquedo via ElementTree e verifica, por BFS, se as vias afetadas permanecem conectadas por outro caminho.
+
+**Por que isso importa para a trilha PG/PO:**
+
+- Commit `cbb53da` é a primeira peça concreta de infraestrutura para o objetivo específico 1 (Seção 8 do pré-projeto): "calibrar o modelo SUMO ... validado contra contagens de tráfego e a Pesquisa Origem-Destino de SJC." A métrica GEH (convenção-padrão GEH<5 em 85% dos links) e RMSE/MAPE de tempo de viagem são exatamente os critérios de aderência que a metodologia (Seção 9) e a seção de limitações (Seção 12) precisarão citar quando o protocolo de validação cruzada do Capítulo 3 for escrito com evidência real. Isso ainda não é validação — é só a função que, dado um par (observado, simulado), produz o veredito; sem dados observados de SJC (Pesquisa OD e contagens continuam `deferred`, ver entrada 2026-10-24 (3)), a métrica não tem, por ora, nenhum insumo real para rodar. Ainda assim, fixa desde já o critério quantitativo de aceite da calibração que a dissertação usará — antes só havia menção genérica na Seção 10 (métricas before/after), sem especificar o método estatístico exato de validação do nível inferior.
+- Commit `563d679` é a primeira implementação concreta de um item do catálogo de intervenções $\mathcal{I}$ (Seção 6 e objetivo específico 2, Seção 8): a restrição de giro é uma das classes de intervenção já citadas no pré-projeto (ao lado de conversões de mão única, faixas reversíveis, faixas de ônibus, realocação de faixas, corredores protegidos, poucos conectores novos). A verificação de conectividade pós-remoção (BFS) toca diretamente a restrição de "continuidade de rede" da Seção 6 — ainda que aplicada aqui à malha viária geral, não especificamente ao subgrafo cicloviário/pedonal citado naquela restrição. É código de bancada sobre rede de brinquedo, sem ligação ainda a SUMO real nem ao corredor de SJC.
+- Commit `396caf7` é infraestrutura de suporte (garantir que uma rede `.net.xml` é bem formada antes de simular) — relevante para a robustez do pipeline do Capítulo 4, mas não altera nenhuma afirmação de formulação, escopo ou dado desta trilha; vale uma nota breve, não uma seção própria.
+
+Nenhuma dessas três peças gera resultado, número ou validação real ainda — todas operam sobre fixtures de brinquedo, não sobre a rede real de SJC nem sobre dados observados. Isso é consistente com o estágio "pré-código real" assumido pelo pré-projeto e não altera nenhuma premissa de escopo, formulação ou cronograma.
+
+`outline.md` recebeu notas breves nos Capítulos 3 e 4 citando essas três peças como infraestrutura disponível (critério de aderência de calibração; suporte à construção robusta da rede; primeira transformação de intervenção) para quando esses capítulos forem redigidos com evidência real; nenhuma edição foi feita em `pre-projeto.md`.
+
+**Próximos passos:** sem alteração em relação à entrada anterior (2026-10-24 (6)).
+
 ## 2026-10-24 (6)
 
 Commit `eefc81c` ("feat: run provenance manifests (roadmap P0.7)") acrescentou `arteria/provenance.py`: um `RunManifest` (SHA do git, versão do SUMO, seed, hash da configuração, checksums dos arquivos de entrada) gravado em `runs/<city>/<run_id>/manifest.json` por execução de simulação/calibração/otimização, conforme o leiaute de `docs/roadmap.md`. É código de biblioteca puro, testado só em fixtures de brinquedo (toy fixtures); nenhum comando de execução o invoca ainda — isso chega só nas Fases 3/4/7 do roadmap (`arteria sim run`, `arteria calibrate`, `arteria optimize run`), isto é, é trabalho de bancada (desk-only) por ora.
