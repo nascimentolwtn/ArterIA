@@ -34,7 +34,7 @@ Por razões de tratabilidade computacional e de rigor na calibração, o estudo 
 
 ## 6. Formulação formal do problema
 
-Seja $G = (N, A)$ a rede viária do corredor de estudo, com nós $N$ e arcos $A$. Seja $y \in \{0,1\}^{|\mathcal{I}|}$ o vetor de decisão do **nível superior**, em que cada componente $y_i$ indica a seleção de uma intervenção $i$ pertencente a um catálogo finito e restrito $\mathcal{I}$ (conversões de mão única, faixas reversíveis, faixas de ônibus, realocação de faixas, corredores protegidos para bicicleta/pedestre, restrições de conversão, novos conectores). A cada vetor $y$ corresponde uma rede modificada $G(y)$.
+Seja $G = (N, A)$ a rede viária do corredor de estudo, com nós $N$ e arcos $A$. Seja $y \in \{0,1\}^{|\mathcal{I}|}$ o vetor de decisão do **nível superior**, em que cada componente $y_i$ indica a seleção de uma intervenção $i$ pertencente a um catálogo finito e restrito $\mathcal{I}$ (conversões de mão única, faixas reversíveis, faixas de ônibus, realocação de faixas, corredores protegidos para bicicleta/pedestre, restrições de conversão, novos conectores, retemporização semafórica e prioridade semafórica para transporte público). A cada vetor $y$ corresponde uma rede modificada $G(y)$.
 
 No **nível inferior**, dado $G(y)$ e uma matriz de demanda OD $Q$, o fluxo de equilíbrio $x^*(y)$ resolve o problema de atribuição de tráfego (equilíbrio do usuário de Wardrop, ou sua aproximação estocástica/dinâmica obtida por simulação microscópica):
 

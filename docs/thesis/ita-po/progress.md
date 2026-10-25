@@ -5,6 +5,22 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (5)
+
+Decisão explícita do responsável pelo ArterIA (instrução direta, fora do fluxo normal de commits analisados por esta trilha): "Add signal-retiming to the pre-projeto catalog now." Isso resolve, por decisão do próprio responsável e não por inferência desta trilha, a pendência registrada na entrada 2026-10-25 (4) — item (b) — e marcada como `TODO(decisão)` no Capítulo 3 do `outline.md`: a ausência de retemporização semafórica/prioridade semafórica para transporte público no catálogo $\mathcal{I}$ da Seção 6 do `pre-projeto.md`.
+
+**O que foi feito:**
+- `pre-projeto.md`, Seção 6 (linha 37): a lista do catálogo $\mathcal{I}$ passou a incluir "retemporização semafórica e prioridade semafórica para transporte público", ao final da enumeração já existente (conversões de mão única, faixas reversíveis, faixas de ônibus, realocação de faixas, corredores protegidos para bicicleta/pedestre, restrições de conversão, novos conectores). A lista não se repete em nenhuma outra seção do documento, então nenhuma outra edição textual foi necessária.
+- `outline.md`, Capítulo 3: o `TODO(decisão)` correspondente foi substituído por uma nota `RESOLVIDO`, registrando que a decisão partiu do responsável pelo ArterIA, não de um(a) orientador(a) (que ainda não existe), e que nenhuma implementação de código para essa classe de intervenção existe hoje no repositório.
+
+**Por que isso importa para a pergunta de pesquisa:** o catálogo $\mathcal{I}$ definido na Seção 6 é a base do espaço de decisão do nível superior do problema bi-nível ($y \in \{0,1\}^{|\mathcal{I}|}$). Antes desta entrada, a formulação da dissertação cobria sete classes de intervenção, mas o roteiro mais amplo do ArterIA (P5.2, "signal retiming and transit signal priority") já previa uma oitava classe fora da formulação acadêmica — uma divergência concreta entre o catálogo do produto e o catálogo da tese, exposta pela decisão de priorização B>D>C>A (entrada 2026-10-25 (4)). Com esta edição, a formulação passa a cobrir essa classe independentemente de qual candidato (B, C ou D) venha a ser confirmado como recorte final — reduz uma dependência entre a decisão ainda aberta de recorte geográfico e a integridade da formulação matemática já fixada.
+
+**Impacto na tese:** Capítulo 3 (Formulação/Metodologia) — o `TODO(decisão)` que apontava essa lacuna é encerrado como resolvido; a formulação da Seção 6 do pré-projeto, usada como base do Capítulo 3, já reflete o catálogo ampliado. Não há impacto nos Capítulos 4–7 (Desenvolvimento, Resultados, Discussão, Conclusão): nenhuma implementação, dado ou resultado foi gerado por esta decisão, apenas o enunciado do catálogo.
+
+**Perguntas abertas/riscos:** permanece sem solução (e fora do escopo desta entrada) qual candidato será de fato o recorte da dissertação — a dependência de dados de OD/contagens (`deferred`, entrada 2026-10-24 (3)) continua bloqueando essa escolha. A inclusão da retemporização semafórica no catálogo não implica que o Candidato D será o recorte escolhido; apenas remove uma divergência textual entre o catálogo da dissertação e o do produto ArterIA, qualquer que seja o recorte final. Como nota de contexto (sem ação desta trilha, por não ser escopo desta tese): o mesmo pacote de decisões do responsável também confirmou que o polígono do Candidato B se conecta ao trecho do Anel Viário do Candidato A, e citou uma possível extensão futura opcional (dependência DCTA↔Dutra, sentido norte, rumo a Vista Verde) — ambos já registrados em `cities/sjc/candidate-corridors.md`, sem necessidade de registro duplicado aqui.
+
+**Próximos passos:** sem alteração na numeração (ver lista consolidada na entrada 2026-10-25 (4)/anteriores); o item 2 ("confirmar o corredor exato de SJC") continua bloqueado pela mesma dependência de dados de OD/contagens.
+
 ## 2026-10-25 (4)
 
 Commit `bf725e9` ("docs: owner decision — all 4 SJC candidates in scope, priority B > D > C > A") editou `cities/sjc/candidate-corridors.md` (seção "Decision (2026-10-25)", no topo do arquivo) com duas decisões do responsável pelo ArterIA sobre os quatro candidatos registrados na entrada anterior (2026-10-25 (3)):
