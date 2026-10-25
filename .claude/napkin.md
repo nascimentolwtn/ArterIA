@@ -33,15 +33,19 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-25] Desk: run `arteria studyarea build --city sjc` for real**
-   Do instead: tooling is done — `arteria/network/study_area.py` + `arteria studyarea
-   build --city sjc --user-agent "<yours>"` geocodes `cities/sjc/study-areas.yaml`'s
-   4 priority candidates (B > D > C > A) via Nominatim and writes
-   `cities/sjc/study-areas.geojson`. Blocked remotely (ADR 0009, no network to
-   nominatim.openstreetmap.org); needs a real desk run with a real `--user-agent`
-   (Nominatim's usage policy, not a placeholder). Treat the output as a draft —
-   check against satellite imagery/OSM before any real P2.1 extraction. `pip
-   install -e ".[dev,geo]"` first (new `geo` extra: geopy/shapely/pyproj).
+1. **[2026-10-25] Desk: run the full studyarea -> osm fetch -> network build chain for real**
+   Do instead: all the code exists now — `docs/local/sjc-quickstart.md` is the exact
+   sequence (`arteria studyarea build` -> `arteria osm fetch --candidate b` ->
+   `arteria network build` -> `arteria network validate` -> `netedit`/`sumo-gui` ->
+   `randomTrips.py` for a quick visual). None of it has run against real
+   `sumo`/`netconvert`/`osmium`/Nominatim/Geofabrik yet (ADR 0009: no network, no
+   binaries remotely) — this is the first real contact. Expect to need to adjust
+   `default_netconvert_options()` (`arteria/network/build.py`) against the installed
+   `netconvert --help`, and the `osmium extract` flags against `osmium --help`; note
+   whatever changes in a commit so the next remote session doesn't reintroduce the
+   same unverified assumption. Treat all output as draft/uncalibrated — check the
+   study-area polygon against satellite imagery/OSM, and don't treat `randomTrips.py`
+   traffic as anything but a routability sanity check.
 2. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
    Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
 3. **[2026-10-24] Pick the code license** (small)
