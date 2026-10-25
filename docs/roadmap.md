@@ -1,6 +1,6 @@
 # ArterIA Roadmap
 
-Status: Draft (planning only, no code yet). Date: 2026-10-24 (revised 2026-10-24: Remote features reframed as Claude app sessions, no GitHub Actions). Current version: 0.1 (planning).
+Status: Draft (phased plan; implementation is ahead of it in places — see `CHANGELOG.md`). Date: 2026-10-24 (revised 2026-10-24: Remote features reframed as Claude app sessions, no GitHub Actions; revised 2026-10-25: version bumped to 0.3). Current version: 0.3 (network-build tooling).
 
 This roadmap turns the method in `docs/research-brief-sjc.md` (Phases 1-6) into a phased plan for a **reusable, multi-city** tool, with São José dos Campos (SJC) as the first pilot. It follows ADR 0001 (SUMO as the lower-level simulator, Python as the implementation language). Each phase lists goals, features (with IDs used in the Remote/Local sections), dependencies, deliverables, exit criteria and risks.
 

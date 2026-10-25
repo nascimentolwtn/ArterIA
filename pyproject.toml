@@ -1,6 +1,6 @@
 [project]
 name = "arteria"
-version = "0.2.0"
+version = "0.3.0"
 description = "AI-assisted decision-support tool for street-network planning, evaluated against calibrated SUMO simulations"
 readme = "README.md"
 requires-python = ">=3.11"

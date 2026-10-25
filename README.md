@@ -26,7 +26,7 @@ SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl ou otimizadores 
 
 ## Status
 
-Fase inicial, versão 0.1 (planejamento). Próximos passos: construir a linha de base do primeiro piloto e definir a estrutura do projeto independente de cidade. Veja o `CHANGELOG.md` para o que mudou.
+Fase inicial, versão 0.3 (ferramental de construção de rede: busca OSM, construção/validação via `netconvert`, polígonos de área de estudo, primeiras transformações de intervenção). Próximos passos: executar o pipeline real OSM-para-rede de SJC na mesa de trabalho e avançar para a calibração da linha de base. Veja o `CHANGELOG.md` para o que mudou.
 
 ## Dados e créditos
 
