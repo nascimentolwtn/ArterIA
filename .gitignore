@@ -1,3 +1,6 @@
+# Claude Code agent worktrees (temporary, created by Agent tool isolation)
+.claude/worktrees/
+
 # Python
 __pycache__/
 *.py[cod]
