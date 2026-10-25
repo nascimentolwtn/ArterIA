@@ -25,13 +25,20 @@ everything else in this repo stays in English per `CLAUDE.md`.
 
 | Manifest id(s) | Agency | Status | Sent on | Notes |
 |---|---|---|---|---|
-| `planmob-diagnostico-prognostico`, `od-survey-atlas`, `od-survey-microdata` | Ipplan | deferred | — | Draft below; not to be sent until the owner lifts the deferral |
+| `planmob-diagnostico-prognostico`, `od-survey-atlas` | Ipplan | deferred | — | Draft below (now without item 3, OD microdata — see note); not to be sent until the owner lifts the deferral |
 | `linha-verde-project`, `fgv-transit-tender-studies`, `gtfs-feed`, `traffic-counts`, `signal-timing-plans`, `crash-data`, `emergency-routes` | SEMOB | deferred | — | Draft below (now without item 1, the Master Plan text — see note); SEMOB can route specific items to Urbam, the transit operator, or Corpo de Bombeiros/SAMU |
 
 `master-plan-lc612-2018` is no longer on this list: it moved to
 `status: public_available` in the manifest (self-service via Geosanja/the
 legislation portal), so Draft 2 below should have item 1 dropped before it is
 ever sent.
+
+`od-survey-microdata` is no longer on this list either: the owner declined it
+permanently (2026-10-25, ADR 0013, privacy/re-identification risk), so
+Draft 1 below should have item 3 dropped before it is ever sent — demand
+generation uses a synthetic, count-calibrated scenario instead, regardless
+of whether Ipplan would release it. `od-survey-atlas` (aggregated/public)
+is unaffected and stays item 2.
 
 Update this table (and the manifest) the moment a request is actually sent or a reply
 arrives — this file is a to-do, not a log of what happened.
@@ -73,12 +80,7 @@ directly; confirm current details before using them:
 >
 > 1. O **Diagnóstico e Prognóstico do PlanMob SJC** (Lei Complementar 576/2016), na
 >    versão mais atual disponível;
-> 2. O **Atlas da Pesquisa Origem-Destino**, caso exista versão consolidada/pública;
-> 3. A **microdados (base desagregada) da Pesquisa Origem-Destino**, usada no
->    projeto "Mobilidade do Futuro" — estou ciente de que pode haver restrições de
->    uso/redistribuição, e me comprometo a tratar os dados conforme os termos que
->    me forem indicados (uso exclusivamente acadêmico, sem redistribuição, dados
->    agregados/anonimizados em qualquer publicação).
+> 2. O **Atlas da Pesquisa Origem-Destino**, caso exista versão consolidada/pública.
 >
 > Fico à disposição para assinar termo de uso ou confidencialidade, se necessário, e
 > para apresentar mais detalhes do projeto caso seja útil.

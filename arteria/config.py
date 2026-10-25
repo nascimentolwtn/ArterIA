@@ -14,7 +14,12 @@ import yaml
 from pydantic import BaseModel, Field
 
 Visibility = Literal["public", "restricted"]
-ManifestStatus = Literal["public_available", "deferred", "requested", "received", "unavailable"]
+# `declined` (ADR 0013): a permanent owner policy choice never to request or
+# use this source (e.g. real OD survey microdata, for privacy/re-identification
+# risk) — unlike `deferred`, it does not expect a future request.
+ManifestStatus = Literal[
+    "public_available", "deferred", "requested", "received", "unavailable", "declined"
+]
 
 
 class TimeWindow(BaseModel):

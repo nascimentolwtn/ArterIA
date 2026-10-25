@@ -216,6 +216,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 | 0010 | Non-public data handling: storage, encryption, retention, publishable derived data | P0.6, P1.2, P4.1 |
 | 0011 | Cities: Skylines edition, mod set, and "illustrative" labelling | P8.3 |
 | 0012 | Repository visibility and licensing (public repo; Apache 2.0 code, CC BY 4.0 docs) — written and accepted 2026-10-25, resolving open questions 5 and 7 | P0.8 |
+| 0013 | No real OD microdata; synthetic, count-calibrated demand only — written and accepted 2026-10-25, partially resolving open question 1 (OD microdata specifically) | P1.1, P3.1-P3.3, P4.3 |
 
 ## Remote features
 
@@ -407,7 +408,7 @@ Suggested minimum: 8 cores/16 threads, 32 GB RAM, 200 GB free SSD for `ARTERIA_D
 
 ## Open questions
 
-1. **Data access:** will the SJC municipality (Ipplan / Mobilidade Urbana / Urbam) and the transit operator share OD survey microdata, counts, signal plans and GTFS, and under what terms? This decides between the full and the open-data-only path (P1.2, P10.2, ADR 0010).
+1. **Data access:** will the SJC municipality (Ipplan / Mobilidade Urbana / Urbam) and the transit operator share counts, signal plans and GTFS, and under what terms? **Partially resolved 2026-10-25 for OD survey microdata specifically:** the owner permanently declined to ever request, use or derive from real OD microdata, on privacy/re-identification grounds (ADR 0013) — demand generation (P3) is synthetic and count-calibrated regardless of availability, not contingent on this question for that one source. Counts, signal plans, crash data, emergency routes and GTFS remain separately `deferred` and still decide between the full and the open-data-only path for those sources (P1.2, P10.2, ADR 0010).
 2. **Pilot area:** which corridor(s) win the P1.3 scoring, and how large a buffer is tractable for microsimulation versus mesoscopic? **Partially resolved 2026-10-25:** the owner chose all 4 candidates in `cities/sjc/candidate-corridors.md` (Av. Andrômeda↔DCTA, the Jardim Colinas roundabout/Ponte Estaiada, the centro/São Dimas/Vila Adyana one-way maze, and the Anel Viário), in priority order B > D > C > A. This is a qualitative owner call, not the data-backed P1.3 scoring (OD/counts stay deferred); no bounding polygon exists yet for any of the 4.
 3. **Calibration thresholds:** accept the GEH < 5 on 85% of links convention, or looser thresholds given sparse data (ADR 0005)?
 4. **Objectives:** which objectives are primary (person-delay, transit reliability, safety, emissions, equity), and who signs off on equity metrics and income-group data (ADR 0007)?

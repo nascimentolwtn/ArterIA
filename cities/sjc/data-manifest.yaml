@@ -146,11 +146,18 @@ sources:
     license: "TBD — expect data-sharing terms restricting redistribution"
     visibility: restricted
     sha256: null
-    status: deferred
+    status: declined
     notes: >
-      Referenced in docs/research-brief-sjc.md [73]. If unreleased, fall back
-      to the open-data-only path (roadmap P1.2 risk, P10.2) with synthetic
-      demand. Keep under ARTERIA_PRIVATE if received (ADR 0004/0010).
+      Referenced in docs/research-brief-sjc.md [73]. **Declined by owner
+      decision, 2026-10-25 (ADR 0013):** never requested, received, used, or
+      derived from (including by randomizing/anonymizing a real copy), given
+      the re-identification/LGPD risk of household/trip-level microdata, not
+      just its commercial/contractual restriction. Demand generation (P3)
+      uses a synthetic, count-calibrated scenario instead (gravity-model
+      fallback + `routeSampler`), permanently, not as a contingency pending
+      release. Unlike `deferred`, this status is not expected to change if
+      Ipplan ever does release it. Does not affect `od-survey-atlas`
+      (aggregated/public) above.
 
   - id: fgv-transit-tender-studies
     name: "FGV studies for the public-transport tender"

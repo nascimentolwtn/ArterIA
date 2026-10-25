@@ -14,5 +14,7 @@ sources: []
 #     license: "TBD"
 #     visibility: public  # or restricted
 #     sha256: null        # filled in once a file is actually received
-#     status: deferred    # public_available | deferred | requested | received | unavailable
+#     status: deferred    # public_available | deferred | requested | received | unavailable | declined
+#                         # declined = permanent owner policy choice never to pursue this source
+#                         # (e.g. privacy risk, ADR 0013) — unlike deferred, not expected to change.
 #     notes: "Anything that needs verifying before relying on this."

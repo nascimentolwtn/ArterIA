@@ -25,7 +25,9 @@ def test_sjc_city_config_validates() -> None:
 def test_sjc_data_manifest_validates() -> None:
     manifest = load_data_manifest(REPO_ROOT / "cities" / "sjc" / "data-manifest.yaml")
     assert len(manifest.sources) >= 10
-    assert all(entry.status in {"public_available", "deferred"} for entry in manifest.sources)
+    assert all(
+        entry.status in {"public_available", "deferred", "declined"} for entry in manifest.sources
+    )
 
 
 def test_template_city_config_validates() -> None:
