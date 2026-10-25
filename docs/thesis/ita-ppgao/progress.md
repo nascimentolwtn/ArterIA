@@ -5,6 +5,26 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão dos commits 27b9fb9 e db0f998)
+
+Dois commits revisados, de natureza bem distinta.
+
+### `27b9fb9` — arquivo de outra trilha, sem relevância direta identificada
+
+Commit `27b9fb9` ("docs(thesis): add signal-retiming to ita-po's intervention catalog") adicionou retemporização de semáforos / prioridade semafórica de transporte (*transit-signal-priority*) ao catálogo de intervenções da Seção 6 de `docs/thesis/ita-po/pre-projeto.md`, por instrução direta do responsável pelo projeto. É arquivo de outra trilha (ita-po), não lido em profundidade e não tocado por este agente, por regra de escopo. Relevância para AO-EL: nenhuma identificada diretamente — é edição textual do enquadramento de otimização/formulação próprio da trilha ita-po, não uma mudança no catálogo de intervenções compartilhado em código do ArterIA (que tem precedente de registro nesta trilha, e.g. `turn_restriction.py`, entrada de `563d679` acima). Caso a retemporização semafórica venha, em commit futuro, a ser implementada como intervenção de catálogo compartilhada em código (não apenas como texto de pré-projeto de outra trilha), isso teria relevância renovada para o Objetivo específico 2 desta trilha (catálogo restrito de intervenções, Seção 6 do pré-projeto). Por ora, nenhuma ação necessária.
+
+### `db0f998` — primeira ferramenta de rascunho de polígono de recorte (roadmap P1.4)
+
+Commit `db0f998` adicionou a primeira implementação de código do roadmap P1.4: `arteria/network/study_area.py` geocodifica, para cada candidato, uma lista de consultas de marco/endereço via Nominatim, toma o fecho convexo (*convex hull*) dos pontos resultantes e o expande (*buffer*) por uma distância configurável, produzindo um polígono-rascunho de delimitação em GeoJSON. `cities/sjc/study-areas.yaml` codifica os quatro candidatos já registrados nesta trilha (entradas de `71638f1` e `bf725e9`, acima), na mesma ordem de prioridade B > D > C > A, com as consultas do Candidato B incluindo deliberadamente vias do Anel Viário para que seu fecho convexo se conecte ao do Candidato A — primeiro commit a dar forma geométrica à leitura que esta trilha já havia registrado (entrada de `71638f1`) de que o Candidato A funciona como contexto de buffer/desvio para o Candidato B, e não como recorte autônomo.
+
+Três ressalvas relevantes para esta trilha, refletidas no `outline.md`:
+
+1. **Nenhum polígono real existe ainda.** O próprio módulo e os comentários do YAML tratam a saída como rascunho explícito ("DRAFT"), a verificar contra imagem de satélite/OSM antes de qualquer uso real; a única função que toca a rede (`geocode_nominatim`) está bloqueada nesta sessão remota (ADR 0009) e depende de execução de mesa ainda não realizada. Não há, portanto, nenhuma evidência geográfica nova a incorporar ao Capítulo 3 além da intenção de método.
+2. **O método de delimitação é deliberadamente simples e carrega uma limitação metodológica que vale registrar desde já, antes mesmo de o polígono real existir**: fecho convexo de pontos de marcos/endereços seguido de buffer fixo é um método geométrico específico — e relativamente grosseiro — para definir o polígono do recorte. Ele não deriva da extensão real da malha viária (OSM) nem de limites administrativos conhecidos, e o fecho convexo de um pequeno conjunto de marcos pode incluir área substancialmente maior, ou traçar uma fronteira substancialmente diferente, do que a malha viária relevante sugeriria. Isso toca diretamente o recorte geográfico da Seção 5 do pré-projeto (Objetivo específico 1): quando o polígono real for gerado (na execução de mesa ainda pendente), deverá ser tratado como ponto de partida a refinar contra a malha viária real — e, idealmente, contra qualquer limite institucional conhecido do complexo ITA/DCTA-CTA — antes de delimitar a extração de rede (P2.1) sobre a qual a formulação bi-nível (Seção 6 do pré-projeto) seria efetivamente aplicada, não como o recorte final do Capítulo 3 em si.
+3. Como nos commits anteriores sobre os candidatos de SJC, trata-se de decisão/ferramenta de produto do ArterIA (priorização e delimitação dos quatro candidatos), não de decisão de recorte desta dissertação nem de validação do enquadramento operacional/FAB por um orientador do PPGAO — nenhum orientador foi contatado até o momento. A continuidade do Candidato B (DCTA) na posição de maior prioridade de construção no ArterIA, agora com um primeiro esboço de forma geométrica planejado (ainda não executado), não altera esse risco central; apenas torna um pouco mais concreto, tecnicamente, o recorte que estaria disponível primeiro caso a validação um dia ocorra.
+
+Registra-se nota equivalente no Capítulo 3 do `outline.md`. Nenhuma mudança de status. O risco principal — validação do enquadramento operacional/FAB por um orientador do PPGAO — permanece integralmente em aberto e não é tocado por este commit.
+
 ## 2026-10-25 (revisão do commit bf725e9)
 
 Commit `bf725e9` ("docs: owner decision — all 4 SJC candidates in scope, priority B > D > C > A") registra duas decisões do responsável pelo projeto ArterIA sobre `cities/sjc/candidate-corridors.md`, lido diretamente na seção "Decision (2026-10-25)" no topo do arquivo:
