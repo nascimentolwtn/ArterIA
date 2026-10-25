@@ -33,23 +33,31 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
+1. **[2026-10-25] Confirm candidate-corridor open items (P1.3/P1.4/P1.5)** (small, unblocks Phase 1)
+   Do instead: owner proposed 3 SJC candidate areas from local driving experience —
+   see `cities/sjc/candidate-corridors.md`. Needs: (a) confirm the exact
+   street/location of the reported underused-elevated-bypass phenomenon (candidate
+   match found: Jardim Colinas roundabout / Ponte Estaiada, unconfirmed), (b) decide
+   whether candidate B (Av. Andrômeda↔DCTA) subsumes candidate A's Anel Viário
+   segment or stays a separate study area. No corridor is selected yet — this is
+   problem-statement groundwork, not the P1.3 scoring decision.
+2. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
    Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
-2. **[2026-10-24] Pick the code license** (small)
+3. **[2026-10-24] Pick the code license** (small)
    Do instead: decide before first public release; record in an ADR if non-trivial.
-3. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
+4. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
-4. **[2026-10-24] Owner review of ADR 0003** (Status: Proposed, unreviewed)
+5. **[2026-10-24] Owner review of ADR 0003** (Status: Proposed, unreviewed)
    Do instead: ADR 0002 and 0004 are now both Accepted. ADR 0003 (city.yaml/data-manifest
    schema) hasn't been raised yet — it's already implemented (`arteria/config.py`) and
    exercised against real SJC files, so review is a formality unless something there
    needs to change.
-5. **[2026-10-24] Desk: run `nox -s smoke` for real**
+6. **[2026-10-24] Desk: run `nox -s smoke` for real**
    Do instead: this session's `nox -s smoke` only confirmed it skips cleanly with no
    `sumo` binary (correct for remote). At the desk, with SUMO installed, confirm it
    actually passes against a real toy network — the roadmap's P0 exit criterion needs
    both halves.
-6. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
+7. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
    Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
    remote session's network policy. At the desk: confirm Geosanja still serves Master
    Plan/zoning layers and check for a distinct road-network layer; confirm IBGE's Base
