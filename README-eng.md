@@ -26,7 +26,7 @@ SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl or custom optimi
 
 ## Status
 
-Early stage, version 0.1 (planning). Next steps: build the first pilot baseline and define the city-agnostic project structure. See `CHANGELOG.md` for what's changed.
+Early stage, version 0.3 (network-build tooling: OSM fetch, `netconvert` build/validate, study-area polygons, the first intervention transforms). Next steps: run the real OSM-to-network pipeline for SJC at the desk and move to baseline calibration. See `CHANGELOG.md` for what's changed.
 
 ## Data and credits
 
