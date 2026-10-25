@@ -69,6 +69,18 @@ nox -s lint tests              # both — same as a remote Claude session's R1
 nox -s smoke                   # skips cleanly without a `sumo` binary;
                                 # real toy-network run still TODO (lands with Phase 2)
 arteria city new <name>        # scaffold cities/<name>/ from cities/_template/
+arteria studyarea build --city sjc --user-agent "<yours>"
+                                # (P1.4) geocodes cities/sjc/study-areas.yaml via
+                                # Nominatim, writes study-areas.geojson. DESK-ONLY:
+                                # needs real network to nominatim.openstreetmap.org,
+                                # blocked remotely (ADR 0009). First run:
+                                # pip install -e ".[dev,geo]"  (new `geo` extra)
+                                # --user-agent must identify you, per Nominatim's
+                                # usage policy — not a placeholder. Treat the
+                                # output as a draft; check it against satellite
+                                # imagery/OSM before any real P2.1 extraction.
+                                # Add --include-future for the disabled Vista
+                                # Verde extension candidate.
 ```
 
 ## Daily commands (planned, no script yet — roadmap ID in parentheses)

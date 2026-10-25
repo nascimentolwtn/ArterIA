@@ -160,10 +160,18 @@ different intervention type than A–C.
    is requested (still deferred by the owner's choice,
    `cities/sjc/data-requests.md`) or an open-data-only fallback (OSM +
    travel-time proxies) is adopted for each area's P1.4 study-area polygon.
-2. None of the four has a drawn bounding polygon yet (`cities/sjc/city.yaml`
-   still has `bounding_polygon` commented out) — needed before P2.1 OSM
-   extraction can start on B, including its confirmed connection to A's
-   Anel Viário segment.
-3. The Vista Verde northbound extension to Candidate B (logged above) has
-   no polygon, no priority, and no scope decision attached — it's a future
+2. **Polygon tooling is ready, the run isn't.** `arteria studyarea build
+   --city sjc --user-agent "<yours>"` (roadmap P1.4,
+   `arteria/network/study_area.py`) geocodes each candidate's landmark list
+   in `cities/sjc/study-areas.yaml` via Nominatim and writes
+   `cities/sjc/study-areas.geojson` — one polygon per candidate, buffered
+   convex hulls, B's hull already including the Anel Viário landmarks so it
+   connects to A as decided. It needs real network access to
+   `nominatim.openstreetmap.org`, which this remote session doesn't have
+   (ADR 0009); run it at the desk. **Treat the output as a draft** — check
+   it against satellite imagery/OSM before using it for a real P2.1
+   extraction, same caution the roadmap already gives OSM completeness.
+3. The Vista Verde northbound extension to Candidate B is in
+   `study-areas.yaml` as a disabled candidate (`b_ext_vista_verde`) — no
+   priority, run with `--include-future` if it's ever wanted; it's a future
    option, not current work.

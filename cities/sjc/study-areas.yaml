@@ -1,0 +1,72 @@
+# SJC study-area geocoding queries (roadmap P1.4), consumed by
+# `arteria studyarea build --city sjc` (arteria/network/study_area.py).
+#
+# Each candidate's `queries` are landmark/address strings derived from
+# cities/sjc/candidate-corridors.md's descriptions — geocoded via Nominatim
+# at the desk (this remote session's network policy blocks
+# nominatim.openstreetmap.org), convex-hulled, then buffered by `buffer_m`
+# metres to produce a draft polygon. Treat the output as a DRAFT: verify it
+# against satellite imagery/OSM before using it for any real P2.1 OSM
+# extraction, same as the roadmap already expects for OSM completeness.
+#
+# Priority order per the owner's 2026-10-25 decision: B > D > C > A.
+
+candidates:
+  - id: b
+    name: "Av. Andrômeda <-> DCTA / Jardim Satélite"
+    priority: 1
+    queries:
+      - "Avenida Andrômeda, Jardim Satélite, São José dos Campos, SP, Brazil"
+      - "Avenida Brigadeiro Faria Lima 1941, Putim, São José dos Campos, SP, Brazil"  # DCTA
+      - "Vila Letônia, São José dos Campos, SP, Brazil"
+      - "Bairro São Bento, São José dos Campos, SP, Brazil"
+      - "Avenida Florestan Fernandes, São José dos Campos, SP, Brazil"  # connects to A, per owner's decision
+    buffer_m: 400
+    note: >
+      Polygon connects to candidate A's Anel Viário segment (owner decision,
+      2026-10-25) rather than standing alone.
+
+  - id: d
+    name: "Jardim Colinas roundabout / Ponte Estaiada"
+    priority: 2
+    queries:
+      - "Avenida Jorge Zarur, São José dos Campos, SP, Brazil"
+      - "Avenida São João, São José dos Campos, SP, Brazil"
+      - "Avenida Cassiano Ricardo, São José dos Campos, SP, Brazil"
+      - "Avenida Doutor Eduardo Cury, São José dos Campos, SP, Brazil"
+    buffer_m: 250
+    note: null
+
+  - id: c
+    name: "Centro / São Dimas / Vila Adyana one-way maze"
+    priority: 3
+    queries:
+      - "Centro, São José dos Campos, SP, Brazil"
+      - "São Dimas, São José dos Campos, SP, Brazil"
+      - "Vila Adyana, São José dos Campos, SP, Brazil"
+    buffer_m: 300
+    note: null
+
+  - id: a
+    name: "Anel Viário and its access roads"
+    priority: 4
+    queries:
+      - "Avenida Florestan Fernandes, São José dos Campos, SP, Brazil"
+      - "Avenida Senador Teotônio Vilela, São José dos Campos, SP, Brazil"
+      - "Viaduto Everardo Passos, São José dos Campos, SP, Brazil"
+      - "Viaduto Nadim Rahal, São José dos Campos, SP, Brazil"
+    buffer_m: 400
+    note: null
+
+  - id: b_ext_vista_verde
+    name: "Future extension: Av. Andrômeda/DCTA <-> Vista Verde (northbound)"
+    priority: null
+    enabled: false
+    queries:
+      - "Vista Verde, São José dos Campos, SP, Brazil"
+    buffer_m: 400
+    note: >
+      Optional future extension (owner, 2026-10-25): the same DCTA<->Dutra
+      dependency reported for candidate B also applies northbound, toward
+      Vista Verde. Not current priority — disabled by default; pass
+      --include-future to `arteria studyarea build` to geocode it too.
