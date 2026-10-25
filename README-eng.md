@@ -34,4 +34,4 @@ Map data © OpenStreetMap contributors (ODbL). Each city's local sources are cre
 
 ## License
 
-TBD
+Code (`arteria/`) under [Apache License 2.0](LICENSE). Documentation, research brief, and published derived data under [CC BY 4.0](LICENSE-DOCS.md). See `docs/adr/0012-repo-visibility-and-licensing.md`.

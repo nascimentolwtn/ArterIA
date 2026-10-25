@@ -34,4 +34,4 @@ Dados de mapa © colaboradores do OpenStreetMap (ODbL). As fontes locais de cada
 
 ## Licença
 
-A definir
+Código (`arteria/`) sob [Apache License 2.0](LICENSE). Documentação, resumo de pesquisa e dados derivados publicados sob [CC BY 4.0](LICENSE-DOCS.md). Ver `docs/adr/0012-repo-visibility-and-licensing.md`.

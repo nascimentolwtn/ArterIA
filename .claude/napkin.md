@@ -46,23 +46,19 @@ None open.
    same unverified assumption. Treat all output as draft/uncalibrated — check the
    study-area polygon against satellite imagery/OSM, and don't treat `randomTrips.py`
    traffic as anything but a routability sanity check.
-2. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
-   Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
-3. **[2026-10-24] Pick the code license** (small)
-   Do instead: decide before first public release; record in an ADR if non-trivial.
-4. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
+2. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
-5. **[2026-10-24] Owner review of ADR 0003** (Status: Proposed, unreviewed)
+3. **[2026-10-24] Owner review of ADR 0003** (Status: Proposed, unreviewed)
    Do instead: ADR 0002 and 0004 are now both Accepted. ADR 0003 (city.yaml/data-manifest
    schema) hasn't been raised yet — it's already implemented (`arteria/config.py`) and
    exercised against real SJC files, so review is a formality unless something there
    needs to change.
-6. **[2026-10-24] Desk: run `nox -s smoke` for real**
+4. **[2026-10-24] Desk: run `nox -s smoke` for real**
    Do instead: this session's `nox -s smoke` only confirmed it skips cleanly with no
    `sumo` binary (correct for remote). At the desk, with SUMO installed, confirm it
    actually passes against a real toy network — the roadmap's P0 exit criterion needs
    both halves.
-7. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
+5. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
    Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
    remote session's network policy. At the desk: confirm Geosanja still serves Master
    Plan/zoning layers and check for a distinct road-network layer; confirm IBGE's Base

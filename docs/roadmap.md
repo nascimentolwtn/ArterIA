@@ -215,6 +215,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 | 0009 | Remote-session boundary: what a Claude app cloud session may read, run, commit and push vs. desktop-only work; toy-fixture outputs are never evidence; SUMO calls sit behind an adapter so the rest of `arteria/` tests without real data, no `sumo`/`netconvert` binary required remotely. Replaces the earlier "CI/CD, runner topology, self-hosted runner security" scope (no Actions runners, no hosted CI are planned) and absorbs the AI-agent scope/permissions question that was going to be its own ADR (same boundary, now that remote work is Claude sessions, so no separate number was needed). Kept as an ADR, not just a rule, because the adapter/fixture split shapes the package architecture | P0.1, P0.5, cross-cutting |
 | 0010 | Non-public data handling: storage, encryption, retention, publishable derived data | P0.6, P1.2, P4.1 |
 | 0011 | Cities: Skylines edition, mod set, and "illustrative" labelling | P8.3 |
+| 0012 | Repository visibility and licensing (public repo; Apache 2.0 code, CC BY 4.0 docs) — written and accepted 2026-10-25, resolving open questions 5 and 7 | P0.8 |
 
 ## Remote features
 
@@ -410,9 +411,9 @@ Suggested minimum: 8 cores/16 threads, 32 GB RAM, 200 GB free SSD for `ARTERIA_D
 2. **Pilot area:** which corridor(s) win the P1.3 scoring, and how large a buffer is tractable for microsimulation versus mesoscopic? **Partially resolved 2026-10-25:** the owner chose all 4 candidates in `cities/sjc/candidate-corridors.md` (Av. Andrômeda↔DCTA, the Jardim Colinas roundabout/Ponte Estaiada, the centro/São Dimas/Vila Adyana one-way maze, and the Anel Viário), in priority order B > D > C > A. This is a qualitative owner call, not the data-backed P1.3 scoring (OD/counts stay deferred); no bounding polygon exists yet for any of the 4.
 3. **Calibration thresholds:** accept the GEH < 5 on 85% of links convention, or looser thresholds given sparse data (ADR 0005)?
 4. **Objectives:** which objectives are primary (person-delay, transit reliability, safety, emissions, equity), and who signs off on equity metrics and income-group data (ADR 0007)?
-5. **Repo visibility:** public or private GitHub repo? With remote sessions pushing branches directly, a public repo publishes every pushed branch at once; visibility also decides results-site exposure and outside contributions (ADR 0009, ADR 0010).
+5. ~~**Repo visibility:** public or private GitHub repo?~~ **Resolved 2026-10-25:** public (ADR 0012). Does not change the per-source `visibility: public|restricted` data-manifest field (ADR 0003/0004), which still blocks committing any source an agency restricts.
 6. **Compute:** is the current dev PC enough (8+ cores, 32 GB RAM), or is a university cluster/cloud budget available for P7 optimization batches?
-7. **Code license:** still TBD in the README; needed before the first release (P0.8).
+7. ~~**Code license:** still TBD in the README.~~ **Resolved 2026-10-25:** Apache License 2.0 for code, CC BY 4.0 for docs/research writing/published derived data (ADR 0012).
 8. **Cities: Skylines edition:** C:S 1 (mature mods: TM:PE, Move It, importers) or C:S II (less mod support)? Licensing for workshop use (ADR 0011).
 9. **RL track:** is the dynamic lane-allocation RL experiment (P7.5) in thesis scope or deferred?
 10. **Second city:** which city for P10 (a nearby Vale do Paraíba city, or one with strong open data)?
