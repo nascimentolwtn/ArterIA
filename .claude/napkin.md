@@ -36,11 +36,13 @@ None open.
 1. **[2026-10-25] Draw bounding polygons for the 4 SJC study areas, priority B > D > C > A**
    Do instead: owner decided (2026-10-25) all 4 candidates in
    `cities/sjc/candidate-corridors.md` are in scope, worked in that priority order.
-   Candidate D confirmed as the Jardim Colinas roundabout/Ponte Estaiada ("bolinho
-   caipira" is the owner's own nickname for its shape). Still needed before P2.1 OSM
-   extraction can start on B (the first priority): an actual bounding polygon in
-   `cities/sjc/city.yaml` — none of the 4 has one yet. Desk/GIS task, not blocked on
-   OD data (qualitative/open-data-only path is fine for a polygon).
+   Candidate D confirmed as the Jardim Colinas roundabout/Ponte Estaiada. Candidate
+   B's polygon connects to A's Anel Viário segment (also confirmed). Still needed
+   before P2.1 OSM extraction can start on B (the first priority): an actual
+   bounding polygon in `cities/sjc/city.yaml` — none of the 4 has one yet. Desk/GIS
+   task, not blocked on OD data (qualitative/open-data-only path is fine for a
+   polygon). A possible future extension to B (northbound DCTA↔Dutra dependency
+   toward Vista Verde) is logged in `candidate-corridors.md` but out of current scope.
 2. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
    Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
 3. **[2026-10-24] Pick the code license** (small)

@@ -13,8 +13,8 @@ The owner has decided all four candidates below are in scope for SJC, to be
 worked in this priority order:
 
 1. **B** — Av. Andrômeda ↔ DCTA / Jardim Satélite
-2. **D** — Jardim Colinas roundabout / Ponte Estaiada, "bolinho caipira"
-   (confirmed — see Candidate D below)
+2. **D** — Jardim Colinas roundabout / Ponte Estaiada (confirmed — see
+   Candidate D below)
 3. **C** — Centro / São Dimas / Vila Adyana one-way maze
 4. **A** — Anel Viário and its access roads
 
@@ -36,11 +36,9 @@ owner chose to lead with B instead. Two practical notes on that:
   `turn_restriction.py`, only handles connection removal). That's a
   heads-up for whoever picks up P5.2, not a blocker now.
 
-The four areas are kept as four separate study areas per this ordering
-(not merged) — see "Open items" for the one remaining practical question
-(whether B's build should pull in A's southern Anel Viário segment as
-shared buffer context when B's turn comes up, or keep them fully
-separate).
+**Resolved 2026-10-25:** Candidate B's polygon connects to the Anel Viário
+(Candidate A) rather than treating them as fully separate study areas — see
+Candidate A and Candidate B below.
 
 ## Candidate A — Anel Viário and its access roads, Dutra to "fundo do vale"
 
@@ -59,6 +57,10 @@ Dutra fails).
 reallocation may be less feasible than on narrower streets (brief's 5th
 scoring criterion) — probably better framed as *buffer context* for
 Candidate B than as a standalone pilot (see "My read" below).
+
+**Resolved 2026-10-25:** the owner confirmed Candidate B's polygon connects
+to A's southern segment rather than treating them as fully separate study
+areas (see Candidate B below).
 
 ## Candidate B — Av. Andrômeda ↔ DCTA / Jardim Satélite
 
@@ -79,6 +81,16 @@ Aeroespacial, Segurança e Defesa) ever wants an access/resilience case
 study tied to a real installation, this corridor is a natural fit — but
 that's a thesis-scope call for the owner/an advisor, not decided here.
 
+**Polygon, confirmed 2026-10-25:** connects to Candidate A's Anel Viário
+segment rather than standing as a fully separate study area, matching the
+westbound/eastbound detour description above (the Anel Viário is part of
+the eastbound return loop).
+
+**Future extension (optional, not current priority):** the same DCTA ↔
+Dutra dependency also exists northbound, toward the Vista Verde
+neighborhood — logged here for later consideration, not part of the
+current B polygon/build.
+
 ## Candidate C — Centro / São Dimas / Vila Adyana one-way maze
 
 **Observed phenomenon:** several consecutive one-way streets running the
@@ -92,14 +104,12 @@ Also the most tractable of the three on the brief's "feasibility of lane
 reallocation without major land acquisition" criterion — narrower
 residential/commercial streets, no earthworks implied.
 
-## Candidate D — Jardim Colinas roundabout / Ponte Estaiada ("bolinho caipira")
+## Candidate D — Jardim Colinas roundabout / Ponte Estaiada
 
-**Confirmed 2026-10-25.** "Bolinho caipira" is the owner's own nickname for
-the structure, from its shape — not an official name, and not connected to
-the snack food a web search for that phrase turned up. The structure
-itself is the **Jardim Colinas roundabout**, where the city's own materials
-describe a cable-stayed bridge ("Ponte Estaiada" / Arco da Inovação) with
-two viaducts — upper and lower, in an X shape — built over that junction.
+**Confirmed 2026-10-25.** The structure is the **Jardim Colinas
+roundabout**, where the city's own materials describe a cable-stayed
+bridge ("Ponte Estaiada" / Arco da Inovação) with two viaducts — upper and
+lower, in an X shape — built over that junction.
 
 **Observed phenomenon:** a landmark elevated route built over an at-grade
 roundabout + traffic light, seemingly designed to remove the need for the
@@ -132,9 +142,8 @@ different intervention type than A–C.
   build`/`validate` against. The owner chose to lead with B instead (see
   "Decision" above); that stands.
 - **Candidate B** is structurally the most interesting (a short trip turned
-  into a long detour by missing connectivity) but its polygon may need to
-  reach into Candidate A's southern Anel Viário segment anyway — still an
-  open build-time question (see "Open items"), not a scope one.
+  into a long detour by missing connectivity); its polygon connects to
+  Candidate A's southern Anel Viário segment, confirmed by the owner.
 - **Candidate A alone** is probably too large/arterial for a first
   microsimulation pilot (brief's buffer-size risk, P1 "Risks"); better
   framed as buffer/boundary context for B when A's turn comes up, 4th in
@@ -147,13 +156,14 @@ different intervention type than A–C.
 
 ## Open items
 
-1. Decide whether B's polygon should pull in A's southern Anel Viário
-   segment as shared buffer context when B's turn comes up, or keep them
-   fully separate study areas. Not urgent — A is 4th in priority.
-2. All four stay provisional on real evidence until either OD/count data
+1. All four stay provisional on real evidence until either OD/count data
    is requested (still deferred by the owner's choice,
    `cities/sjc/data-requests.md`) or an open-data-only fallback (OSM +
    travel-time proxies) is adopted for each area's P1.4 study-area polygon.
-3. None of the four has a drawn bounding polygon yet (`cities/sjc/city.yaml`
+2. None of the four has a drawn bounding polygon yet (`cities/sjc/city.yaml`
    still has `bounding_polygon` commented out) — needed before P2.1 OSM
-   extraction can start on B.
+   extraction can start on B, including its confirmed connection to A's
+   Anel Viário segment.
+3. The Vista Verde northbound extension to Candidate B (logged above) has
+   no polygon, no priority, and no scope decision attached — it's a future
+   option, not current work.
