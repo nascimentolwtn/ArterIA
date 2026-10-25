@@ -81,18 +81,39 @@ arteria studyarea build --city sjc --user-agent "<yours>"
                                 # imagery/OSM before any real P2.1 extraction.
                                 # Add --include-future for the disabled Vista
                                 # Verde extension candidate.
+arteria osm fetch --city sjc --candidate b [--pbf-path <file>]
+                                # (L8, P2.1) downloads/caches Geofabrik's sudeste
+                                # extract (or reuses --pbf-path), clips it to the
+                                # named study-area candidate's polygon via
+                                # `osmium extract`. DESK-ONLY: needs network +
+                                # the real `osmium` binary, neither available
+                                # remotely (ADR 0009). Written and unit-tested
+                                # against toy fixtures only — see
+                                # docs/local/sjc-quickstart.md step 2.
+arteria network build --city sjc --osm-pbf <file> [--type-files ...] [--extra ...]
+                                # (L9, P2.2/P2.3) wraps `netconvert` with the
+                                # standard SUMO OSM-import flags, then runs the
+                                # existing P2.5 validation on the result and
+                                # prints the error/warning counts. DESK-ONLY:
+                                # needs the real `netconvert` binary, not
+                                # available remotely. See
+                                # docs/local/sjc-quickstart.md step 3 — the
+                                # flag set hasn't been run against a real
+                                # binary yet, so confirm it against
+                                # `netconvert --help` before trusting it blind.
+arteria network validate --city sjc [--net <file>]
+                                # (L11, P2.5) prints the full validation report
+                                # (reuses arteria/network/validate.py, already
+                                # tested on toy fixtures) for a `.net.xml` you
+                                # already built.
 ```
 
 ## Daily commands (planned, no script yet — roadmap ID in parentheses)
 
 These are specified in `docs/roadmap.md` but their entry points don't exist
-in the repo yet. Build them when their phase starts (see "When does SJC
-become visible in SUMO?" below for the current blocker).
+in the repo yet.
 
 ```bash
-arteria osm fetch --city sjc --source geofabrik --date YYYY-MM-DD   # (L8, P2.1)
-arteria network build --city sjc                                    # (L9, P2.2/P2.3)
-arteria network validate --city sjc                                 # (L11, P2.5)
 arteria network edit --city sjc --junction <id>                     # (L10, P2.4, opens netedit)
 arteria sim gui --city sjc --scenario baseline                      # (L14, P3.6)
 arteria demand build --city sjc --window am-peak                    # (L13, P3.1-P3.3)
@@ -100,6 +121,10 @@ arteria sim run --city sjc --scenario baseline --seeds 10           # (L15, P3.6
 arteria calibrate demand --city sjc                                 # (L16, P4.3-P4.5)
 arteria optimize run --city sjc --study <id> --algo nsga2            # (L17, P7)
 ```
+
+A quick visual check of the network and some (uncalibrated) traffic moving
+on it doesn't need any of those yet — see `docs/local/sjc-quickstart.md`,
+which uses SUMO's own bundled `randomTrips.py` instead.
 
 ## Weekly / per-session routine
 
@@ -113,25 +138,15 @@ arteria optimize run --city sjc --study <id> --algo nsga2            # (L17, P7)
 
 ## When does SJC become visible in SUMO?
 
-Short answer: **not yet, and it's not a remote-session task** — it needs two
-things to happen first, both desktop-only.
-
-1. **Phase 1 (study-area selection) hasn't run.** `cities/sjc/city.yaml` still
-   has placeholder bounding polygon and time windows — there's no corridor
-   chosen yet (roadmap P1.3/P1.4). That's a scoring/decision step, not code;
-   it can happen in a remote session (R21 can draft the scoring matrix) but
-   needs your input on which corridor(s) to evaluate.
-2. **The OSM extraction and `netconvert` build (L8/L9, Phase 2) require the
-   real `sumo`/`netconvert`/`osmium` binaries and GUI tools**, which remote
-   Claude sessions deliberately don't have (ADR 0009) — this is desktop work.
-
-Once a corridor polygon exists, the realistic desktop sequence is:
-`arteria osm fetch` (download + clip OSM) → `arteria network build`
-(`netconvert`) → `arteria network validate` → open it in `sumo-gui`/`netedit`
-to actually look at it. None of those four commands exist in the repo yet —
-only their spec in `docs/roadmap.md`. So the real dependency chain is:
-**pick the SJC pilot corridor → write `arteria osm fetch`/`network build`
-(a remote session can write and unit-test this code against toy fixtures
-today, per R4) → run it at the desk with real SUMO installed.** There's no
-date attached to this yet in the roadmap; it's gated on your corridor
-decision, not on remaining code volume.
+As of 2026-10-25: **the code exists; running it at the desk is the only
+step left.** `arteria osm fetch`, `arteria network build`, and
+`arteria network validate` are implemented and unit-tested against toy
+fixtures (remote sessions have no real `sumo`/`netconvert`/`osmium`
+binary or network access, per ADR 0009, so none of the three has run
+against real SJC data yet). `docs/local/sjc-quickstart.md` is the exact
+desk sequence: geocode a study-area polygon for real (needs real network
+to Nominatim), fetch + clip the real OSM extract, build and validate the
+network, open it in `sumo-gui`/`netedit`, and see uncalibrated traffic
+move on it via SUMO's bundled `randomTrips.py`. None of that is a
+calibrated baseline or a validated corridor choice — see that file's
+"What this is NOT" section.
