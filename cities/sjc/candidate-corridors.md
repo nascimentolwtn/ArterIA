@@ -2,14 +2,45 @@
 
 Proposed by the project owner from direct local experience driving these
 areas — not yet backed by counts or OD data (those stay `deferred` in
-`data-manifest.yaml`). This is the P1.5 problem-statement groundwork, not
-the final P1.3 scoring matrix: real scoring needs data this session doesn't
-have yet. None of the three is selected as the Phase 1 pilot corridor —
-that decision belongs to the owner (see `.claude/napkin.md`, User
-Directives: "scope stays SJC-only... the owner decides").
+`data-manifest.yaml`).
 
 Street names are kept in Portuguese as given; everything else follows
 `CLAUDE.md`'s English convention for project docs.
+
+## Decision (2026-10-25): all four areas in scope, priority order B > D > C > A
+
+The owner has decided all four candidates below are in scope for SJC, to be
+worked in this priority order:
+
+1. **B** — Av. Andrômeda ↔ DCTA / Jardim Satélite
+2. **D** — Jardim Colinas roundabout / Ponte Estaiada, "bolinho caipira"
+   (confirmed — see Candidate D below)
+3. **C** — Centro / São Dimas / Vila Adyana one-way maze
+4. **A** — Anel Viário and its access roads
+
+This is a qualitative, owner-level priority call, not the data-backed P1.3
+scoring matrix (no OD/count data exists yet — see "Qualitative first-pass
+read" below). It supersedes the "My read" recommendation further down this
+file, which had suggested starting with C for its lower cost/risk; the
+owner chose to lead with B instead. Two practical notes on that:
+
+- **B first means tackling a genuine missing-connectivity case before a
+  simpler one-way/turn-restriction case.** Fixing it may need a new
+  connector edge (catalog P5.2's "new connector edge, only from a
+  pre-approved list" — the costliest, most land-constrained intervention
+  type) rather than just a turn-restriction relaxation. Worth confirming
+  during P5.3 candidate generation whether a connector is even feasible
+  there before committing engineering time to it specifically.
+- **D second means the transform library (P5.2) needs signal-retiming
+  logic earlier than the roadmap currently sequences it** (today's code,
+  `turn_restriction.py`, only handles connection removal). That's a
+  heads-up for whoever picks up P5.2, not a blocker now.
+
+The four areas are kept as four separate study areas per this ordering
+(not merged) — see "Open items" for the one remaining practical question
+(whether B's build should pull in A's southern Anel Viário segment as
+shared buffer context when B's turn comes up, or keep them fully
+separate).
 
 ## Candidate A — Anel Viário and its access roads, Dutra to "fundo do vale"
 
@@ -61,30 +92,27 @@ Also the most tractable of the three on the brief's "feasibility of lane
 reallocation without major land acquisition" criterion — narrower
 residential/commercial streets, no earthworks implied.
 
-## Unconfirmed — elevated bypass underused at a roundabout
+## Candidate D — Jardim Colinas roundabout / Ponte Estaiada ("bolinho caipira")
 
-**Observed phenomenon, as reported:** a landmark elevated route built over
-an at-grade roundabout + traffic light, seemingly designed to remove the
-need for the signal entirely. In practice, at peak hours most traffic uses
-the roundabout and signal while the elevated route runs free — a "postcard"
+**Confirmed 2026-10-25.** "Bolinho caipira" is the owner's own nickname for
+the structure, from its shape — not an official name, and not connected to
+the snack food a web search for that phrase turned up. The structure
+itself is the **Jardim Colinas roundabout**, where the city's own materials
+describe a cable-stayed bridge ("Ponte Estaiada" / Arco da Inovação) with
+two viaducts — upper and lower, in an X shape — built over that junction.
+
+**Observed phenomenon:** a landmark elevated route built over an at-grade
+roundabout + traffic light, seemingly designed to remove the need for the
+signal entirely. In practice, at peak hours most traffic uses the
+roundabout and signal while the elevated route runs free — a "postcard"
 structure nobody uses operationally.
 
-**What I found, unconfirmed:** a web search for "bolinho caipira" turned up
-nothing tying that name to a specific structure — it came back as a
-regional snack food, with no roundabout/viaduct connection in any source.
-But I found what may be the actual location: the **Jardim Colinas
-roundabout**, where the city's own materials describe a cable-stayed bridge
-("Ponte Estaiada" / Arco da Inovação) with two viaducts — upper and lower,
-in an X shape — built over that junction. That matches the shape of what
-you're describing, but I can't confirm it's the same spot. **Please confirm
-the street/location** before this goes further.
-
-**Why it matters if confirmed:** unlike A–C, this isn't a topology problem
-(one-way/connector) — the capacity already exists. It would be an
-operational question: signal timing biased toward the surface route,
-missing/unclear signage, or driver habit/wayfinding. Still squarely in
-ArterIA's catalog (P5.2 "signal retiming and transit signal priority") and
-RQ1, just a different intervention type than A–C.
+**Why it matters:** unlike A–C, this isn't a topology problem
+(one-way/connector) — the capacity already exists. It's an operational
+question: signal timing biased toward the surface route, missing/unclear
+signage, or driver habit/wayfinding. Still squarely in ArterIA's catalog
+(P5.2 "signal retiming and transit signal priority") and RQ1, just a
+different intervention type than A–C.
 
 ## Qualitative first-pass read (not the P1.3 scoring matrix — no counts exist yet)
 
@@ -93,32 +121,39 @@ RQ1, just a different intervention type than A–C.
 | A — Anel Viário | Spikes on Dutra incidents | Unknown | Unknown | Unknown | Likely low (wide arterial) | None (OD/counts deferred) |
 | B — Andrômeda↔DCTA | Not congestion — forced detour length | Unknown | Unknown | Unknown | Unknown (needs field check) | None |
 | C — Centro/São Dimas/Vila Adyana | Not congestion — forced detour length | Likely high (central, commercial) | Possible | Possible | Likely high (narrow streets) | None |
+| D — Jardim Colinas roundabout | Reported: underused at peak hours | N/A (operational, not a route choice problem per se) | Possible (bus routes likely cross it) | Unknown | N/A — capacity exists, this is a signal/routing question | None |
 
-## My read
+## My read (superseded by the owner's decision above — kept for the reasoning)
 
-- **Candidate C** is the cheapest to validate and best demonstrates
+- **Candidate C** looked cheapest to validate and best demonstrated
   ArterIA's actual pitch (searching one-way/turn-restriction changes against
   a baseline) with the least land-acquisition risk and a compact,
-  well-bounded area. Good first target to prototype `network build`/
-  `validate` against, even before OD/count data arrives.
+  well-bounded area — my suggested first target to prototype `network
+  build`/`validate` against. The owner chose to lead with B instead (see
+  "Decision" above); that stands.
 - **Candidate B** is structurally the most interesting (a short trip turned
-  into a long detour by missing connectivity) but its polygon would need to
-  reach into Candidate A's southern Anel Viário segment anyway — consider
-  merging B and A into one "DCTA access" study area rather than treating A
-  as its own pilot.
+  into a long detour by missing connectivity) but its polygon may need to
+  reach into Candidate A's southern Anel Viário segment anyway — still an
+  open build-time question (see "Open items"), not a scope one.
 - **Candidate A alone** is probably too large/arterial for a first
   microsimulation pilot (brief's buffer-size risk, P1 "Risks"); better
-  framed as buffer/boundary context for B.
-- This is not a decision, just a recommendation — P1.3's real scoring still
+  framed as buffer/boundary context for B when A's turn comes up, 4th in
+  priority.
+- This was a recommendation, not a decision — P1.3's real scoring still
   needs commute/congestion data that's currently deferred, or an
   OSM-only fallback with travel-time proxies (roadmap P1 risk mitigation).
+  The owner's priority order above is itself qualitative for the same
+  reason; it isn't expected to wait for that data.
 
 ## Open items
 
-1. Confirm the exact street/location of the elevated-bypass phenomenon.
-2. Decide whether B's polygon subsumes A's southern segment, or keep them
-   as separate study areas sharing a buffer.
-3. All three stay provisional until either OD/count data is requested
-   (still deferred by the owner's choice, `cities/sjc/data-requests.md`) or
-   an open-data-only fallback (OSM + travel-time proxies) is adopted for
-   P1.4's study-area polygon.
+1. Decide whether B's polygon should pull in A's southern Anel Viário
+   segment as shared buffer context when B's turn comes up, or keep them
+   fully separate study areas. Not urgent — A is 4th in priority.
+2. All four stay provisional on real evidence until either OD/count data
+   is requested (still deferred by the owner's choice,
+   `cities/sjc/data-requests.md`) or an open-data-only fallback (OSM +
+   travel-time proxies) is adopted for each area's P1.4 study-area polygon.
+3. None of the four has a drawn bounding polygon yet (`cities/sjc/city.yaml`
+   still has `bounding_polygon` commented out) — needed before P2.1 OSM
+   extraction can start on B.

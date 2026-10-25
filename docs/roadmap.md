@@ -407,7 +407,7 @@ Suggested minimum: 8 cores/16 threads, 32 GB RAM, 200 GB free SSD for `ARTERIA_D
 ## Open questions
 
 1. **Data access:** will the SJC municipality (Ipplan / Mobilidade Urbana / Urbam) and the transit operator share OD survey microdata, counts, signal plans and GTFS, and under what terms? This decides between the full and the open-data-only path (P1.2, P10.2, ADR 0010).
-2. **Pilot area:** which corridor(s) win the P1.3 scoring, and how large a buffer is tractable for microsimulation versus mesoscopic?
+2. **Pilot area:** which corridor(s) win the P1.3 scoring, and how large a buffer is tractable for microsimulation versus mesoscopic? **Partially resolved 2026-10-25:** the owner chose all 4 candidates in `cities/sjc/candidate-corridors.md` (Av. Andrômeda↔DCTA, the Jardim Colinas roundabout/Ponte Estaiada, the centro/São Dimas/Vila Adyana one-way maze, and the Anel Viário), in priority order B > D > C > A. This is a qualitative owner call, not the data-backed P1.3 scoring (OD/counts stay deferred); no bounding polygon exists yet for any of the 4.
 3. **Calibration thresholds:** accept the GEH < 5 on 85% of links convention, or looser thresholds given sparse data (ADR 0005)?
 4. **Objectives:** which objectives are primary (person-delay, transit reliability, safety, emissions, equity), and who signs off on equity metrics and income-group data (ADR 0007)?
 5. **Repo visibility:** public or private GitHub repo? With remote sessions pushing branches directly, a public repo publishes every pushed branch at once; visibility also decides results-site exposure and outside contributions (ADR 0009, ADR 0010).

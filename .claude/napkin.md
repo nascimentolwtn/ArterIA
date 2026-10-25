@@ -33,14 +33,14 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-25] Confirm candidate-corridor open items (P1.3/P1.4/P1.5)** (small, unblocks Phase 1)
-   Do instead: owner proposed 3 SJC candidate areas from local driving experience —
-   see `cities/sjc/candidate-corridors.md`. Needs: (a) confirm the exact
-   street/location of the reported underused-elevated-bypass phenomenon (candidate
-   match found: Jardim Colinas roundabout / Ponte Estaiada, unconfirmed), (b) decide
-   whether candidate B (Av. Andrômeda↔DCTA) subsumes candidate A's Anel Viário
-   segment or stays a separate study area. No corridor is selected yet — this is
-   problem-statement groundwork, not the P1.3 scoring decision.
+1. **[2026-10-25] Draw bounding polygons for the 4 SJC study areas, priority B > D > C > A**
+   Do instead: owner decided (2026-10-25) all 4 candidates in
+   `cities/sjc/candidate-corridors.md` are in scope, worked in that priority order.
+   Candidate D confirmed as the Jardim Colinas roundabout/Ponte Estaiada ("bolinho
+   caipira" is the owner's own nickname for its shape). Still needed before P2.1 OSM
+   extraction can start on B (the first priority): an actual bounding polygon in
+   `cities/sjc/city.yaml` — none of the 4 has one yet. Desk/GIS task, not blocked on
+   OD data (qualitative/open-data-only path is fine for a polygon).
 2. **[2026-10-24] Decide repo visibility** (remote sessions push branches directly; drives results-site exposure)
    Do instead: decide before the first remote session pushes code or data manifests (roadmap open question 5).
 3. **[2026-10-24] Pick the code license** (small)
