@@ -1,0 +1,52 @@
+entries:
+  - id: busline-x-bus-lane
+    type: bus_lane
+    description: Dedicated bus lane on Av. X, rightmost lane, peak hours only.
+    target_edges: ["edgeA", "edgeB"]
+    parameters:
+      lane_index: 1
+      allow: ["bus"]
+    cost_estimate_brl: 120000.0
+    complexity: medium
+    legal_constraints:
+      - "requires municipal traffic-engineering sign-off (CTB art. 24)"
+    safety_notes: "Improves bus-stop sightlines; no change to crossing distance."
+    emergency_access_notes: "Lane remains usable by emergency vehicles (allow includes authority)."
+    equity_notes: "Benefits transit-dependent riders on a high-frequency corridor."
+    expected_beneficiaries: ["bus riders", "transit agency"]
+    expected_losers: ["private car commuters on Av. X"]
+    mutual_exclusions: ["busline-x-one-way"]
+
+  - id: busline-x-one-way
+    type: one_way_conversion
+    description: Convert Av. X eastbound segment to one-way westbound.
+    target_edges: ["edgeA"]
+    parameters:
+      direction: westbound
+    cost_estimate_brl: 15000.0
+    complexity: low
+    legal_constraints:
+      - "requires public notice period before signage change"
+    safety_notes: "Removes a contraflow conflict point at the Y junction."
+    emergency_access_notes: "Emergency routing must be re-checked for the reversed segment."
+    equity_notes: "May lengthen trips for residents east of the corridor without cars."
+    expected_beneficiaries: ["through traffic"]
+    expected_losers: ["local residents without cars", "eastbound deliveries"]
+    mutual_exclusions: ["busline-x-bus-lane"]
+
+  - id: junction-y-turn-restriction
+    type: turn_restriction
+    description: Prohibit left turn from edgeC into edgeD at junction Y.
+    target_junctions: ["junctionY"]
+    parameters:
+      from_edge: edgeC
+      to_edge: edgeD
+    cost_estimate_brl: 5000.0
+    complexity: low
+    legal_constraints: []
+    safety_notes: "Removes the junction's highest-conflict turning movement."
+    emergency_access_notes: "No emergency route currently uses this turn."
+    equity_notes: null
+    expected_beneficiaries: ["through traffic on edgeC"]
+    expected_losers: ["drivers bound for edgeD from edgeC"]
+    mutual_exclusions: []
