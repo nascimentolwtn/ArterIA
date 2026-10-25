@@ -7,6 +7,9 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 ### Added
 
 - Run provenance manifests (`arteria/provenance.py`, roadmap P0.7): a reusable schema and helper functions so that every future simulation, calibration, or optimizer run (`arteria sim run`, `arteria calibrate ...`, `arteria optimize run` — desk-only, Phases 3/4/7) can write a `manifest.json` recording the git commit, SUMO version, random seed, a hash of the config used, and checksums of its input files, matching the `runs/<city>/<run-id>/` layout in `docs/roadmap.md`. Tested on toy fixtures only; no command calls it yet.
+- Network validation checks (`arteria/network/validate.py`, roadmap R4/P2.5): parses a `.net.xml`-shaped document and reports, without stopping at the first problem, on connectivity, dead ends, lane counts, missing one-way markers, dangling or out-of-range connections, non-positive speed limits, and traffic-light junctions missing their signal program. Tested against hand-written toy fixtures (one clean, one with a deliberate issue per check); the real network build and visual check stay at the desk.
+- GEH and travel-time goodness-of-fit metrics (`arteria/calibration/goodness_of_fit.py`, roadmap R8/P4.5): the standard GEH statistic (with the zero/zero edge case handled), travel-time RMSE and MAPE, and a summary helper reporting how many links pass the conventional GEH < 5 threshold. Tested on synthetic counts; a future calibration report (P4.7) would consume this.
+- Turn-restriction transform (`arteria/interventions/turn_restriction.py`, roadmap R18/P5.2): removes a named connection from a `.net.xml`-shaped document without mutating the input, and reports whether the two edges stay connected through some other path afterward (a minimal stand-in for the fuller P5.4 validity checks). Tested on a toy fixture with both a bypassed and a sole connection.
 
 ## [0.2] - 2026-10-24
 

@@ -9,7 +9,8 @@
 
 ## Execution & Validation (Highest Priority)
 
-None yet.
+1. **[2026-10-25] Parallel worktree agents: `pip install -e .` is not worktree-safe here**
+   Do instead: there's no per-worktree venv in this container — `pip install -e .` writes a single shared, system-wide editable link, so concurrent `pip install -e .` calls from sibling worktrees race and can point the installed `arteria` at the wrong path. Also, `pytest` installed as a `uv tool` can't see that editable install at all. Run `python3 -m pytest` (or set `PYTHONPATH` to the worktree root) instead of reinstalling per worktree; only reinstall editable once, from the final merged repo path, after parallel work lands.
 
 ## Roadmap & Status
 
