@@ -1,6 +1,8 @@
 from pathlib import Path
 
-from arteria.data_safety import check_files, sha256_of
+import pytest
+
+from arteria.data_safety import check_files, find_repo_root, sha256_of
 
 
 def _write_manifest(repo_root: Path, sha256: str) -> None:
@@ -40,3 +42,17 @@ def test_does_not_flag_an_unrelated_file(tmp_path: Path) -> None:
     _write_manifest(tmp_path, "0" * 64)
 
     assert check_files([other], tmp_path) == []
+
+
+def test_find_repo_root_locates_git_dir_regardless_of_cwd_depth(tmp_path: Path) -> None:
+    (tmp_path / ".git").mkdir()
+    nested = tmp_path / "a" / "b" / "c"
+    nested.mkdir(parents=True)
+
+    assert find_repo_root(nested) == tmp_path
+    assert find_repo_root(tmp_path) == tmp_path
+
+
+def test_find_repo_root_raises_when_no_git_dir_is_found(tmp_path: Path) -> None:
+    with pytest.raises(RuntimeError):
+        find_repo_root(tmp_path / "nowhere")

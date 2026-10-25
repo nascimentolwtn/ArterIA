@@ -181,7 +181,7 @@ def validate_network(path: str | Path) -> ValidationReport:
             adjacency[to_j].add(from_j)
 
     if junction_ids:
-        start = next(iter(junction_ids))
+        start = min(junction_ids)
         seen = {start}
         stack = [start]
         while stack:

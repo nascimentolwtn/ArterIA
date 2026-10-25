@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from arteria.scaffold import CityAlreadyExistsError, create_city
+from arteria.scaffold import CityAlreadyExistsError, InvalidCityNameError, create_city
 
 REPO_ROOT = Path(__file__).parent.parent
 
@@ -27,3 +27,22 @@ def test_refuses_to_overwrite_an_existing_city(tmp_path: Path) -> None:
 
     with pytest.raises(CityAlreadyExistsError):
         create_city("existing", cities_root)
+
+
+@pytest.mark.parametrize(
+    "name",
+    [
+        "../../etc/evil",
+        "/etc/evil",
+        "..",
+        "sjc/../../evil",
+        "Sjc",
+        "",
+    ],
+)
+def test_refuses_a_name_that_could_escape_cities_root(tmp_path: Path, name: str) -> None:
+    cities_root = tmp_path / "cities"
+    cities_root.mkdir()
+
+    with pytest.raises(InvalidCityNameError):
+        create_city(name, cities_root)

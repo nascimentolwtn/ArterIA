@@ -22,6 +22,22 @@ def restricted_checksums(repo_root: Path) -> set[str]:
     return checksums
 
 
+def find_repo_root(start: Path) -> Path:
+    """Walk up from `start` looking for `.git`.
+
+    Deliberately independent of `__file__`: if `arteria` is ever installed
+    non-editably, `__file__` resolves into site-packages, nowhere near the
+    checkout, and a root derived from it would silently find no manifests —
+    the one safety net ADR 0004 relies on going quietly inert instead of
+    failing loudly. `pre-commit` always runs hooks with cwd at the repo
+    root, so `start` is normally `Path.cwd()`.
+    """
+    for candidate in (start, *start.parents):
+        if (candidate / ".git").exists():
+            return candidate
+    raise RuntimeError(f"could not find repo root (no .git) above {start}")
+
+
 def sha256_of(path: Path) -> str:
     digest = hashlib.sha256()
     with open(path, "rb") as f:
@@ -47,7 +63,7 @@ def check_files(paths: list[Path], repo_root: Path) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
-    repo_root = Path(__file__).resolve().parent.parent
+    repo_root = find_repo_root(Path.cwd())
     violations = check_files([Path(p) for p in argv], repo_root)
     for v in violations:
         print(v, file=sys.stderr)

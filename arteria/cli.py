@@ -10,7 +10,7 @@ from pathlib import Path
 import typer
 
 from arteria import __version__
-from arteria.scaffold import CityAlreadyExistsError, create_city
+from arteria.scaffold import CityAlreadyExistsError, InvalidCityNameError, create_city
 
 app = typer.Typer(help="ArterIA: AI-assisted decision-support tool for street-network planning.")
 city_app = typer.Typer(help="City scaffolding (ADR 0002).")
@@ -62,7 +62,7 @@ def city_new(name: str) -> None:
     cities_root = Path.cwd() / "cities"
     try:
         city_dir = create_city(name, cities_root)
-    except CityAlreadyExistsError as exc:
+    except (CityAlreadyExistsError, InvalidCityNameError) as exc:
         typer.echo(str(exc), err=True)
         raise typer.Exit(code=1) from exc
 
