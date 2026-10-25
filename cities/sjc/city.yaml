@@ -9,6 +9,7 @@ sumo_version: "1.20.0" # TBD: confirm the actual pinned version at the desk when
 # bounding_polygon: not set yet — the pilot corridor/buffer is still open (roadmap P1.3/P1.4)
 time_windows:
   am-peak:
-    start: "07:00" # TBD: confirm against PlanMob/field data once available (roadmap P1.1)
-    end: "09:00"
+    start: "07:00" # Accepted qualitatively (ADR 0003, owner, 2026-10-25) from direct
+    end: "09:00"   # experience of corridors A/D's peak-hour congestion, not field counts;
+    # refine against real PlanMob/count data once available (roadmap P1.1, P4 calibration).
 data_manifest: data-manifest.yaml

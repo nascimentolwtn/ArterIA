@@ -48,17 +48,12 @@ None open.
    traffic as anything but a routability sanity check.
 2. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
-3. **[2026-10-24] Owner review of ADR 0003** (Status: Proposed, unreviewed)
-   Do instead: ADR 0002 and 0004 are now both Accepted. ADR 0003 (city.yaml/data-manifest
-   schema) hasn't been raised yet — it's already implemented (`arteria/config.py`) and
-   exercised against real SJC files, so review is a formality unless something there
-   needs to change.
-4. **[2026-10-24] Desk: run `nox -s smoke` for real**
+3. **[2026-10-24] Desk: run `nox -s smoke` for real**
    Do instead: this session's `nox -s smoke` only confirmed it skips cleanly with no
    `sumo` binary (correct for remote). At the desk, with SUMO installed, confirm it
    actually passes against a real toy network — the roadmap's P0 exit criterion needs
    both halves.
-5. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
+4. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
    Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
    remote session's network policy. At the desk: confirm Geosanja still serves Master
    Plan/zoning layers and check for a distinct road-network layer; confirm IBGE's Base

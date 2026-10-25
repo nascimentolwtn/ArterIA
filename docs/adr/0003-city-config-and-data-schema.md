@@ -1,7 +1,11 @@
 # 0003. City config and data schema
 
 Date: 2026-10-24
-Status: Proposed
+Status: Accepted (2026-10-25: owner proceeds without waiting for real traffic
+counts/OD data to fill in fields like `time_windows` — confirmed
+qualitatively, from direct local experience, that corridors A (Anel
+Viário/Dutra spillover) and D (Jardim Colinas roundabout) carry heavy
+peak-hour traffic; see "Owner acceptance" below)
 
 ## Context
 
@@ -23,3 +27,23 @@ Remote Claude sessions (ADR 0009) never see restricted data, but they do read an
 - Easier: remote sessions can fully validate a city's config and catch a licensing/checksum mistake before it reaches the desk; a new city (P10) starts from a schema-checked template instead of free-form YAML that only fails at runtime; downstream schemas (catalog, scenarios) get a consistent shape for free.
 - Harder: every new field needs a schema change and a migration note, not just an ad-hoc YAML edit; the schema has to be designed before real SJC data is in hand, so some fields are best guesses.
 - Risk: over-engineering the schema before real data exposes its actual shape (flagged as a P0 risk in the roadmap) — mitigate by keeping the schema minimal and versioned, extending it as P1 data requests come back rather than anticipating every field now.
+
+## Owner acceptance (2026-10-25)
+
+The owner accepts this ADR as written and chooses not to wait for real
+traffic counts or OD survey data (both `deferred` in
+`cities/sjc/data-manifest.yaml`) before treating schema fields like
+`time_windows` as usable rather than placeholder. The stated basis is
+direct local experience, not measurement: corridor A (the Anel Viário,
+which absorbs spillover whenever an incident closes the Dutra) and
+corridor D (the Jardim Colinas roundabout/Ponte Estaiada junction) are
+both known qualitatively to carry heavy peak-hour traffic — consistent with
+`cities/sjc/candidate-corridors.md`'s "Qualitative first-pass read" table.
+This does not extend to corridors B and C, whose listed issue is forced
+detour length / one-way maze structure rather than peak congestion.
+
+This is still qualitative, not calibration-grade: `city.yaml`'s
+`time_windows.am-peak` stays a best guess (hours, not volumes) until P4
+calibration against real counts, if those ever arrive — accepting this ADR
+unblocks P0/P1 schema work now, it does not retroactively make the am-peak
+window itself a validated calibration target.
