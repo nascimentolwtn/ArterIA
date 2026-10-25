@@ -92,7 +92,7 @@ def _orphaned_junctions(root: ET.Element) -> list[str]:
     if not junction_ids:
         return []
 
-    start = next(iter(junction_ids))
+    start = min(junction_ids)
     seen = {start}
     queue = deque([start])
     while queue:
