@@ -5,6 +5,7 @@ import pytest
 from arteria.interventions.apply import (
     LaneRestrictionApplyResult,
     OneWayApplyResult,
+    SignalRetimingApplyResult,
     TurnRestrictionApplyResult,
     UnsupportedInterventionTypeError,
     apply_intervention,
@@ -13,11 +14,16 @@ from arteria.interventions.catalog import CatalogEntry, load_catalog
 
 FIXTURES = Path(__file__).parent / "fixtures"
 NET_FIXTURE = FIXTURES / "toy-net-apply-intervention.net.xml"
+TLS_NET_FIXTURE = FIXTURES / "toy-net-tls.net.xml"
 CATALOG_FIXTURE = FIXTURES / "toy-catalog.yaml"
 
 
 def _toy_net() -> str:
     return NET_FIXTURE.read_text(encoding="utf-8")
+
+
+def _tls_net() -> str:
+    return TLS_NET_FIXTURE.read_text(encoding="utf-8")
 
 
 def _catalog_entry(entry_id: str) -> CatalogEntry:
@@ -69,9 +75,61 @@ def test_does_not_mutate_the_input() -> None:
     assert original == _toy_net()
 
 
+def test_signal_retiming_entry_dispatches_to_retime_signal() -> None:
+    entry = CatalogEntry.model_validate(
+        {
+            "id": "junction-j0-retiming",
+            "type": "signal_retiming",
+            "description": "desc",
+            "complexity": "low",
+            "target_junctions": ["tls0"],
+            "parameters": {"phase_durations": [40, 4]},
+        }
+    )
+
+    result = apply_intervention(_tls_net(), entry)
+
+    assert isinstance(result, SignalRetimingApplyResult)
+    assert 'duration="40" state="Gr"' in result.net_xml
+    assert result.previous_durations == [31.0, 5.0]
+    assert result.previous_cycle_length_s == 36.0
+    assert result.new_cycle_length_s == 44.0
+
+
+def test_signal_retiming_requires_phase_durations_parameter() -> None:
+    entry = CatalogEntry.model_validate(
+        {
+            "id": "bad-retiming",
+            "type": "signal_retiming",
+            "description": "desc",
+            "complexity": "low",
+            "target_junctions": ["tls0"],
+        }
+    )
+
+    with pytest.raises(ValueError, match="phase_durations"):
+        apply_intervention(_tls_net(), entry)
+
+
+def test_signal_retiming_requires_exactly_one_target_junction() -> None:
+    entry = CatalogEntry.model_validate(
+        {
+            "id": "bad-retiming-junctions",
+            "type": "signal_retiming",
+            "description": "desc",
+            "complexity": "low",
+            "target_junctions": ["tls0", "other"],
+            "parameters": {"phase_durations": [40, 4]},
+        }
+    )
+
+    with pytest.raises(ValueError, match="exactly one"):
+        apply_intervention(_tls_net(), entry)
+
+
 @pytest.mark.parametrize(
     "unsupported_type",
-    ["reversible_lane", "new_connector", "signal_retiming", "transit_signal_priority"],
+    ["reversible_lane", "new_connector", "transit_signal_priority"],
 )
 def test_unsupported_type_raises(unsupported_type: str) -> None:
     entry = CatalogEntry.model_validate(

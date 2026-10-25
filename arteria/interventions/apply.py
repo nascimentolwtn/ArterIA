@@ -1,18 +1,19 @@
 """Catalog-entry dispatcher: apply one `CatalogEntry` to a network (roadmap P5.2/P5.3).
 
 `arteria/interventions/catalog.py` describes *what* a candidate intervention
-is; `one_way.py`, `turn_restriction.py` and `lane_restriction.py` each know
-*how* to make one specific kind of network edit. Nothing yet turned a
-`CatalogEntry` into a call to the right one of those — this module is that
-missing link: `apply_intervention()` reads `entry.type` and pulls the edge/
-junction ids and transform parameters it needs out of `entry.target_edges`/
-`entry.target_junctions`/`entry.parameters`, exactly as a real catalog entry
-(see `tests/fixtures/toy-catalog.yaml`) carries them.
+is; `one_way.py`, `turn_restriction.py`, `lane_restriction.py` and
+`signal_retiming.py` each know *how* to make one specific kind of network
+edit. Nothing yet turned a `CatalogEntry` into a call to the right one of
+those — this module is that missing link: `apply_intervention()` reads
+`entry.type` and pulls the edge/junction ids and transform parameters it
+needs out of `entry.target_edges`/`entry.target_junctions`/
+`entry.parameters`, exactly as a real catalog entry (see
+`tests/fixtures/toy-catalog.yaml`) carries them.
 
-Four catalog types have no transform yet (`reversible_lane`, `new_connector`,
-`signal_retiming`, `transit_signal_priority`): each needs a network edit
-beyond plain-XML attribute/element removal (time-dependent lane permissions,
-a brand-new edge, or a TLS program), so `apply_intervention()` raises
+Three catalog types have no transform yet (`reversible_lane`, `new_connector`,
+`transit_signal_priority`): each needs a network edit beyond plain-XML
+attribute/element removal (time-dependent lane permissions, a brand-new
+edge, or detector/TraCI wiring), so `apply_intervention()` raises
 `UnsupportedInterventionTypeError` for them rather than guessing.
 """
 
@@ -23,6 +24,7 @@ from dataclasses import dataclass
 from arteria.interventions.catalog import CatalogEntry, InterventionType
 from arteria.interventions.lane_restriction import restrict_lane
 from arteria.interventions.one_way import convert_to_one_way
+from arteria.interventions.signal_retiming import retime_signal
 from arteria.interventions.turn_restriction import remove_connection
 
 _LANE_RESTRICTION_TYPES: frozenset[InterventionType] = frozenset(
@@ -36,7 +38,7 @@ _DEFAULT_ALLOW: dict[str, list[str]] = {
 }
 
 _UNSUPPORTED_TYPES: frozenset[InterventionType] = frozenset(
-    {"reversible_lane", "new_connector", "signal_retiming", "transit_signal_priority"}
+    {"reversible_lane", "new_connector", "transit_signal_priority"}
 )
 
 
@@ -70,7 +72,22 @@ class LaneRestrictionApplyResult:
     previous_disallow: dict[str, str | None]
 
 
-ApplyResult = OneWayApplyResult | TurnRestrictionApplyResult | LaneRestrictionApplyResult
+@dataclass(frozen=True)
+class SignalRetimingApplyResult:
+    """Outcome of applying a `signal_retiming` catalog entry."""
+
+    net_xml: str
+    previous_durations: list[float]
+    previous_cycle_length_s: float
+    new_cycle_length_s: float
+
+
+ApplyResult = (
+    OneWayApplyResult
+    | TurnRestrictionApplyResult
+    | LaneRestrictionApplyResult
+    | SignalRetimingApplyResult
+)
 
 
 def apply_intervention(net_xml: str, entry: CatalogEntry) -> ApplyResult:
@@ -131,6 +148,23 @@ def apply_intervention(net_xml: str, entry: CatalogEntry) -> ApplyResult:
             previous_disallow=previous_disallow,
         )
 
+    if entry.type == "signal_retiming":
+        tls_id = _require_single_junction(entry)
+        phase_durations = entry.parameters.get("phase_durations")
+        if not phase_durations:
+            raise ValueError(
+                f"entry {entry.id!r}: signal_retiming needs parameters.phase_durations"
+            )
+        signal_result = retime_signal(
+            net_xml, tls_id=tls_id, phase_durations=[float(d) for d in phase_durations]
+        )
+        return SignalRetimingApplyResult(
+            net_xml=signal_result.net_xml,
+            previous_durations=signal_result.previous_durations,
+            previous_cycle_length_s=signal_result.previous_cycle_length_s,
+            new_cycle_length_s=signal_result.new_cycle_length_s,
+        )
+
     if entry.type in _UNSUPPORTED_TYPES:
         raise UnsupportedInterventionTypeError(
             f"entry {entry.id!r}: no transform implemented yet for type {entry.type!r} "
@@ -148,6 +182,15 @@ def _require_single_edge(entry: CatalogEntry) -> str:
             f"got {len(entry.target_edges)}"
         )
     return entry.target_edges[0]
+
+
+def _require_single_junction(entry: CatalogEntry) -> str:
+    if len(entry.target_junctions) != 1:
+        raise ValueError(
+            f"entry {entry.id!r}: {entry.type!r} needs exactly one target_junctions entry, "
+            f"got {len(entry.target_junctions)}"
+        )
+    return entry.target_junctions[0]
 
 
 def _require_edges(entry: CatalogEntry) -> list[str]:
