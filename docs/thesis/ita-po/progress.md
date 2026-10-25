@@ -5,6 +5,14 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (12)
+
+Commit `2624762` ("fix: wire signal_retiming into the catalog-entry dispatcher") aplica, em código, a correção já antecipada na nota de reconciliação de merge da entrada 2026-10-25 (11): `apply_intervention()` (`arteria/interventions/apply.py`) agora despacha `signal_retiming` para `retime_signal()` (`arteria/interventions/signal_retiming.py`, `target_junctions[0]` como `tls_id`, `parameters.phase_durations`). Confirma, sem alterar, a contagem já usada por esta trilha desde a entrada (11): dos quatro tipos antes citados como sem transformação, só `reversible_lane`, `new_connector` e `transit_signal_priority` seguem assim — nenhuma mudança na leitura de risco já registrada para os Candidatos B/D (entradas (4)/(11)). 3 testes novos (`tests/test_apply_intervention.py`, fixture `toy-net-tls.net.xml`), 140 testes/`ruff`/`mypy` limpos, sem ADR nova. Nenhuma edição em `pre-projeto.md`.
+
+**Impacto na tese:** Capítulo 3/4 do `outline.md` recebem só uma frase confirmando que a correção antecipada em (11) já ocorreu em código — sem novo conteúdo de formulação ou de risco além do já registrado.
+
+**Perguntas abertas/riscos:** sem alteração; ver (11)/(4) para a lista consolidada (OD/contagens `deferred`; corredor final não confirmado; `new_connector`/`reversible_lane`/`transit_signal_priority` ainda sem transformação, fora da fronteira ADR 0009).
+
 ## 2026-10-25 (11)
 
 Commit `3f4cf1d` ("feat: catalog-entry dispatcher wiring transforms to the intervention catalog (roadmap R18/P5.2-P5.3)"), ramo `ccr-0ddc589e-4ijfgg`. Acrescenta `arteria/interventions/apply.py`, função `apply_intervention()`, que liga o esquema do catálogo (`arteria/interventions/catalog.py`, ADR 0006, já citado nesta trilha em 2026-10-25 (7)) às transformações de rede já existentes (`one_way.py`, `turn_restriction.py`, `lane_restriction.py`, também já citadas em 2026-10-25 (7)) — até este commit catálogo e biblioteca de transformações existiam separadamente, sem código que traduzisse uma `CatalogEntry` numa chamada real de transformação. A função despacha por `entry.type`:

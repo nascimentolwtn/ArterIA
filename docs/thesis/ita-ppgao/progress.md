@@ -5,6 +5,14 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão do commit 2624762 — correção da lacuna do dispatcher sinalizada na nota de reconciliação de merge, entrada abaixo)
+
+Commit `2624762` corrige exatamente a inconsistência que a "Nota de reconciliação de merge" da entrada anterior (abaixo) já havia identificado: `apply_intervention()` (`arteria/interventions/apply.py`) agora despacha `signal_retiming` para `retime_signal()` (`arteria/interventions/signal_retiming.py`, existente desde `e5c89bd`), usando `target_junctions[0]` como `tls_id` e `parameters.phase_durations`. Dos quatro tipos de catálogo antes citados como sem transformação, agora só `reversible_lane`, `new_connector` e `transit_signal_priority` permanecem assim — exatamente a contagem (3, não mais 4) já anunciada na nota de reconciliação. 3 testes novos reaproveitando `tests/fixtures/toy-net-tls.net.xml`; 140 testes passam, `ruff`/`mypy` limpos; nenhuma ADR nova, correção de engenharia dentro do roadmap P5 já decidido.
+
+**Relevância para a trilha AO-EL:** marginal e já antecipada — não altera a leitura de fundo registrada na entrada sobre `3f4cf1d` (abaixo), apenas atualiza a contagem de tipos de intervenção ainda sem caminho de execução de 4 para 3. **Faixas reversíveis** (`reversible_lane`) continua sendo a lacuna mais relevante para esta trilha, dado seu nome explícito na Seção 6 do pré-projeto e sua plausibilidade estratégica para o Candidato B (DCTA). Sem dado real do recorte ITA/DCTA-CTA, sem relação com a FAB.
+
+Nenhuma mudança de status. O risco principal — validação do enquadramento operacional/FAB por um orientador do PPGAO — permanece integralmente em aberto e não é tocado por este commit.
+
 ## 2026-10-25 (revisão do commit 3f4cf1d)
 
 Commit `3f4cf1d` ("feat: catalog-entry dispatcher wiring transforms to the intervention catalog (roadmap R18/P5.2-P5.3)") acrescenta `arteria/interventions/apply.py`, função `apply_intervention()`, que conecta o schema do catálogo de intervenções (`arteria/interventions/catalog.py`, rascunho de ADR 0006, ainda `Proposed`, roadmap P5.1) às transformações de rede já existentes e registradas individualmente nesta trilha (`one_way.py`, entrada de `a3be064`; `turn_restriction.py`, entrada de `563d679`; `lane_restriction.py`, entrada de `cac3738`, todas acima). Até este commit, catálogo e biblioteca de transformações existiam separadamente, sem código que traduzisse uma `CatalogEntry` numa chamada real de transformação — é a peça que faltava para fechar esse elo. A função despacha por `entry.type`:
