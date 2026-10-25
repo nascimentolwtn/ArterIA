@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Hand-written toy SUMO net.xml for the catalog-entry dispatcher tests
+(roadmap R18/P5.2-P5.3, arteria/interventions/apply.py). Shares edge and
+junction ids with tests/fixtures/toy-catalog.yaml (edgeA-edgeD,
+junctionY), so that file's three entries can be applied directly to this
+network without any renaming.
+
+A 4-edge directed cycle j0 -(edgeA)-> j1 -(edgeB)-> j2 -(edgeC)->
+junctionY -(edgeD)-> j0: removing any single edge still leaves every
+junction reachable via the other three (one-way conversion on edgeA
+orphans nothing). edgeA and edgeB each carry 2 lanes, for the bus-lane
+entry's lane_index 1. The only connection from edgeC to edgeD is the
+direct one the turn-restriction entry removes, with no bypass, so that
+entry leaves edgeD unreachable from edgeC.
+-->
+<net version="1.20" junctionCornerDetail="5">
+    <location netOffset="0,0" convBoundary="0,0,100,100" origBoundary="-1,-1,-1,-1" projParameter="!"/>
+
+    <edge id="edgeA" from="j0" to="j1" priority="1" numLanes="2" speed="13.89">
+        <lane id="edgeA_0" index="0" speed="13.89" length="100.00" shape="0,0 100,0"/>
+        <lane id="edgeA_1" index="1" speed="13.89" length="100.00" shape="0,0 100,0"/>
+    </edge>
+    <edge id="edgeB" from="j1" to="j2" priority="1" numLanes="2" speed="13.89">
+        <lane id="edgeB_0" index="0" speed="13.89" length="100.00" shape="100,0 100,100"/>
+        <lane id="edgeB_1" index="1" speed="13.89" length="100.00" shape="100,0 100,100"/>
+    </edge>
+    <edge id="edgeC" from="j2" to="junctionY" priority="1" numLanes="1" speed="13.89">
+        <lane id="edgeC_0" index="0" speed="13.89" length="100.00" shape="100,100 0,100"/>
+    </edge>
+    <edge id="edgeD" from="junctionY" to="j0" priority="1" numLanes="1" speed="13.89">
+        <lane id="edgeD_0" index="0" speed="13.89" length="100.00" shape="0,100 0,0"/>
+    </edge>
+
+    <junction id="j0" type="priority" x="0" y="0" incLanes="edgeD_0" intLanes=""/>
+    <junction id="j1" type="priority" x="100" y="0" incLanes="edgeA_0 edgeA_1" intLanes=""/>
+    <junction id="j2" type="priority" x="100" y="100" incLanes="edgeB_0 edgeB_1" intLanes=""/>
+    <junction id="junctionY" type="priority" x="0" y="100" incLanes="edgeC_0" intLanes=""/>
+
+    <connection from="edgeA" to="edgeB" fromLane="0" toLane="0"/>
+    <connection from="edgeB" to="edgeC" fromLane="0" toLane="0"/>
+    <connection from="edgeC" to="edgeD" fromLane="0" toLane="0"/>
+    <connection from="edgeD" to="edgeA" fromLane="0" toLane="0"/>
+</net>
