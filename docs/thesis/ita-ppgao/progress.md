@@ -5,6 +5,18 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão do commit e5c89bd)
+
+Commit `e5c89bd` ("feat: signal-retiming transform (roadmap R18/P5.2)") adiciona `arteria/interventions/signal_retiming.py`: uma transformação determinística de `.net.xml` que ajusta as durações de fase de um `<tlLogic>` nomeado, reportando o ciclo semafórico anterior e o novo. É o quinto mecanismo do catálogo compartilhado de intervenções do ArterIA, na mesma linha já registrada nesta trilha para `one_way.py`, `lane_restriction.py` e `turn_restriction.py` (entradas de `a3be064`/`cac3738`/`c76f0dc`/`39a4d80` e `563d679`, abaixo) — testado apenas contra uma fixture toy (`tests/fixtures/toy-net-tls.net.xml`, 7 testes passando), sem relação com o recorte de SJC nem com dado real de semáforo do entorno ITA/DCTA-CTA.
+
+**Relevância específica para a trilha AO-EL:**
+
+Retemporização semafórica toca, em princípio, dois pontos já previstos no pré-projeto: a Seção 6 cita "prioridade de acesso" e intervenções de controle de tráfego entre as classes do catálogo restrito, e o próprio commit nota, de forma explícita, que **prioridade semafórica de transporte (*transit-signal-priority*)** — o mecanismo mais diretamente relevante a continuidade operacional de deslocamento de viaturas/transporte coletivo sob um cenário de interdição — é deliberadamente diferida, dependendo de instrumentação de detectores e controle via TraCI ainda não implementados (P4.2/P6.1). O que existe hoje é, portanto, apenas o ajuste estático de durações de fase (retemporização de plano fixo), não a lógica dinâmica de retenção/extensão de fase para um veículo se aproximando que seria o uso operacionalmente mais interessante para esta trilha — mesma distinção já aplicada aos demais itens do catálogo (infraestrutura de mecanismo de intervenção, não modelagem de cenário de interdição ou de resiliência em si).
+
+Vale notar também, por paralelo exato já observado nesta trilha (entrada de `27b9fb9`, abaixo): a trilha `ita-po` registrou, em commit anterior (`27b9fb9`), a retemporização semafórica/*transit-signal-priority* como item de texto no catálogo de intervenções do seu próprio pré-projeto. Com `e5c89bd`, esse mecanismo passa a existir, pela primeira vez, como transformação de catálogo **em código compartilhado** do ArterIA (não apenas como texto de pré-projeto de outra trilha) — ainda que apenas a parte estática (retemporização de plano fixo), com a parte dinâmica (TSP) explicitamente diferida. Isso renova, de forma limitada, a relevância para o Objetivo específico 2 desta trilha (catálogo restrito de intervenções, Seção 6 do pré-projeto), nos mesmos termos já registrados para os demais mecanismos de catálogo: capacidade técnica de aplicar a intervenção a uma malha, não evidência de cenário de interdição, dado real do recorte ITA/DCTA-CTA, ou validação do enquadramento FAB.
+
+Registra-se nota equivalente no `outline.md` (Capítulo 4, seção de catálogo de intervenções). Nenhuma mudança de status. O risco principal — validação do enquadramento operacional/FAB por um orientador do PPGAO — permanece integralmente em aberto; este commit é pura engenharia de software de catálogo compartilhado do ArterIA, sem dado real do recorte ITA/DCTA-CTA nem da FAB.
+
 ## 2026-10-25 (revisão dos commits a659e1d, f3473fd e a426ac3)
 
 Três commits da branch `ccr-b47695cc-ik89jg`, posteriores ao lote de sete commits já registrado abaixo, habilitam pela primeira vez uma execução de mesa que constrói e renderiza uma malha viária real de SJC — mas ainda nenhum deles a executou de fato, e nenhum é dado ou decisão desta trilha.

@@ -5,6 +5,16 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (commit `e5c89bd`: transformação de retemporização semafórica — puramente instrumental, sem conexão conceitual identificada)
+
+Commit `e5c89bd` ("feat: signal-retiming transform (roadmap R18/P5.2)") foi avaliado nesta sessão, posterior ao lote já registrado na entrada seguinte (abaixo, três commits terminando em `a426ac3`). Adicionou `arteria/interventions/signal_retiming.py`: transformação determinística sobre um `net.xml` que define durações por fase de uma `<tlLogic>` nomeada, reportando o comprimento de ciclo anterior/novo — fecha a biblioteca de transformações de intervenção em nível de faixa/sinal, ao lado de `one_way.py`, `lane_restriction.py` e `turn_restriction.py`. Prioridade semafórica para transporte coletivo (reter/estender uma fase para um ônibus se aproximando) é explicitamente adiada, pendente de detectores/TraCI (P4.2/P6.1). Testado contra `tests/fixtures/toy-net-tls.net.xml` e `tests/test_signal_retiming.py` (7 testes), sem dado real de SJC.
+
+**Por que importa para esta trilha:** diferente de `one_way.py`/`turn_restriction.py`, este commit não segue o padrão "remover ligação + checar alcançabilidade residual por BFS" já notado como estruturalmente próximo a uma simulação de interdição — aqui a operação é redefinir durações de fase semafórica e recalcular o ciclo, sem tocar conectividade da malha. Segue, portanto, a mesma classificação já aplicada a `lane_restriction.py`/`detectors.py`/`replication.py`: robustez/catálogo de engenharia pura, roteirizada no roadmap (R18/P5.2) para fins de otimização de tráfego, sem conexão conceitual direta identificada com segurança/defesa ou com as métricas de resiliência da seção 10 do pré-projeto. Nenhum dado real de SJC; nenhum achado.
+
+**Impacto na tese:** nenhuma edição em `outline.md` — consistente com o tratamento já dado a commits de catálogo sem conexão conceitual (`lane_restriction.py`, `catalog.py`). O Capítulo 5 (Modelagem de Resiliência) e o Capítulo 2 (lacuna bibliográfica de segurança/RI) não foram tocados.
+
+**Decisão pendente:** nenhuma nova. As pendências críticas seguem inalteradas: (a) validação do enquadramento de segurança/defesa por um orientador do PPGCA, ainda não contatado; (b) nivelamento metodológico em estudos estratégicos; (c) decisão sobre caso único vs. multi-caso, dependente de (a) e (b).
+
 ## 2026-10-25 (três commits — `a659e1d`, `f3473fd`, `a426ac3`: pipeline OSM-fetch → netconvert build/validate + runbook de mesa; primeira vez que o repositório tem código pronto para construir e validar uma rede real de SJC, pendente de execução real na sessão de mesa desta tarde)
 
 Três commits na branch `ccr-b47695cc-ik89jg` do ArterIA foram avaliados nesta sessão, posteriores ao lote já registrado na entrada seguinte (abaixo, sete commits terminando em `a3be064`/`39a4d80`).
