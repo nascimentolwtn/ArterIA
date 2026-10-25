@@ -5,6 +5,17 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (2)
+
+Commit `31a4af6` ("fix: deterministic connectivity check, city-name validation, repo-root detection") é um commit de correção de bug + documentação, não de nova funcionalidade. Duas de suas quatro partes têm relevância marginal para esta trilha:
+
+- `arteria/network/validate.py`: a checagem de conectividade por BFS passou a escolher a junção de partida de forma determinística (`min(junction_ids)`) em vez de `next(iter(set))`, que dependia da semente de hash aleatória do Python e podia reportar de forma não determinística, de execução para execução, quais junções são "inalcançáveis". Esse módulo já estava citado no `outline.md` (Capítulo 4) como infraestrutura disponível para a etapa de controle de qualidade da construção da rede $G$, precondição citada na Seção 9 do pré-projeto antes da calibração propriamente dita. A correção não muda nenhuma afirmação de escopo, formulação ou dado — apenas torna confiável um resultado que, antes da correção, poderia variar entre execuções da mesma checagem sobre a mesma rede. Sem edição no `outline.md`: a citação já existente a `validate.py` continua válida, agora sobre uma base de código mais correta.
+- Novo ADR `docs/adr/0009-remote-session-boundary.md`: formaliza por escrito a fronteira de sessão remota/desktop (o que uma sessão de nuvem do Claude pode ler/executar/commitar vs. trabalho SUMO/GUI restrito a desktop) que código e `docs/roadmap.md` já citavam como vigente desde 2026-10-24, mas que até este commit não existia como documento formal. A entrada de progresso anterior desta trilha (2026-10-25, item 1) já citava "(ADR 0009, fronteira de sessão remota)" ao justificar por que os testes de aderência de calibração usam apenas fixtures sintéticas — essa citação, feita antes de o documento formal existir, passa agora a apontar para um ADR real e rastreável, fechando a lacuna de documentação sem exigir nenhuma correção retroativa.
+
+As outras duas partes do commit (validação de slug minúsculo em nomes de cidade no `arteria city new`, em `arteria/scaffold.py`; e detecção de raiz do repositório por busca de `.git` em vez de `__file__` no mecanismo de segurança de dados restritos da ADR 0004, em `arteria/data_safety.py`) são robustez de engenharia pura — sem decisão de formulação, método ou dado que afete esta trilha. Nenhuma edição foi feita em `outline.md` nem em `pre-projeto.md` por conta dessas duas partes.
+
+**Próximos passos:** sem alteração em relação à entrada anterior (2026-10-25, item 1 / 2026-10-24 (6)).
+
 ## 2026-10-25
 
 Três commits no ramo `ccr-b47695cc-ik89jg` implementam funcionalidades já previstas no roadmap do ArterIA (R8/P4.5, R4/P2.5, R18/P5.2); nenhuma delas envolve uma ADR nova.

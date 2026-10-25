@@ -5,6 +5,16 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão do commit `31a4af6`)
+
+Commit `31a4af6` ("fix: deterministic connectivity check, city-name validation, repo-root detection") revisado — é um commit de correção de bug + documentação, não de nova capacidade; entrada breve.
+
+- **`arteria/network/validate.py`**: a checagem de conectividade por BFS passou a escolher a junção inicial de forma determinística (`min(junction_ids)`) em vez de `next(iter(set))`, que dependia da seed de hash aleatória do Python e podia reportar de forma não determinística, de execução para execução, quais junções são "inalcançáveis". Relevante para esta trilha porque este módulo já é o "portão de qualidade de dados" rastreado no Capítulo 3 do `outline.md` (nota do commit `396caf7`, 2026-10-24) a montante de qualquer representação em grafo (GNN/RL) construída sobre a rede. A correção torna esse portão confiável em si mesmo (mesmo resultado a cada execução), mas não muda o fato de que ele ainda roda só contra fixtures toy escritas à mão, não contra a rede real de SJC — o TODO(evidência) já registrado permanece de pé.
+- **`arteria/scaffold.py`** (validação de slug em minúsculas no nome da cidade) e **`arteria/data_safety.py`** (detecção de raiz do repositório por `.git` em vez de `__file__`): robustez/segurança de scaffolding e reforço de um mecanismo de segurança de dados já existente (ADR 0004), respectivamente — sem relevância de pesquisa identificada para esta trilha; nenhuma mudança feita por esse motivo.
+- **Nova `docs/adr/0009-remote-session-boundary.md`**: formaliza por escrito a fronteira de sessão remota/desktop que esta trilha já vinha citando informalmente pelo número "ADR 0009" (ver entrada abaixo, revisão dos commits `cbb53da`/`396caf7`/`563d679`, linha sobre `goodness_of_fit.py`: "fronteira de sessão remota da ADR 0009"). A citação já usava o número correto por a decisão estar assentada desde 2026-10-24 (conforme `docs/roadmap.md`); com o arquivo da ADR agora existindo de fato, a citação passa de referência a uma decisão informalmente assentada para referência a um documento formal publicado. Nenhuma mudança de conteúdo necessária nesta trilha além desta confirmação — a fronteira em si (testes só com fixtures sintéticas/toy, sem SUMO real em sessão remota) já era a premissa usada em todas as entradas anteriores deste log.
+
+**Próximo passo associado:** nenhum passo novo; mantém-se a observação já registrada de revisitar `validate.py` quando ele rodar contra a rede real de SJC.
+
 ## 2026-10-25 (revisão dos commits `cbb53da`, `396caf7`, `563d679`)
 
 Três commits da branch `ccr-b47695cc-ik89jg` revisados em conjunto — todos itens já previstos no roteiro do ArterIA (R8/P4.5, R4/P2.5, R18/P5.2), sem nova ADR envolvida.

@@ -5,6 +5,16 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão do commit 31a4af6)
+
+Commit `31a4af6` ("fix: deterministic connectivity check, city-name validation, repo-root detection") é predominantemente correção de bug + documentação, não nova capacidade; relevância para esta trilha é modesta e pontual.
+
+- **`arteria/network/validate.py`** — a checagem de conectividade por BFS passou a escolher o nó de partida de forma determinística (`min(junction_ids)`), em vez de depender da ordem (não determinística entre execuções) de iteração de um `set` em Python. É correção de um bug de confiabilidade na mesma rotina de validação de malha já citada no Capítulo 4 do `outline.md` (commit `396caf7`, pré-condição antes de calibrar): antes da correção, a mesma malha toy poderia ocasionalmente reportar junções "inalcançáveis" diferentes entre duas execuções, o que teria comprometido qualquer plano de validação que dependesse de reprodutibilidade da checagem. Não altera o conteúdo do capítulo além de tornar essa pré-condição tecnicamente mais confiável; segue testada apenas contra fixtures toy, sem relação com a malha real do recorte ITA/DCTA-CTA.
+- **`arteria/scaffold.py`** (validação de slug minúsculo em nomes de cidade) e **`arteria/data_safety.py`** (detecção de raiz do repositório por busca de `.git` em vez de `__file__`) — robustez/segurança de infraestrutura de scaffolding e do mecanismo de segurança de dados restritos (ADR 0004), sem conteúdo de pesquisa, metodologia ou dado específico desta trilha. Sem relevância registrável aqui.
+- **`docs/adr/0009-remote-session-boundary.md`** (nova ADR) — formaliza por escrito o limite de sessão remota/desktop que código e `docs/roadmap.md` já citavam informalmente desde 2026-10-24. A entrada de progresso anterior (`2026-10-25`, revisão de `cbb53da`/`396caf7`/`563d679`, linha acima) já citava esse limite pelo número "ADR 0009" ao justificar por que os testes de `goodness_of_fit.py` eram apenas sintéticos — citação feita quando a ADR ainda não existia formalmente como documento. Com este commit, a lacuna de documentação está fechada: a citação já feita no `progress.md` e no `outline.md` (Capítulo 4) pode agora ser lida como referência ao documento formal `docs/adr/0009-remote-session-boundary.md`, sem necessidade de reescrevê-la — o número e o conteúdo citados permanecem corretos.
+
+Nenhuma mudança de status. O risco principal — validação do enquadramento operacional/FAB por um orientador do PPGAO — não é tocado por este commit, de natureza corretiva e documental na engenharia de software do ArterIA.
+
 ## 2026-10-25 (revisão dos commits cbb53da, 396caf7 e 563d679)
 
 Três commits da branch `ccr-b47695cc-ik89jg` implementam funcionalidades já previstas no roadmap do ArterIA (R8/P4.5, R4/P2.5, R18/P5.2); nenhum deles envolve uma ADR nova, logo nenhuma decisão arquitetural a registrar nesta trilha — apenas relevância prospectiva para capítulos do `outline.md`.
