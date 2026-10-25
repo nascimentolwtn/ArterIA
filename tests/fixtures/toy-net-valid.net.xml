@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Minimal hand-written toy network for arteria.network.validate tests.
+     Not a real netconvert output — just enough shape to exercise the checks. -->
+<net version="1.16">
+    <edge id="e1" from="j1" to="j2" oneway="true">
+        <lane id="e1_0" index="0" speed="13.89" length="100.0"/>
+    </edge>
+    <edge id="e2" from="j2" to="j3" oneway="true">
+        <lane id="e2_0" index="0" speed="11.11" length="80.0"/>
+    </edge>
+    <edge id="e3" from="j3" to="j1" oneway="true">
+        <lane id="e3_0" index="0" speed="11.11" length="90.0"/>
+    </edge>
+
+    <junction id="j1" type="priority"/>
+    <junction id="j2" type="traffic_light"/>
+    <junction id="j3" type="priority"/>
+
+    <connection from="e1" to="e2" fromLane="0" toLane="0"/>
+    <connection from="e2" to="e3" fromLane="0" toLane="0"/>
+    <connection from="e3" to="e1" fromLane="0" toLane="0"/>
+
+    <tlLogic id="j2" type="static" programID="0" offset="0">
+        <phase duration="30" state="G"/>
+        <phase duration="5" state="y"/>
+    </tlLogic>
+</net>

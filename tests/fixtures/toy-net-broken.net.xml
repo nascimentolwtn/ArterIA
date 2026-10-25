@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Toy network with deliberate issues for arteria.network.validate tests:
+     - edge e2 is a dead end (no outgoing edge from j3)
+     - junction j4 is unreachable (no edge touches it)
+     - connection on e2 references a lane index out of range (toLane=1 but e2 has 1 lane)
+     - connection references an unknown edge "e99"
+     - edge e3 has no speed on its lane
+     - edge e1 has no explicit 'oneway' attribute
+     - junction j2 is type="traffic_light" but has no matching <tlLogic> -->
+<net version="1.16">
+    <edge id="e1" from="j1" to="j2">
+        <lane id="e1_0" index="0" speed="13.89" length="100.0"/>
+    </edge>
+    <edge id="e2" from="j2" to="j3" oneway="true">
+        <lane id="e2_0" index="0" speed="11.11" length="80.0"/>
+    </edge>
+    <edge id="e3" from="j1" to="j3" oneway="true">
+        <lane id="e3_0" index="0" length="60.0"/>
+    </edge>
+
+    <junction id="j1" type="priority"/>
+    <junction id="j2" type="traffic_light"/>
+    <junction id="j3" type="priority"/>
+    <junction id="j4" type="priority"/>
+
+    <connection from="e1" to="e2" fromLane="0" toLane="0"/>
+    <connection from="e2" to="e3" fromLane="0" toLane="1"/>
+    <connection from="e99" to="e1" fromLane="0" toLane="0"/>
+</net>
