@@ -5,6 +5,24 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão do commit `0cbb61e`)
+
+Commit `0cbb61e` ("docs: accept ADR 0003, qualitative peak-hour basis for corridors A/D") moveu `docs/adr/0003-city-config-and-data-schema.md` de `Status: Proposed` para `Status: Accepted`, com uma seção nova "Owner acceptance (2026-10-25)". A ADR define o esquema validado (pydantic) de `cities/<city>/city.yaml`/`data-manifest.yaml`; a aceitação acrescenta a base de evidência que o responsável do ArterIA considera suficiente para tratar campos desse esquema como utilizáveis antes de dados de calibração reais existirem.
+
+- O responsável decide não esperar por contagens de tráfego/Pesquisa OD (ambas `deferred` em `cities/sjc/data-manifest.yaml`) antes de preencher `time_windows` em `cities/sjc/city.yaml`, aceitando como base experiência direta local qualitativa: os Candidatos A (Anel Viário, absorve transbordamento de incidente na Dutra/BR-116) e D (rotatória do Jardim Colinas/Ponte Estaiada) carregam, segundo essa experiência, tráfego pesado de horário de pico — consistente com `cities/sjc/candidate-corridors.md`, já citado nesta trilha (entrada de `71638f1`/`bf725e9`).
+- **Explicitamente não estendido aos Candidatos B e C**, cujo problema (já registrado nesta trilha como instância real de alcançabilidade/restrição de giro) é comprimento de desvio forçado/labirinto de mão única, não congestionamento.
+- A própria ADR mantém `time_windows.am-peak` (07:00–09:00) como "best guess" qualitativo, não grau-de-calibração, pendente de calibração P4 real.
+
+**Relevância para esta trilha (RL multiagente + GNN):**
+
+1. **Primeira ADR de esquema de dados a mudar de status nesta trilha, e a mudança vem com uma distinção fina para a Arquitetura do Sistema (Capítulo 3).** `cities/<city>/city.yaml` passa a ter status formal de esquema aceito — relevante porque esse arquivo é precisamente onde atributos de borda/nó dependentes de tempo (janela de pico) entrariam na representação em grafo heterogêneo e dinâmico do Objetivo específico 1. Mas a própria ADR rotula `time_windows.am-peak` como qualitativo, não calibrado — se esse campo vier a alimentar, no futuro, a definição de um cenário de treinamento de RL (ex. demanda de pico sintética amostrada dentro dessa janela), a dissertação precisaria declarar explicitamente que a janela em si é um "best guess" por experiência direta do responsável, não um valor medido — o mesmo tipo de ressalva de honestidade já aplicado a `randomTrips.py` (tráfego não calibrado, entrada de `a659e1d`/`f3473fd`/`a426ac3`, acima) e à aproximação normal de `replication.py` (entrada de `a3be064`/.../`39a4d80`, acima).
+2. **A base qualitativa aceita cobre A e D, não B — o candidato que o roteiro de mesa (`sjc-quickstart.md`) já escolheu como primeiro a ser efetivamente construído.** Isso não é uma correção retroativa de nenhuma nota já registrada (nenhuma delas dependia de uma janela de pico qualitativa para B), mas é um ponto a observar: se o Capítulo 4 (Experimentos) vier a usar o Candidato B como ambiente de treinamento, não há hoje nenhuma base — qualitativa ou quantitativa — declarada para a janela de horário de pico ali, diferentemente do que passaria a existir para D (2º na ordem de prioridade do ArterIA) caso este venha a ser o recorte.
+3. **Nenhuma dependência de dados já registrada é resolvida**: OD/contagens seguem `deferred`; nenhum corredor foi selecionado para fins desta dissertação; nenhuma execução real de RL/GNN ocorreu.
+
+**Impacto na tese:** nota de rastreio adicionada ao Capítulo 3 do `outline.md` registrando a aceitação formal da ADR 0003 e a distinção "esquema aceito ≠ campo calibrado" para `time_windows.am-peak`, com o ponto de vigilância sobre a ausência de base qualitativa equivalente para o Candidato B. Nenhuma prosa de capítulo foi reescrita.
+
+**Próximo passo associado:** observar, em revisões futuras, se `time_windows.am-peak` chega a ser citado como insumo de algum cenário de treinamento de RL — e, se for, verificar que a ressalva de "best guess qualitativo, não calibrado" acompanha a citação, na mesma linha já aplicada a `randomTrips.py` e a `replication.py`.
+
 ## 2026-10-25 (revisão dos commits `a659e1d`, `f3473fd`, `a426ac3`)
 
 Três commits da branch `ccr-b47695cc-ik89jg` revisados em conjunto — primeira vez que o repositório tem código pronto para, na prática, buscar um extrato OSM real, construí-lo em rede SUMO e abri-lo em `sumo-gui`/`netedit`, pendente apenas da execução de fato na sessão de desktop do responsável do projeto (fora do alcance desta sessão remota, ADR 0009).

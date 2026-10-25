@@ -5,6 +5,22 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão do commit 0cbb61e)
+
+Commit `0cbb61e` ("docs: accept ADR 0003, qualitative peak-hour basis for corridors A/D") moveu `docs/adr/0003-city-config-and-data-schema.md` de `Status: Proposed` para `Status: Accepted`, com nova seção "Owner acceptance (2026-10-25)". A ADR define o esquema validado (pydantic) de `cities/<city>/city.yaml`/`data-manifest.yaml`; a aceitação registra a base de evidência que o responsável do projeto considera suficiente para preencher campos desse esquema sem esperar por dados de calibração reais.
+
+- O responsável decide não esperar por contagens de tráfego/Pesquisa OD (ambas `deferred` em `cities/sjc/data-manifest.yaml`) antes de tratar `time_windows` de `cities/sjc/city.yaml` como utilizável, aceitando experiência direta local qualitativa: os Candidatos A (Anel Viário, absorve transbordamento quando a Dutra/BR-116 tem incidente) e D (rotatória do Jardim Colinas/Ponte Estaiada) carregam tráfego pesado de horário de pico — consistente com a leitura qualitativa já registrada em `cities/sjc/candidate-corridors.md` (entradas de `71638f1`/`bf725e9`, abaixo).
+- **Explicitamente não estendido aos Candidatos B e C**, cujo problema é comprimento de desvio forçado/labirinto de mão única, não congestionamento.
+- `time_windows.am-peak` (07:00–09:00) permanece, pela própria ADR, um "best guess" qualitativo, não grau-de-calibração, pendente de calibração P4 real.
+
+**Relevância específica para a trilha AO-EL:**
+
+1. **Primeira mudança de status (Proposed → Accepted) de uma ADR de esquema de dados registrada nesta trilha.** O esquema de `city.yaml` passa a ter status formal de aceito — relevante ao Capítulo 4 (Metodologia), que já lista como pendência o "desenho experimental formal e plano de validação do modelo de simulação": a janela temporal de um cenário de interdição/avaliação operacional depende, em última instância, desse campo. Mas a própria ADR é explícita de que aceitar o esquema não torna o valor de `time_windows.am-peak` grau-de-calibração — distinção a preservar se o Capítulo 4/5 vier a citar essa janela, na mesma linha de honestidade já aplicada ao GoF de calibração (`cbb53da`) e à aproximação normal de `replication.py` (entrada de `a3be064`/.../`39a4d80`, acima): ambos infraestrutura sem dado real de calibração do recorte ITA/DCTA-CTA para rodar.
+2. **A base qualitativa aceita cobre os Candidatos A e D — não B, que é o recorte mais próximo do enquadramento operacional/FAB desta trilha (acesso Av. Andrômeda ↔ DCTA, prioridade #1 de construção do ArterIA).** Isso é um ponto concreto a vigiar, não uma correção: nenhuma nota já registrada nesta trilha dependia de uma janela de pico qualitativa para B, mas se o recorte final desta dissertação vier a recair sobre B (ainda sujeito à validação do enquadramento FAB por um orientador do PPGAO, que não existe), não há hoje nenhuma base declarada — qualitativa ou quantitativa — sobre horário de pico ali, diferentemente do Candidato D (2º na ordem de prioridade do ArterIA), que passaria a ter ao menos essa base qualitativa, se viesse a ser o recorte.
+3. **Nenhuma dependência de dados operacionais da FAB é tocada ou resolvida.** A aceitação da ADR trata de esquema de configuração/dado civil de tráfego geral — não de dado operacional (fluxo de pessoal/cargas/viaturas) específico ao recorte ITA/DCTA-CTA, que segue sem nenhum levantamento, como já registrado.
+
+Nenhuma mudança de status. O risco principal — validação do enquadramento operacional/FAB por um orientador do PPGAO — permanece integralmente em aberto e não é tocado por este commit, de natureza de esquema/governança de dado civil.
+
 ## 2026-10-25 (revisão dos commits a659e1d, f3473fd e a426ac3)
 
 Três commits da branch `ccr-b47695cc-ik89jg`, posteriores ao lote de sete commits já registrado abaixo, habilitam pela primeira vez uma execução de mesa que constrói e renderiza uma malha viária real de SJC — mas ainda nenhum deles a executou de fato, e nenhum é dado ou decisão desta trilha.
