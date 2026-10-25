@@ -5,6 +5,27 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (revisão do commit 71638f1)
+
+Commit `71638f1` ("docs: log 3 owner-proposed SJC candidate corridors (P1.3/P1.5)") adicionou `cities/sjc/candidate-corridors.md`: três recortes-candidatos de Fase 1 do ArterIA propostos pelo responsável do projeto a partir de experiência direta de dirigir nessas áreas (não de contagens ou dados de Pesquisa OD, que seguem `deferred`), mais um quarto candidato ainda não confirmado. **Nenhum dos quatro foi selecionado** — o próprio arquivo é explícito: é levantamento preliminar de enunciado de problema (P1.5), não a matriz de pontuação real (P1.3), que ainda depende de dado hoje indisponível.
+
+- **Candidato A — Anel Viário e vias de acesso** (Dutra até o "fundo do vale"): tratado no arquivo como o desvio de facto da cidade quando a Dutra tem incidente sem alternativa real — um caso de redundância/resiliência em nível de contorno urbano.
+- **Candidato B — Av. Andrômeda ↔ DCTA / Jardim Satélite**: não há ligação direta; o trajeto para oeste exige a Dutra ou um loop longo por viadutos via São Bento/Vila Letônia, e o retorno é assimétrico (Dutra até o Anel Viário, retorno, Av. Letônia Melin). O próprio arquivo identifica a DCTA como "aerospace/defense installation" e observa explicitamente, em nota própria, que se a trilha `unifa-ppgca` quiser um caso de acesso/resiliência ligado a uma instalação real, este corredor "é um encaixe natural" — mas qualifica isso como "a thesis-scope call for the owner/an advisor, not decided here".
+- **Candidato C — malha de mão única de Centro/São Dimas/Vila Adyana**: ruas de mão única consecutivas forçam 2-3 quadras extras antes de permitir conversão ou reentrada na via pretendida — problema de mobilidade urbana geral, sem relação com acesso à FAB.
+- **Candidato D (não confirmado)**: possível rotatória elevada subutilizada (hipótese não confirmada: rotatória do Jardim Colinas / "Ponte Estaiada") — também mobilidade geral, sem relação com a FAB.
+
+**Relevância específica para a trilha AO-EL — leitura própria, não a herdada da revisão prévia do orquestrador:**
+
+O Candidato B é, de fato, a instância concreta mais direta até agora, entre os commits revisados nesta trilha, da distinção já traçada no Capítulo 1 do `outline.md` entre "mobilidade urbana de SJC" e "logística de acesso a instalações da FAB": é um caso real e nomeado (não hipotético) de ausência de rota direta redundante a uma instalação do Comando da Aeronáutica, e corresponde quase literalmente à alternativa de "corredor de acesso crítico único" já prevista na Seção 5 do `pre-projeto.md` ("por exemplo, a via de ligação entre a instalação e a rodovia regional... usada para deslocamento de pessoal e cargas"). O Candidato A, como o próprio arquivo propõe, é melhor lido como contexto de buffer/desvio para B (a rota que absorve o tráfego quando a via direta falha) do que como recorte autônomo — o que reforça, e não substitui, o mesmo ponto de resiliência/ponto único de falha já listado na Seção 10 do pré-projeto.
+
+Dito isso, três ressalvas importantes, para não sobre-interpretar este commit:
+
+1. **Nada foi decidido.** O arquivo é explícito: nenhum dos quatro candidatos é o recorte escolhido para o produto ArterIA, e a decisão de recorte do ArterIA (um problema de engenharia de produto, por cidade) não é o mesmo que a decisão de recorte desta dissertação (Seção 5 do pré-projeto) — são decisões relacionadas, mas distintas, tomadas por atores potencialmente diferentes (responsável do projeto vs. futuro orientador do PPGAO).
+2. **A inclusão da DCTA como estudo de caso é explicitamente qualificada no próprio arquivo como uma "thesis-scope call for the owner/an advisor, not decided here"** — vale repetir aqui com a mesma ênfase: não é uma validação do enquadramento operacional/FAB, nem uma indicação de orientador. Nenhum orientador do PPGAO foi contatado até o momento.
+3. As "perguntas de pesquisa" citadas no arquivo (RQ1, RQ4, RQ5) são RQs de nível de produto do ArterIA (presumivelmente do `docs/research-brief-sjc.md`, não lido nesta revisão), de mobilidade urbana geral — não devem ser confundidas com os objetivos específicos 1-7 da Seção 8 do pré-projeto desta trilha, que são mais estreitos (acesso logístico-operacional, cenários de interdição, continuidade operacional).
+
+Registram-se notas correspondentes nos Capítulos 1, 2 e 3 do `outline.md`. Nenhuma mudança de status. O risco principal — validação do enquadramento operacional/FAB por um orientador do PPGAO — permanece integralmente em aberto; este commit fornece, no máximo, um exemplo empírico concreto e nomeado a levar a essa conversa futura, não uma resposta a ela.
+
 ## 2026-10-25 (revisão do commit 31a4af6)
 
 Commit `31a4af6` ("fix: deterministic connectivity check, city-name validation, repo-root detection") é predominantemente correção de bug + documentação, não nova capacidade; relevância para esta trilha é modesta e pontual.

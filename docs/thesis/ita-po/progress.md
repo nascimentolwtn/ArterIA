@@ -5,6 +5,32 @@ Profundidade: leve
 
 ---
 
+## 2026-10-25 (3)
+
+Commit `71638f1` ("docs: log 3 owner-proposed SJC candidate corridors (P1.3/P1.5)") acrescentou `cities/sjc/candidate-corridors.md`: três candidatos de área de estudo para a Fase 1 do ArterIA (roadmap P1.3/P1.4/P1.5), propostos pelo responsável pelo ArterIA a partir de experiência direta dirigindo em São José dos Campos — nenhum ainda selecionado.
+
+1. **Candidato A — Anel Viário e vias de acesso** (Dutra/BR-116 até o "fundo do vale"): desvio de fato quando a Dutra tem incidente sem alternativa real. O próprio documento o enquadra como contexto de via arterial larga/zona de amortecimento (*buffer*), não como alvo de realocação de faixas em si — provavelmente melhor servindo de contexto para o Candidato B do que como piloto autônomo.
+2. **Candidato B — Av. Andrômeda ↔ DCTA / Jardim Satélite**: sem ligação direta; força desvio longo via Dutra ou viadutos pequenos por São Bento/Vila Letônia, com laço de retorno assimétrico via Anel Viário + Av. Letônia Melin.
+3. **Candidato C — labirinto de mão única de Centro/São Dimas/Vila Adyana**: sequências de ruas de mão única forçam 2-3 quadras extras antes de o motorista poder virar ou reentrar na avenida pretendida. Julgado, no próprio documento, o mais tratável nos critérios de viabilidade de realocação de faixas (ruas estreitas, sem desapropriação).
+4. **Candidato D, não confirmado**: um viaduto/ponte estaiada elevado sobre uma rotatória+semáforo em nível, pouco usado no horário de pico — hipótese não confirmada: rotatória do Jardim Colinas / "Ponte Estaiada". Pendente de confirmação do responsável; se confirmado, é uma questão de temporização de semáforo/operação, não de topologia de rede.
+
+Nenhum dado de contagem ou OD sustenta ainda a tabela qualitativa de primeira leitura incluída no documento — ela é citada explicitamente como "não é a matriz de pontuação do P1.3" (que continua bloqueada pela Pesquisa OD/contagens `deferred`, ver entrada 2026-10-24 (3) desta trilha).
+
+**Por que isso importa para a trilha PG/PO:** este é, pela primeira vez, um conjunto concreto de geografias candidatas para o item ainda aberto no Capítulo 1 do `outline.md` — "confirmar o corredor exato de SJC a usar como estudo de caso" — hoje bloqueado pela ausência de dados de OD/contagens por zona (entrada 2026-10-24 (3)). O commit não resolve esse bloqueio (nenhum dado observado foi obtido), mas dá substância ao que antes era apenas "candidato preferencial: trecho do eixo Linha Verde" (entrada 2026-10-24, próximo passo nº 2) — que, note-se, não é nenhum dos quatro candidatos agora propostos; a referência à Linha Verde no próximo passo original pode estar desatualizada e deve ser revista à luz deste documento.
+
+Duas observações específicas de alinhamento com a formulação da Seção 6 do pré-projeto:
+
+- O **Candidato C** mapeia de forma direta sobre as variáveis de decisão do nível superior já descritas na formulação (conversões de mão única, realocação de faixas) — é o candidato cuja descrição qualitativa mais se aproxima de um catálogo $\mathcal{I}$ já operacionalizável, sem exigir classes de intervenção ainda não formuladas (ex. novos conectores) ou desapropriação.
+- O enquadramento do **Candidato A** como contexto de "zona de amortecimento" em vez de alvo direto de intervenção é consistente com a cautela já registrada no pré-projeto (Seção 6/objetivos $f_1$–$f_7$) de que o recorte do estudo não deve ser confundido com toda a malha arterial da cidade — reforça, sem alterar, a distinção já existente entre corredor de estudo e contexto de rede mais ampla usado para capturar efeito de transbordamento (*spillover*).
+
+O Candidato B levanta uma observação fora do escopo desta trilha: o próprio documento nota que a área poderia interessar à trilha `unifa-ppgca` (DCTA é instalação aeroespacial/de defesa) — citado aqui apenas para registro; nenhuma ação foi tomada, já que decisões de escopo de outra trilha não cabem a este agente.
+
+**Decisão explicitamente NÃO tomada nesta entrada:** qual dos quatro candidatos (se algum) será o recorte final. Isso permanece prerrogativa do responsável pelo ArterIA (ver `cities/sjc/candidate-corridors.md`, que cita `.claude/napkin.md`: "o responsável decide"), possivelmente revisitada com um(a) orientador(a) quando houver.
+
+`outline.md` recebeu uma nota breve no Capítulo 1 citando `cities/sjc/candidate-corridors.md` como insumo disponível para a confirmação do recorte, substituindo a referência desatualizada ao "eixo Linha Verde" como único candidato citado; nenhuma edição foi feita em `pre-projeto.md` (Seção 5 continua a referência de escopo vigente — corredor único ou subárea compacta — e nenhum dos quatro candidatos exige revisão dessa seção).
+
+**Próximos passos:** sem alteração na numeração; o item 2 ("confirmar o corredor exato de SJC") agora aponta para `cities/sjc/candidate-corridors.md` em vez da referência genérica à Linha Verde, mas continua bloqueado pela mesma dependência de dados (OD/contagens `deferred`) registrada desde 2026-10-24 (3).
+
 ## 2026-10-25 (2)
 
 Commit `31a4af6` ("fix: deterministic connectivity check, city-name validation, repo-root detection") é um commit de correção de bug + documentação, não de nova funcionalidade. Duas de suas quatro partes têm relevância marginal para esta trilha:
