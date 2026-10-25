@@ -19,6 +19,10 @@ city_app = typer.Typer(help="City scaffolding (ADR 0002).")
 app.add_typer(city_app, name="city")
 studyarea_app = typer.Typer(help="Study-area polygon drafting (roadmap P1.4).")
 app.add_typer(studyarea_app, name="studyarea")
+osm_app = typer.Typer(help="OSM source download and extraction (roadmap P2.1).")
+app.add_typer(osm_app, name="osm")
+network_app = typer.Typer(help="netconvert build and validation (roadmap P2.2/P2.3/P2.5).")
+app.add_typer(network_app, name="network")
 
 
 @app.callback()
@@ -126,6 +130,137 @@ def studyarea_build(
     out_path = city_dir / "study-areas.geojson"
     out_path.write_text(json.dumps(geojson, indent=2, ensure_ascii=False))
     typer.echo(f"Wrote {out_path} ({len(geojson['features'])} candidate polygon(s)).")
+
+
+@osm_app.command("fetch")
+def osm_fetch(
+    city: str = typer.Option(..., "--city"),
+    candidate: str = typer.Option(..., "--candidate"),
+    pbf_path: Path | None = typer.Option(
+        None,
+        "--pbf-path",
+        help="Use this local .osm.pbf instead of downloading one.",
+    ),
+    source_url: str | None = typer.Option(
+        None,
+        "--source-url",
+        help="Regional OSM extract to download if --pbf-path isn't given. "
+        "Defaults to the Geofabrik 'sudeste' extract (default_geofabrik_url()).",
+    ),
+) -> None:
+    """Fetch (or reuse) a regional OSM PBF and clip it to a study-area
+    candidate's polygon, per `cities/<city>/study-areas.geojson`.
+
+    Needs real network access and a real `osmium` binary — blocked in
+    remote Claude sessions (ADR 0009). Run this at the desk.
+    """
+    from arteria.network.osm_fetch import (
+        OsmExtractError,
+        OsmFetchError,
+        default_geofabrik_url,
+        download_source_pbf,
+        extract_candidate_polygon,
+        extract_osm,
+    )
+
+    city_dir = Path.cwd() / "cities" / city
+    raw_dir = city_dir / "network" / "raw"
+
+    try:
+        if pbf_path is not None:
+            source_pbf = pbf_path
+        else:
+            url = source_url or default_geofabrik_url()
+            source_pbf = raw_dir / url.rsplit("/", 1)[-1]
+            if source_pbf.exists():
+                typer.echo(f"Reusing cached {source_pbf}")
+            else:
+                download_source_pbf(url, source_pbf)
+                typer.echo(f"Downloaded {url} -> {source_pbf}")
+
+        polygon = extract_candidate_polygon(city_dir / "study-areas.geojson", candidate)
+        output_path = raw_dir / f"{city}-{candidate}.osm.pbf"
+        extract_result = extract_osm(
+            pbf_path=source_pbf, polygon_geojson=polygon, output_path=output_path
+        )
+    except (OsmFetchError, OsmExtractError, FileNotFoundError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"Wrote {extract_result.output_path} (sha256={extract_result.sha256})")
+
+
+@network_app.command("build")
+def network_build(
+    city: str = typer.Option(..., "--city"),
+    osm_pbf: Path = typer.Option(..., "--osm-pbf"),
+    type_files: str | None = typer.Option(
+        None,
+        "--type-files",
+        help="Comma-separated list of SUMO typemap files for netconvert --type-files.",
+    ),
+    extra: list[str] = typer.Option(
+        [],
+        "--extra",
+        help="Extra netconvert option, appended last; repeatable.",
+    ),
+) -> None:
+    """Run `netconvert` against `--osm-pbf`, writing `cities/<city>/network/<city>.net.xml`,
+    then validate the result.
+    """
+    from arteria.network.build import NetconvertError, build_network
+
+    city_dir = Path.cwd() / "cities" / city
+    output_path = city_dir / "network" / f"{city}.net.xml"
+    type_file_paths = [Path(p.strip()) for p in type_files.split(",")] if type_files else []
+
+    try:
+        result = build_network(
+            osm_pbf_path=osm_pbf,
+            output_path=output_path,
+            type_files=type_file_paths,
+            extra_options=extra,
+        )
+    except (NetconvertError, FileNotFoundError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"Wrote {result.net_xml_path}")
+    typer.echo(
+        f"Validation: {result.validation_errors} error(s), "
+        f"{result.validation_warnings} warning(s)"
+    )
+    if result.validation_errors > 0:
+        typer.echo("Run `arteria network validate` for the full report.")
+
+
+@network_app.command("validate")
+def network_validate(
+    city: str = typer.Option(..., "--city"),
+    net: Path | None = typer.Option(
+        None,
+        "--net",
+        help="Defaults to cities/<city>/network/<city>.net.xml.",
+    ),
+) -> None:
+    """Validate a built network with `arteria.network.validate.validate_network`
+    and print every finding."""
+    from arteria.network.validate import validate_network
+
+    city_dir = Path.cwd() / "cities" / city
+    net_path = net or city_dir / "network" / f"{city}.net.xml"
+
+    try:
+        report = validate_network(net_path)
+    except (FileNotFoundError, OSError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    for finding in report.findings:
+        typer.echo(f"[{finding.severity}] {finding.check}: {finding.message}")
+
+    if report.has_blocking_issues:
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":
