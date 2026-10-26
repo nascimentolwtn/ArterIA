@@ -302,7 +302,7 @@ Remote features are tasks the owner types into the Claude app and gets done end-
 
 *Detailed by the Local sub-planner; ADR numbers reconciled.*
 
-This section covers work on the developer's Windows 11 machine: tool installation, local compute, GUI tools (netedit, sumo-gui, Cities: Skylines) and private data. Each item is marked **Auto** (fully automatable), **Semi** (scripted with one human checkpoint) or **Manual** (documented procedure). IDs are `L<n>`.
+This section covers work on the developer's desk machine: tool installation, local compute, GUI tools (netedit, sumo-gui, Cities: Skylines) and private data. The desk OS is WSL2 (Ubuntu), used as the sole primary environment rather than split with native Windows (ADR 0014) — GUI tools run inside WSL2 via WSLg, and the repo/`ARTERIA_DATA` live on the native Linux filesystem, not under `/mnt/c/...`. Each item is marked **Auto** (fully automatable), **Semi** (scripted with one human checkpoint) or **Manual** (documented procedure). IDs are `L<n>`.
 
 ### Entry-point conventions
 

@@ -1,7 +1,7 @@
 # Local setup and daily commands
 
-Practical reference for working on ArterIA at the desk (Windows 11, per
-`docs/roadmap.md`'s "Local features"). This file collects the commands that
+Practical reference for working on ArterIA at the desk (WSL2/Ubuntu, per
+ADR 0014 and `docs/roadmap.md`'s "Local features"). This file collects the commands that
 already work today and the ones the roadmap defines but whose scripts don't
 exist yet (marked **(planned)** — see the roadmap `L<n>` ID in parentheses for
 the full spec). Remote Claude app sessions never run the SUMO/GUI steps here;
@@ -27,28 +27,29 @@ see `docs/roadmap.md` → "Remote features" for what they can do instead.
      download the SUMO MSI/zip from https://sumo.dlr.de/docs/Downloads.php and
      set `SUMO_HOME` to the install directory.
 
-3. **Long paths** (planned — L4, one-time, admin)
-   `scripts/win/enable-longpaths.ps1` doesn't exist yet. Manually:
-   ```powershell
-   git config --global core.longpaths true
-   # then enable LongPathsEnabled=1 in the registry (Local Group Policy or regedit), reboot
-   ```
+3. **Long paths** — not applicable under WSL2 (ADR 0014). Windows'
+   `MAX_PATH`/registry long-path setting only matters for a working tree on
+   the Windows filesystem; with the repo on WSL2's native `ext4` there's no
+   path-length limit to raise. (If you ever do clone onto `/mnt/c/...`
+   instead, per ADR 0014 don't — but if you must, the old recipe is
+   `git config --global core.longpaths true` plus `LongPathsEnabled=1` in
+   the registry.)
 
-4. **Defender exclusions** (planned — L5, optional, admin)
-   Exclude `ARTERIA_DATA` and the `sumo.exe`/`netconvert.exe` paths from
-   real-time scanning for speed. Script not written yet; do it by hand in
-   Windows Security settings if runs feel slow. Never exclude the repo or
-   Downloads folder.
+4. **Defender exclusions** — not applicable under WSL2 (ADR 0014). Windows
+   Defender's real-time scanner doesn't walk WSL2's `ext4` VHD the way it
+   does a native NTFS path, so there's nothing to exclude once `ARTERIA_DATA`
+   lives inside WSL2.
 
 5. **Environment variables**
-   ```powershell
-   setx ARTERIA_DATA   "E:\arteria-data"
-   setx ARTERIA_PRIVATE "V:\"     # only once the VeraCrypt volume exists (L24)
+   ```bash
+   # in ~/.bashrc (or ~/.profile)
+   export ARTERIA_DATA="$HOME/arteria-data"
+   export ARTERIA_PRIVATE="/mnt/veracrypt1"   # only once the VeraCrypt volume exists (L24)
    ```
-   Create `E:\arteria-data\` (see the directory layout in `docs/roadmap.md`
-   → "Recommended local directory layout"). `ARTERIA_PRIVATE` isn't needed
-   until restricted data (OD microdata, counts, signal plans) actually
-   arrives.
+   Create `~/arteria-data/` (see the directory layout in `docs/roadmap.md`
+   → "Recommended local directory layout", adapted to Linux paths).
+   `ARTERIA_PRIVATE` isn't needed until restricted data (OD microdata,
+   counts, signal plans) actually arrives.
 
 6. **Pre-commit hooks** (works today)
    ```bash

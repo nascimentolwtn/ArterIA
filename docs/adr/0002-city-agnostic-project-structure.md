@@ -6,7 +6,7 @@ path pulled forward from Phase 10 into P0 — see "Multi-city flexibility" below
 
 ## Context
 
-ArterIA must support São José dos Campos (SJC) as the first pilot without baking SJC-specific assumptions into shared code, so that a second city (Phase 10) can be onboarded later with config/plugin changes only, not a refactor (`docs/roadmap.md` P0.1, P10). The project also runs in two very different places: a Windows 11 desktop (SUMO GUI tools, long calibration/optimizer runs, private data) and sandboxed Linux cloud sessions (toy-fixture tests only, no GUI, no private data, discarded after each session — ADR 0009). Both need the same commands to behave identically.
+ArterIA must support São José dos Campos (SJC) as the first pilot without baking SJC-specific assumptions into shared code, so that a second city (Phase 10) can be onboarded later with config/plugin changes only, not a refactor (`docs/roadmap.md` P0.1, P10). The project also runs in two very different places: a WSL2 (Ubuntu) desktop (SUMO GUI tools, long calibration/optimizer runs, private data — ADR 0014) and sandboxed Linux cloud sessions (toy-fixture tests only, no GUI, no private data, discarded after each session — ADR 0009). Both need the same commands to behave identically.
 
 Two sub-decisions follow from this: how the repo is laid out, and what runs the recurring tasks (lint, tests, builds) across Windows, WSL2 and Linux without relying on tools that are awkward on Windows (`make`, `just`).
 
