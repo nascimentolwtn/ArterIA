@@ -3,7 +3,10 @@
 binary and stays desktop-only.
 """
 
+import pathlib
 import shutil
+import tempfile
+import xml.etree.ElementTree as ET
 
 import nox
 
@@ -25,8 +28,36 @@ def tests(session: nox.Session) -> None:
 
 @nox.session
 def smoke(session: nox.Session) -> None:
-    """Real toy-network SUMO run — desktop-only (roadmap P0.5)."""
-    if not shutil.which("sumo"):
-        session.skip("desktop-only: no `sumo` binary on PATH (expected in a remote session)")
-    session.install("-e", ".[dev]")
-    session.log("TODO: real toy-network smoke run lands with the Phase 2 network build.")
+    """Real toy-network SUMO run: netconvert + sumo, desktop-only (roadmap P0.5)."""
+    if not shutil.which("sumo") or not shutil.which("netconvert"):
+        session.skip("desktop-only: no `sumo`/`netconvert` on PATH (expected in a remote session)")
+    src = pathlib.Path("tests/fixtures/smoke").resolve()
+    with tempfile.TemporaryDirectory() as tmp:
+        work = pathlib.Path(tmp)
+        for f in src.iterdir():
+            shutil.copy(f, work)
+        with session.chdir(work):
+            session.run(
+                "netconvert",
+                "--node-files=toy.nod.xml",
+                "--edge-files=toy.edg.xml",
+                "--output-file=toy.net.xml",
+                "--no-warnings",
+                external=True,
+            )
+            session.run(
+                "sumo",
+                "-c",
+                "toy.sumocfg",
+                "--no-step-log",
+                "--tripinfo-output=tripinfo.xml",
+                "--error-log=sumo-errors.txt",
+                external=True,
+            )
+        trips = ET.parse(work / "tripinfo.xml").getroot().findall("tripinfo")
+        errors = (work / "sumo-errors.txt").read_text().strip()
+        if errors:
+            session.error(f"sumo reported errors:\n{errors}")
+        if len(trips) < 10:
+            session.error(f"expected >=10 completed trips, got {len(trips)}")
+        session.log(f"smoke OK: {len(trips)} vehicles completed the toy network")

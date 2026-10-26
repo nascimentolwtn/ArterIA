@@ -1,0 +1,4 @@
+<configuration>
+  <input><net-file value="toy.net.xml"/><route-files value="toy.rou.xml"/></input>
+  <time><begin value="0"/><end value="600"/></time>
+</configuration>

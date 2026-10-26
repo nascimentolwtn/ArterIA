@@ -48,11 +48,6 @@ None open.
    per-corridor networks; record the choice in an ADR if it is hard to reverse.
 3. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
-4. **[2026-10-24] Desk: run `nox -s smoke` for real**
-   Do instead: this session's `nox -s smoke` only confirmed it skips cleanly with no
-   `sumo` binary (correct for remote). At the desk, with SUMO installed, confirm it
-   actually passes against a real toy network — the roadmap's P0 exit criterion needs
-   both halves.
 5. **[2026-10-26] Reconcile Windows-native roadmap L-items with ADR 0014 (WSL2-primary desk)** (small)
    Do instead: L4 (long paths), L5 (Defender exclusions), L7 (power hygiene/Task
    Scheduler), and L18 (scheduled runs) were all written as

@@ -4,6 +4,10 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 
 ## [Unreleased]
 
+### Added
+
+- `nox -s smoke` now runs for real: it builds a small hand-written toy network (`tests/fixtures/smoke/`) with `netconvert`, simulates it with `sumo`, and fails on any SUMO error or fewer than 10 completed trips. Verified passing (50 vehicles) on the desk, which satisfies the second half of the roadmap's P0 exit criterion. It still skips cleanly where no SUMO binary is installed.
+
 ## [1.0] - 2026-10-26
 
 ### Added

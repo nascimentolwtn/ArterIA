@@ -24,7 +24,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 
 **Dependencies:** none.
 **Deliverables:** skeleton package, `cities/sjc/city.yaml` stub, `cities/_template/`, `nox -s lint tests` passing both at the desk and in a remote Claude session, `nox -s smoke` (real toy-network SUMO run) passing at the desk, ADRs 0002-0004.
-**Exit criteria:** `pytest` passes locally and in a remote Claude session (no real SUMO binary needed there); a toy SUMO run (`nox -s smoke`) passes at the desk; a contributor can create `cities/<new>/` from the template in under 30 minutes.
+**Exit criteria:** `pytest` passes locally and in a remote Claude session (no real SUMO binary needed there); a toy SUMO run (`nox -s smoke`) passes at the desk (verified 2026-10-26 on WSL2 with SUMO from the `eclipse-sumo` PyPI wheel: `netconvert` + `sumo` on `tests/fixtures/smoke/`, 50 vehicles completed); a contributor can create `cities/<new>/` from the template in under 30 minutes.
 **Risks:** over-engineering before real data is seen (mitigate: keep schemas minimal, version them); SUMO version drift between local Windows and Linux (WSL2) (mitigate: pin version, test both; remote sessions never run real SUMO, so they carry no drift risk).
 
 ### Phase 1 - Study-area selection (pilot SJC)
