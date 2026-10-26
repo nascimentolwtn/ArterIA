@@ -190,6 +190,43 @@ A quick visual check of the network and some (uncalibrated) traffic moving
 on it doesn't need any of those yet — see `docs/local/sjc-quickstart.md`,
 which uses SUMO's own bundled `randomTrips.py` instead.
 
+## Viewing the SJC simulation again
+
+Closing the `sumo-gui` window ends that run; nothing is lost, because the
+network and routes are plain files in `cities/sjc/network/` (gitignored,
+regenerable). From the repo root, with the venv active
+(`source .venv/bin/activate`) and `SUMO_HOME` set (new shell, or
+`source ~/.bashrc`; check with `echo $SUMO_HOME` — if empty, `randomTrips.py`
+fails with "can't open file '/tools/randomTrips.py'", and a one-off fix is
+`export SUMO_HOME="$(python -c 'import sumo; print(sumo.SUMO_HOME)')"`):
+
+```bash
+# replay the same traffic (same routes, same vehicles) — press Play, or add --start
+sumo-gui -n cities/sjc/network/sjc.net.xml -r cities/sjc/network/sjc-random.rou.xml --start
+
+# just look at the street network, no vehicles
+sumo-gui -n cities/sjc/network/sjc.net.xml
+
+# open it for editing instead (junction fixes go through netedit, never by hand)
+netedit cities/sjc/network/sjc.net.xml
+
+# fresh random traffic (different vehicles every run unless you pass --seed)
+python "$SUMO_HOME/tools/randomTrips.py" -n cities/sjc/network/sjc.net.xml \
+  -r cities/sjc/network/sjc-random.rou.xml -o cities/sjc/network/sjc-random.trips.xml \
+  -e 3600 -p 2 --validate --seed 42
+```
+
+In `sumo-gui`: Play/Step buttons and the **Delay (ms)** box at the top control
+speed (raise it to slow down); scroll zooms, drag pans; right-click a vehicle
+or edge for info. The run ends at the route file's end time (`-e 3600` = one
+simulated hour), after which the GUI sits idle — close it and relaunch to
+replay. Open it from a WSL2 terminal; the window appears on the Windows desktop
+via WSLg. If `sumo-gui` says it can't find the network or routes, one of them
+is missing: rebuild with `arteria network build --city sjc --osm-pbf
+cities/sjc/network/raw/sjc-b.osm.pbf` and rerun `randomTrips.py` as above
+(`arteria osm fetch --city sjc --candidate b` first if `raw/` is gone). This is
+uncalibrated random traffic — a routability check only.
+
 ## Weekly / per-session routine
 
 1. `arteria doctor`.
