@@ -7,6 +7,42 @@ exist yet (marked **(planned)** — see the roadmap `L<n>` ID in parentheses for
 the full spec). Remote Claude app sessions never run the SUMO/GUI steps here;
 see `docs/roadmap.md` → "Remote features" for what they can do instead.
 
+## Quick setup (WSL2)
+
+Copy-pasteable version of the "One-time setup" section below, for a fresh
+WSL2 Ubuntu machine. Clone inside WSL's own filesystem — never under
+`/mnt/c/...` (ADR 0014).
+
+```bash
+git clone https://github.com/nascimentolwtn/ArterIA.git ~/ArterIA && cd ~/ArterIA
+
+# Python env
+pip install -e ".[dev]"
+
+# SUMO: headless/TraCI via pip; sumo-gui/netedit via apt, running inside
+# WSL2 through WSLg (ADR 0014) — no Windows install, no \\wsl.localhost\...
+pip install eclipse-sumo libsumo traci
+sudo apt install -y sumo sumo-tools sumo-doc
+
+# if `arteria doctor` below can't find SUMO_HOME, set it explicitly:
+# echo 'export SUMO_HOME=/usr/share/sumo' >> ~/.bashrc
+
+# ARTERIA_DATA
+echo 'export ARTERIA_DATA="$HOME/arteria-data"' >> ~/.bashrc
+source ~/.bashrc
+mkdir -p "$ARTERIA_DATA"
+
+# pre-commit hooks
+pip install pre-commit
+pre-commit install
+
+# sanity check
+arteria doctor
+```
+
+`ARTERIA_PRIVATE` isn't part of this — it's only needed once restricted data
+(OD microdata, counts, signal plans) actually arrives; see step 5 below.
+
 ## One-time setup
 
 1. **Python environment** (works today)
@@ -18,14 +54,19 @@ see `docs/roadmap.md` → "Remote features" for what they can do instead.
    (L3) but not set up yet — plain `pip` works in the meantime.
 
 2. **SUMO install** (planned — L1)
-   No `scripts/win/setup-sumo.ps1` exists yet. Until it does, install SUMO
-   manually:
-   - Preferred: `pip install eclipse-sumo libsumo traci` (same version across
-     Windows, WSL2 and remote sessions — pin the version in `pyproject.toml`
-     once chosen, per ADR 0001).
-   - For `sumo-gui`/`netedit` (GUI tools, not available via the pip wheels):
-     download the SUMO MSI/zip from https://sumo.dlr.de/docs/Downloads.php and
-     set `SUMO_HOME` to the install directory.
+   No `scripts/linux/setup-sumo.sh` exists yet. Until it does, install SUMO
+   manually, inside WSL2 (never a native Windows install — ADR 0014):
+   - Headless/TraCI: `pip install eclipse-sumo libsumo traci` (same version
+     as remote sessions — pin it in `pyproject.toml` once chosen, per
+     ADR 0001).
+   - `sumo-gui`/`netedit` (GUI tools, not in the pip wheels):
+     `sudo apt install sumo sumo-tools sumo-doc`. Runs inside WSL2 via WSLg
+     with no extra config on current Windows builds. If you need a newer
+     version than Ubuntu's repos carry, build from source instead (see
+     https://sumo.dlr.de/docs/Downloads.php's Linux/source instructions) —
+     either way, if `arteria doctor` can't find `SUMO_HOME` afterward, set
+     it explicitly (typically `export SUMO_HOME=/usr/share/sumo` in
+     `~/.bashrc`).
 
 3. **Long paths** — not applicable under WSL2 (ADR 0014). Windows'
    `MAX_PATH`/registry long-path setting only matters for a working tree on
