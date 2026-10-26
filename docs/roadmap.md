@@ -158,6 +158,8 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 - P8.3 Cities: Skylines visual twin of the pilot area (map import from OSM/heightmap, recreate selected packages) for workshops; clearly labelled "illustrative".
 - P8.4 Workshop kit: slides, feedback forms, mapping of feedback to catalog changes.
 - P8.5 Comparison study (research question 7): qualitative/quantitative differences between C:S behaviour and calibrated SUMO results.
+- P8.6 3D/2.5D web traffic viewer: replay of SUMO `--fcd-output.geo` over open-data buildings and terrain (optional Google 3D basemap), with zoom/orbit, pause, replay, scrubbing and loop; whole city; labelled "illustrative" **[ADR 0015]**.
+- P8.7 Before/after split view and per-edge delay-delta layer in the viewer.
 
 **Dependencies:** P6 (results); P7 for final packages.
 **Deliverables:** results site, videos, C:S save files and screenshots, workshop materials.
@@ -214,6 +216,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 | 0008 | Optimization architecture | P7.1 |
 | 0009 | Remote-session boundary: what a Claude app cloud session may read, run, commit and push vs. desktop-only work; toy-fixture outputs are never evidence; SUMO calls sit behind an adapter so the rest of `arteria/` tests without real data, no `sumo`/`netconvert` binary required remotely. Replaces the earlier "CI/CD, runner topology, self-hosted runner security" scope (no Actions runners, no hosted CI are planned) and absorbs the AI-agent scope/permissions question that was going to be its own ADR (same boundary, now that remote work is Claude sessions, so no separate number was needed). Kept as an ADR, not just a rule, because the adapter/fixture split shapes the package architecture | P0.1, P0.5, cross-cutting |
 | 0010 | Non-public data handling: storage, retention, publishable derived data | P0.6, P1.2, P4.1 |
+| 0015 | Visualization layer: `sumo-gui` 2D MVP, open-data web viewer (deck.gl), optional Google 3D, C:S as hobby track — proposed 2026-10-26, see `docs/visualization-plan.md` | P8.6, P8.7 |
 | 0011 | Cities: Skylines edition, mod set, and "illustrative" labelling | P8.3 |
 | 0012 | Repository visibility and licensing (public repo; Apache 2.0 code, CC BY 4.0 docs) — written and accepted 2026-10-25, resolving open questions 5 and 7 | P0.8 |
 | 0013 | No real OD microdata; synthetic, count-calibrated demand only — written and accepted 2026-10-25, partially resolving open question 1 (OD microdata specifically) | P1.1, P3.1-P3.3, P4.3 |
@@ -257,6 +260,7 @@ Remote features are tasks the owner types into the Claude app and gets done end-
 | R19 | "Update the thesis tracks for the last commit." | Runs `thesis-orchestrator` on the `Status: ativo` tracks under `docs/thesis/<track>/`, then commits as `docs(thesis)`; skipped for a purely administrative or pure dev-process/tooling commit (CLAUDE.md) | `@claude` Action (thesis part) | P9.3 |
 | R20 | "What would break if I change X?" / "Explain how a package is applied." | Answers from the repo; commits nothing unless asked | new | any |
 | R21 | "Draft the corridor scoring matrix." / "Outline the policy report." | Planning text from committed sources: scoring note, problem statements, workshop kit, policy-report and equity sections, with numbers marked TBD until desk results exist | new | P1.3, P1.5, P8.4, P9.1, P9.2 |
+| R22 | "Write the FCD-to-trips converter and the viewer." | Converter (`--fcd-output.geo` XML -> trips JSON) and static viewer code, tested against a committed toy FCD fixture; no real SJC data, no Google key | new | P8.6, P8.7 |
 
 **Retired IDs** (not reused): R2 Linux vs Windows SUMO parity (needs the Windows PC; the desk runs `nox -s smoke` there, L2); R5 ChatOps `/run` (merged into R6); R14 Codespaces devcontainer (the Claude session replaces it). No `.github/workflows/` files, issue forms, labels or devcontainer are planned.
 
@@ -373,6 +377,15 @@ Resource handling: workers default to physical cores - 1; per-worker RAM cap fro
 | L21 | C:S heightmap and map prep | Semi | P8.3 | `arteria cs prepare-map --city sjc` (DEM -> 1081x1081 16-bit PNG, OSM road export for importer mod) | -> `cs/sjc/heightmap.png`, `roads.osm`, README noting the ~17.28 km playable square |
 | L22 | C:S build and package recreation | Manual | P8.3, P8.5 | Procedure in `docs/local/cities-skylines.md`: import map, fix roads, recreate packages with TM:PE, Move It and a pinned road-importer mod; one save per package; screenshots get an "illustrative" overlay **[ADR 0011]** | -> `cs/sjc/*.crp`, `mods.lock.txt` (Workshop IDs/versions) committed |
 | L23 | C:S vs SUMO comparison | Semi | P8.5 | `arteria cs compare --city sjc --package <id>` (manually logged C:S observations vs SUMO metrics) | -> table for research question 7 |
+
+### Visualization viewer
+
+| ID | Item | Mode | Roadmap | Entry point | Inputs -> Outputs |
+|---|---|---|---|---|---|
+| L26 | Long `sumo-gui` 2D run and Google 3D coverage check | Manual | P8.2, P8.6 | `randomTrips.py -e 86400` then `sumo-gui`; try a Google 3D Tiles sandbox on the SJC viewport; key in `.env`/`ARTERIA_PRIVATE`, never git **[ADR 0015]** | -> go/no-go note on Google coverage and quota |
+| L27 | Real FCD export and viewer run | Semi | P8.6 | `sumo --fcd-output.geo` on the real SJC network, convert (R22), serve locally | -> viewer replaying uncalibrated traffic over the whole city |
+| L28 | Viewer video capture | Semi | P8.6, L20 | screen/headless capture from the open-data basemap; Google-basemap clips limited to 30 s and labelled "for promotional purposes only" | -> MP4 |
+| L29 | Try `sumo-gui` 3D (OSG) | Manual | P8.6 | Windows "all extras" SUMO installer, 30-minute evaluation | -> note on whether it is worth keeping |
 
 ### Non-public municipal data
 
