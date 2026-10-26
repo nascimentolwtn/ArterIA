@@ -16,6 +16,7 @@ at the bottom before showing this to anyone as if it were evidence.
 ## 0. One-time setup (if not already done)
 
 ```bash
+source .venv/bin/activate     # venv from setup-and-daily-commands.md
 pip install -e ".[dev,geo]"   # geo extra: geopy/shapely/pyproj, needed for step 1
 arteria doctor                 # confirms sumo/netconvert/osmium are on PATH and SUMO_HOME is set
 ```

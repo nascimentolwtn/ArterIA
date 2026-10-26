@@ -10,22 +10,38 @@ see `docs/roadmap.md` → "Remote features" for what they can do instead.
 ## Quick setup (WSL2)
 
 Copy-pasteable version of the "One-time setup" section below, for a fresh
-WSL2 Ubuntu machine. Clone inside WSL's own filesystem — never under
-`/mnt/c/...` (ADR 0014).
+WSL2 Ubuntu machine. Clone inside WSL's own filesystem (here `~/git/ArterIA`) —
+never under `/mnt/c/...` (ADR 0014). Every new shell needs
+`source .venv/bin/activate` from the repo root before `arteria`/`nox`/`pytest`
+work.
 
 ```bash
-git clone https://github.com/nascimentolwtn/ArterIA.git ~/ArterIA && cd ~/ArterIA
+git clone https://github.com/nascimentolwtn/ArterIA.git ~/git/ArterIA && cd ~/git/ArterIA
 
-# Python env
+# Python env: pip lives in a project venv (.venv/ is gitignored); Ubuntu 24.04's
+# system Python is PEP 668 "externally managed", so bare `pip install` is refused.
+sudo apt install -y python3-venv python3-pip   # no-op if already present
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e ".[dev]"
 
-# SUMO: headless/TraCI via pip; sumo-gui/netedit via apt, running inside
-# WSL2 through WSLg (ADR 0014) — no Windows install, no \\wsl.localhost\...
+# SUMO: the eclipse-sumo wheel ships sumo, sumo-gui, netedit and netconvert
+# (verified 1.28.0 on this WSL2 box); the GUIs run through WSLg (ADR 0014) —
+# no Windows install, no \\wsl.localhost\...
 pip install eclipse-sumo libsumo traci
-sudo apt install -y sumo sumo-tools sumo-doc
 
-# if `arteria doctor` below can't find SUMO_HOME, set it explicitly:
-# echo 'export SUMO_HOME=/usr/share/sumo' >> ~/.bashrc
+# osmium CLI (arteria osm fetch) is not in any wheel:
+sudo apt install -y osmium-tool
+
+# optional: system SUMO (apt) instead of / besides the wheel
+# sudo apt install -y sumo sumo-tools sumo-doc
+
+# SUMO_HOME for the pip wheel (SUMO tools like randomTrips.py live there):
+echo 'export SUMO_HOME="$(~/git/ArterIA/.venv/bin/python -c "import sumo; print(sumo.SUMO_HOME)")"' >> ~/.bashrc
+# (with apt SUMO instead: export SUMO_HOME=/usr/share/sumo)
+
+# WSLg check: this should open a SUMO window on the Windows desktop
+# sumo-gui --window-size 400,300
 
 # ARTERIA_DATA
 echo 'export ARTERIA_DATA="$HOME/arteria-data"' >> ~/.bashrc
@@ -47,21 +63,27 @@ arteria doctor
 
 1. **Python environment** (works today)
    ```bash
+   sudo apt install -y python3-venv python3-pip
+   python3 -m venv .venv && source .venv/bin/activate
    pip install -e ".[dev]"
    ```
-   Installs `arteria` editable plus `nox`, `ruff`, `mypy`, `pytest`. Needs
+   Always inside the venv: Ubuntu 24.04 marks system Python as externally
+   managed (PEP 668), and one venv per checkout also avoids the shared
+   editable-install race noted in `.claude/napkin.md`. Installs `arteria` editable plus `nox`, `ruff`, `mypy`, `pytest`. Needs
    Python >= 3.11 (`pyproject.toml`). A `uv sync` / `uv.lock` path is planned
    (L3) but not set up yet — plain `pip` works in the meantime.
 
 2. **SUMO install** (planned — L1)
    No `scripts/linux/setup-sumo.sh` exists yet. Until it does, install SUMO
    manually, inside WSL2 (never a native Windows install — ADR 0014):
-   - Headless/TraCI: `pip install eclipse-sumo libsumo traci` (same version
+   - Headless/TraCI: `pip install eclipse-sumo libsumo traci` (venv active; same version
      as remote sessions — pin it in `pyproject.toml` once chosen, per
      ADR 0001).
-   - `sumo-gui`/`netedit` (GUI tools, not in the pip wheels):
-     `sudo apt install sumo sumo-tools sumo-doc`. Runs inside WSL2 via WSLg
-     with no extra config on current Windows builds. If you need a newer
+   - `sumo-gui`/`netedit` come in the same `eclipse-sumo` wheel (checked on
+     this machine: 1.28.0, WSLg 1.0.79). They run inside WSL2 via WSLg with
+     no extra config on current Windows builds. The apt packages
+     (`sudo apt install sumo sumo-tools sumo-doc`) are optional.
+   - `osmium` CLI: `sudo apt install osmium-tool` (needed by `arteria osm fetch`). If you need a newer
      version than Ubuntu's repos carry, build from source instead (see
      https://sumo.dlr.de/docs/Downloads.php's Linux/source instructions) —
      either way, if `arteria doctor` can't find `SUMO_HOME` afterward, set
@@ -94,7 +116,7 @@ arteria doctor
 
 6. **Pre-commit hooks** (works today)
    ```bash
-   pip install pre-commit
+   pip install pre-commit      # venv active
    pre-commit install
    ```
    Runs `ruff` + the `arteria.data_safety` restricted-checksum check
@@ -171,7 +193,7 @@ which uses SUMO's own bundled `randomTrips.py` instead.
 ## Weekly / per-session routine
 
 1. `arteria doctor`.
-2. Read `.claude/napkin.md`, pick an item; `git pull`; `pip install -e ".[dev]"` if dependencies changed.
+2. Read `.claude/napkin.md`, pick an item; `git pull`; `pip install -e ".[dev]"` if dependencies changed (venv active: `source .venv/bin/activate`).
 3. Make the change; `nox -s lint tests smoke`.
 4. Network work (once Phase 2 starts): `arteria network build` + `validate`; junction fixes only through `netedit` (L10), exported to patches — never commit the generated `.net.xml` itself.
 5. Before long runs (calibration/optimizer): disable sleep (L7), then launch with `--workers` or schedule overnight (L18).
