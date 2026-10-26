@@ -4,6 +4,10 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 
 ## [Unreleased]
 
+### Added
+
+- **Networks for candidates D, C and A, and a decision to use one unified SJC network (ADR 0016).** Clipped OSM extracts and `netconvert` networks now exist for all four candidates (SUMO 1.28 from the `eclipse-sumo` wheel; B's result reproduced exactly). Because B and C touch A and D sits about 0.3 km from it, the project builds a single network over the envelope of all four polygons (11,035 edges, 94% in the main routable component, against 70-88% for the separate ones) and treats B, D, C and A as evaluation areas inside it. New `arteria osm fetch --candidate all` clips that envelope. Generated networks are gitignored; the validator still reports many false positives on real networks (tracked in the napkin).
+
 ## [1.0] - 2026-10-26
 
 ### Added

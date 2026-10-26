@@ -94,6 +94,23 @@ def test_extract_candidate_polygon_matches_case_insensitively(tmp_path: Path):
     assert result_upper["features"][0]["properties"]["id"] == "a"
 
 
+def test_extract_candidate_polygon_all_returns_envelope_of_every_candidate(tmp_path: Path):
+    path = tmp_path / "study-areas.geojson"
+    path.write_text(json.dumps(STUDY_AREAS), encoding="utf-8")
+
+    result = extract_candidate_polygon(path, "all")
+
+    ring = result["features"][0]["geometry"]["coordinates"][0]
+    xs = [pt[0] for pt in ring]
+    ys = [pt[1] for pt in ring]
+    all_pts = [pt for f in STUDY_AREAS["features"] for pt in f["geometry"]["coordinates"][0]]
+    assert min(xs) == min(p[0] for p in all_pts)
+    assert max(xs) == max(p[0] for p in all_pts)
+    assert min(ys) == min(p[1] for p in all_pts)
+    assert max(ys) == max(p[1] for p in all_pts)
+    assert ring[0] == ring[-1]
+
+
 def test_extract_candidate_polygon_raises_for_unknown_id_listing_available(tmp_path: Path):
     path = tmp_path / "study-areas.geojson"
     path.write_text(json.dumps(STUDY_AREAS), encoding="utf-8")

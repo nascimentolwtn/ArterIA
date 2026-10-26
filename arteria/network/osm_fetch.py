@@ -71,17 +71,57 @@ def default_geofabrik_url(region: str = "south-america/brazil") -> str:
     return f"https://download.geofabrik.de/{region}/sudeste-latest.osm.pbf"
 
 
+ALL_CANDIDATES_ID = "all"
+
+
+def _envelope_of(features: list[dict], source: Path) -> dict:
+    """One rectangular polygon enclosing every candidate polygon (ADR 0016:
+    the unified city network is clipped to this envelope, so the gaps between
+    corridors are included and the corridors stay connected through them).
+    """
+
+    def points(geometry: dict):
+        if geometry.get("type") == "Polygon":
+            polygons = [geometry["coordinates"]]
+        else:  # MultiPolygon
+            polygons = geometry["coordinates"]
+        for polygon in polygons:
+            yield from polygon[0]
+
+    coords = [pt for f in features for pt in points(f.get("geometry", {}))]
+    if not coords:
+        raise OsmFetchError(f"no candidate polygons in {source}")
+    xs = [pt[0] for pt in coords]
+    ys = [pt[1] for pt in coords]
+    west, south, east, north = min(xs), min(ys), max(xs), max(ys)
+    ring = [[west, south], [east, south], [east, north], [west, north], [west, south]]
+    return {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {"id": ALL_CANDIDATES_ID},
+                "geometry": {"type": "Polygon", "coordinates": [ring]},
+            }
+        ],
+    }
+
+
 def extract_candidate_polygon(study_areas_geojson_path: Path, candidate_id: str) -> dict:
     """Read the `study-areas.geojson` FeatureCollection written by
     `arteria studyarea build` (see `arteria.network.study_area.build_study_areas`)
     and return a single-feature FeatureCollection for the feature whose
-    `properties.id` matches `candidate_id` (case-insensitive).
+    `properties.id` matches `candidate_id` (case-insensitive). The special id
+    `all` returns the bounding rectangle of every candidate polygon.
 
     Raises `OsmFetchError`, listing the available candidate ids, if no
     feature matches.
     """
     data = json.loads(Path(study_areas_geojson_path).read_text(encoding="utf-8"))
     features = data.get("features", [])
+
+    if candidate_id.lower() == ALL_CANDIDATES_ID:
+        return _envelope_of(features, study_areas_geojson_path)
 
     for feature in features:
         feature_id = feature.get("properties", {}).get("id", "")
