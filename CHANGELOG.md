@@ -4,6 +4,10 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 
 ## [Unreleased]
 
+### Added
+
+- Dev PC benchmark against the roadmap's 8-core / 32 GB guideline (`docs/local/dev-pc-benchmark.md`): the desk PC (6 cores / 12 threads, WSL2 capped at 10 GB RAM, 831 GB free disk) is fine for network builds, single runs and overnight calibration at about 4 workers, but the planned 10k-run NSGA-II campaign would take well over a day and needs a smaller first campaign or a cloud/cluster node. SUMO step rates were not measured (no SUMO binary in the measuring session).
+
 ## [1.0] - 2026-10-26
 
 ### Added
