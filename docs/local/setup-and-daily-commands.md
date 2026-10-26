@@ -85,7 +85,7 @@ arteria doctor
    ```bash
    # in ~/.bashrc (or ~/.profile)
    export ARTERIA_DATA="$HOME/arteria-data"
-   export ARTERIA_PRIVATE="/mnt/veracrypt1"   # only once the VeraCrypt volume exists (L24)
+   export ARTERIA_PRIVATE="$HOME/arteria-private"   # plain directory outside git; only once restricted data exists
    ```
    Create `~/arteria-data/` (see the directory layout in `docs/roadmap.md`
    → "Recommended local directory layout", adapted to Linux paths).
@@ -170,12 +170,12 @@ which uses SUMO's own bundled `randomTrips.py` instead.
 
 ## Weekly / per-session routine
 
-1. `arteria doctor` (mount `ARTERIA_PRIVATE` only if today's task needs it).
+1. `arteria doctor`.
 2. Read `.claude/napkin.md`, pick an item; `git pull`; `pip install -e ".[dev]"` if dependencies changed.
 3. Make the change; `nox -s lint tests smoke`.
 4. Network work (once Phase 2 starts): `arteria network build` + `validate`; junction fixes only through `netedit` (L10), exported to patches — never commit the generated `.net.xml` itself.
 5. Before long runs (calibration/optimizer): disable sleep (L7), then launch with `--workers` or schedule overnight (L18).
-6. Dismount `ARTERIA_PRIVATE`; confirm `git status` shows no data files staged.
+6. Confirm `git status` shows no data files staged.
 7. Commit; invoke `thesis-orchestrator` per `CLAUDE.md` unless the commit is purely administrative/tooling; move finished `.claude/napkin.md` items into `CHANGELOG.md`.
 
 ## When does SJC become visible in SUMO?

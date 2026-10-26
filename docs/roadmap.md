@@ -213,7 +213,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 | 0007 | Metric definitions and objective set | P6 |
 | 0008 | Optimization architecture | P7.1 |
 | 0009 | Remote-session boundary: what a Claude app cloud session may read, run, commit and push vs. desktop-only work; toy-fixture outputs are never evidence; SUMO calls sit behind an adapter so the rest of `arteria/` tests without real data, no `sumo`/`netconvert` binary required remotely. Replaces the earlier "CI/CD, runner topology, self-hosted runner security" scope (no Actions runners, no hosted CI are planned) and absorbs the AI-agent scope/permissions question that was going to be its own ADR (same boundary, now that remote work is Claude sessions, so no separate number was needed). Kept as an ADR, not just a rule, because the adapter/fixture split shapes the package architecture | P0.1, P0.5, cross-cutting |
-| 0010 | Non-public data handling: storage, encryption, retention, publishable derived data | P0.6, P1.2, P4.1 |
+| 0010 | Non-public data handling: storage, retention, publishable derived data | P0.6, P1.2, P4.1 |
 | 0011 | Cities: Skylines edition, mod set, and "illustrative" labelling | P8.3 |
 | 0012 | Repository visibility and licensing (public repo; Apache 2.0 code, CC BY 4.0 docs) — written and accepted 2026-10-25, resolving open questions 5 and 7 | P0.8 |
 | 0013 | No real OD microdata; synthetic, count-calibrated demand only — written and accepted 2026-10-25, partially resolving open question 1 (OD microdata specifically) | P1.1, P3.1-P3.3, P4.3 |
@@ -309,7 +309,7 @@ This section covers work on the developer's desk machine: tool installation, loc
 - **One CLI, `arteria`** (Typer, installed from `pyproject.toml`). Every subcommand takes `--city <name>`, reads `cities/<city>/city.yaml`, writes a run manifest (P0.7) and is idempotent (skips a step when input checksums are unchanged).
 - **`scripts/win/*.ps1`** only for Windows-specific setup that needs the OS (registry, Defender, Task Scheduler); no domain logic.
 - **`noxfile.py`** as the cross-platform task runner, so the same commands run on Windows, WSL2 and Linux: `nox -s lint tests smoke build-sjc calibrate-sjc` (recorded in ADR 0002; avoids make/just on Windows). Remote Claude sessions only ever run `lint tests` (R1); `smoke` (real SUMO binary) and everything past it stays desktop-only.
-- **`ARTERIA_DATA`** points at the large-data root outside git; **`ARTERIA_PRIVATE`** at the mounted encrypted volume.
+- **`ARTERIA_DATA`** points at the large-data root outside git; **`ARTERIA_PRIVATE`** at a plain local directory outside git for non-public data.
 
 ### Recommended local directory layout (outside git)
 
@@ -323,7 +323,7 @@ E:\arteria-data\                 (ARTERIA_DATA; excluded from Defender scan, not
   optim\<city>\<study-id>\         optimizer DB (SQLite/Parquet), checkpoints, evaluated-package cache
   media\<city>\                    sumo-gui screenshots/videos, C:S screenshots
   cs\<city>\                       Cities: Skylines saves, map assets, mod-list snapshot
-V:\                              (ARTERIA_PRIVATE; VeraCrypt volume, mounted only while needed)
+V:\                              (ARTERIA_PRIVATE; plain directory outside git)
   <city>\od-survey\  counts\  signal-plans\  crash\   + README-license.txt per source
 ```
 
@@ -334,7 +334,7 @@ The repo stores only manifests, checksums, patches, configs and small fixtures (
 | ID | Item | Mode | Roadmap | Entry point | Inputs -> Outputs |
 |---|---|---|---|---|---|
 | L1 | SUMO install and version pin | Auto | P0.3 | `scripts/win/setup-sumo.ps1 -Version <city.yaml>`; preferred: `eclipse-sumo` + `libsumo` + `traci` pip wheels pinned in the lockfile (same version on Windows, WSL2 and remote sessions); MSI/zip fallback for full sumo-gui | `sumo_version` -> binaries, `SUMO_HOME`, version reported by `arteria doctor` |
-| L2 | Environment check | Auto | P0.3, P0.5 | `arteria doctor` | -> Python/SUMO/netconvert/osmium versions, `SUMO_HOME`, long paths, disk/RAM, `ARTERIA_DATA` writable, private volume mounted? |
+| L2 | Environment check | Auto | P0.3, P0.5 | `arteria doctor` | -> Python/SUMO/netconvert/osmium versions, `SUMO_HOME`, long paths, disk/RAM, `ARTERIA_DATA` writable, `ARTERIA_PRIVATE` present? |
 | L3 | Python environment | Auto | P0.3 | `uv sync`, `nox -s dev` | `pyproject.toml`/`uv.lock` -> `.venv` |
 | L4 | Long paths | Manual (one-time, admin) | P0.1 | `scripts/win/enable-longpaths.ps1` (`LongPathsEnabled=1`, `git config core.longpaths true`) | -> registry/git config |
 | L5 | Defender exclusions for speed | Manual (admin, user consent) | P4, P7 | `scripts/win/defender-exclusions.ps1` (exclude `ARTERIA_DATA` and `sumo.exe`/`netconvert.exe`; never the repo or Downloads) | -> Defender prefs, documented rollback |
@@ -378,7 +378,7 @@ Resource handling: workers default to physical cores - 1; per-worker RAM cap fro
 
 | ID | Item | Mode | Roadmap | Entry point |
 |---|---|---|---|---|
-| L24 | Encrypted private store | Manual (setup), Auto (checks) | P0.6, P1.2, P4.1 | VeraCrypt container or `age`-encrypted files (Windows 11 Home lacks BitLocker management); `arteria data check-private` verifies mount and that no private path is under the repo; pre-commit blocks files matching private-manifest checksums **[ADR 0010]** |
+| L24 | Private store checks | Manual (setup), Auto (checks) | P0.6, P1.2, P4.1 | plain directory outside git; `arteria data check-private` verifies the directory exists and that no private path is under the repo; pre-commit blocks files matching private-manifest checksums **[ADR 0010]** |
 | L25 | Derived/public outputs | Auto | P9.1, P9.4 | `arteria data publish-derived --city sjc` (OD aggregated to zone totals, hourly counts, k-anonymity threshold) -> files safe to commit/release |
 
 Data-sharing terms from the municipality override these defaults.
@@ -397,13 +397,13 @@ Suggested minimum: 8 cores/16 threads, 32 GB RAM, 200 GB free SSD for `ARTERIA_D
 
 ### Local daily workflow
 
-1. `arteria doctor` (mount the private volume only if today's task needs it).
+1. `arteria doctor`.
 2. Read `.claude/napkin.md`, pick the item (runs queued from the phone via R6 first); `git pull`; `uv sync`.
 3. `arteria runs status`; resume failed overnight jobs with `--resume`.
 4. Make the change; `nox -s lint tests smoke` (toy network, < 2 min).
 5. Network work: `arteria network build` + `validate`; netedit fixes only through L10; commit patches, never `.net.xml`.
 6. Before long runs: L7, then schedule (L18) or launch with `--workers` and checkpoints.
-7. Dismount the private volume; confirm `git status` shows no data files.
+7. Confirm `git status` shows no data files.
 8. Commit aggregated results and reports that remote sessions should read (R8, R11); commit per the commit rules, invoke the `thesis-orchestrator` agent (skip for a purely administrative or pure dev-process/tooling commit, CLAUDE.md), move finished napkin items to `CHANGELOG.md`.
 
 ## Open questions

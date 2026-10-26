@@ -55,14 +55,13 @@ None open.
    both halves.
 4. **[2026-10-26] Reconcile Windows-native roadmap L-items with ADR 0014 (WSL2-primary desk)** (small)
    Do instead: L4 (long paths), L5 (Defender exclusions), L7 (power hygiene/Task
-   Scheduler), L18 (scheduled runs), and L24's BitLocker aside were all written as
+   Scheduler), and L18 (scheduled runs) were all written as
    Windows-native `scripts/win/*.ps1`/registry/Task Scheduler items. Under ADR 0014
    (WSL2 sole primary, repo + `ARTERIA_DATA` on native `ext4`) L4/L5 are already
    N/A (see `docs/local/setup-and-daily-commands.md`); L7/L18 need a
    `scripts/linux/...` + systemd-timer/`cron` equivalent instead of `powercfg`/Task
-   Scheduler, and L24 needs VeraCrypt's Linux client (or `age`) instead of the
-   BitLocker note. Update `docs/roadmap.md`'s L-item table once the actual
-   desk scripts get written (L1/L6/L7/L18/L24), not before.
+   Scheduler. Update `docs/roadmap.md`'s L-item table once the actual
+   desk scripts get written (L1/L6/L7/L18), not before.
 5. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
    Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
    remote session's network policy. At the desk: confirm Geosanja still serves Master

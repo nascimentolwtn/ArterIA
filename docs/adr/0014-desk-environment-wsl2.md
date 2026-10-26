@@ -37,7 +37,7 @@ optimizing for.
   not a dual Windows-primary/WSL2-secondary setup. The roadmap's L6 framing
   ("WSL2 option... for long runs") is superseded: WSL2 is not an occasional
   escape hatch, it is where all desk work happens.
-- The repo clone, `ARTERIA_DATA`, and (once mounted) `ARTERIA_PRIVATE` all
+- The repo clone, `ARTERIA_DATA`, and `ARTERIA_PRIVATE` all
   live on WSL2's native Linux filesystem (e.g. `~/arteria-data`), never
   under `/mnt/c/...`. Nothing performance-sensitive (build, `git`, `pip`,
   `nox`) runs against a Windows-mounted path.
@@ -64,11 +64,9 @@ optimizing for.
 - Harder: several roadmap `L<n>` items were written as Windows-native
   PowerShell scripts under `scripts/win/*.ps1` assuming the Windows
   filesystem/registry (L4 long paths, L5 Defender exclusions, L7 power
-  hygiene/Task Scheduler, L18 scheduled runs) or a Windows-only encryption
-  note (L24, BitLocker). These need to be re-pointed at WSL2/Linux
+  hygiene/Task Scheduler, L18 scheduled runs). These need to be re-pointed at WSL2/Linux
   equivalents (`scripts/linux/...`, systemd timers or `cron` instead of
-  Task Scheduler, `age`/VeraCrypt's Linux client instead of a
-  Windows-BitLocker aside) or marked not applicable — tracked as a napkin
+  Task Scheduler) or marked not applicable — tracked as a napkin
   follow-up rather than resolved in this ADR.
 - Risk: depends on the installed Windows build actually having WSLg; if a
   future desk machine only has an older WSL2 without it, `sumo-gui`/

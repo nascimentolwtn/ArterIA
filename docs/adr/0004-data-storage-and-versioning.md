@@ -14,7 +14,7 @@ Git LFS and a self-hosted object store were both considered as ways to keep larg
 - **Commit to git:** code, configs, `city.yaml`/data-manifest schemas (ADR 0003), small toy fixtures, network-correction patches (P2.3), checksums, and run manifests (P0.7). Nothing here depends on city-specific scale.
 - **Never commit:** raw OSM snapshots, OD microdata, generated `.net.xml` network files, per-vehicle simulation outputs (tripinfo/FCD/emissions), optimizer checkpoints/caches, and media (screenshots/video). These live outside git entirely:
   - `ARTERIA_DATA` (local, outside git, excluded from AV scanning) — `raw/`, `cache/`, `runs/`, `optim/`, `media/`, `cs/`, per the directory layout in `docs/roadmap.md`.
-  - `ARTERIA_PRIVATE` (a mounted encrypted volume — VeraCrypt or `age`, per ADR 0010) for non-public municipal data specifically.
+  - `ARTERIA_PRIVATE` (a plain local directory outside git, per ADR 0010) for non-public municipal data specifically.
 - **No Git LFS and no external object store.** Large data stays off git and off any additional hosted storage; the manifest (ADR 0003) plus checksums is the only record that a given large file exists and what it is.
 - **Safety net, not the only control:** `.gitignore` covers `cities/*/private/`, `**/raw/`, `*.fcd.xml`, `outputs/`, `.env`; a pre-commit hook (run at the desk and by remote sessions, R1) fails the commit if a `visibility: restricted` manifest entry's `sha256` is found in the git index.
 - **Derived/public outputs** (aggregated, k-anonymized, per P9.1/L25) are the only form of real results data that may ever be committed or published, and only via an owner-reviewed PR into `results/published/`.
