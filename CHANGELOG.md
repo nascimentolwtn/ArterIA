@@ -4,6 +4,10 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 
 ## [Unreleased]
 
+### Added
+
+- **Networks for candidates D, C and A, and a decision to use one unified SJC network (ADR 0016).** Clipped OSM extracts and `netconvert` networks now exist for all four candidates (SUMO 1.28 from the `eclipse-sumo` wheel; B's result reproduced exactly). Because B and C touch A and D sits about 0.3 km from it, the project builds a single network over the envelope of all four polygons (11,035 edges, 94% in the main routable component, against 70-88% for the separate ones) and treats B, D, C and A as evaluation areas inside it. New `arteria osm fetch --candidate all` clips that envelope. Generated networks are gitignored;
+
 ### Changed
 
 - `arteria network validate` now works on real SUMO networks (fixing the first-run findings below): on the real candidate-B network it goes from 729 errors / 7,562 warnings to 0 errors. The never-applicable `oneway_status` check is gone (one-way vs. two-way edges are now counted by opposite-edge pairs and printed as stats); internal `:` edges are skipped; connectivity is judged by strongly connected components and reports the main component (770 of 986 junctions) and the orphans outside it as one summary warning instead of hundreds of errors; dead ends at the study-area clip boundary are reported separately as `info` (`clip_boundary_dead_end`) from true traps (`dead_end`); and a `traffic_light` junction without a `<tlLogic>` is only an error if some connection is bound to it (the two bicycle-crossing clusters are warnings: no connection uses them, so SUMO treats them as unsignalised -- inferred from the net file, not yet confirmed by running `sumo`). The validator is now also tested against a real 100 m slice of the candidate-B network (`tests/fixtures/real-slice-sjc-b.net.xml`).

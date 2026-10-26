@@ -33,10 +33,6 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-26] Build and unify networks for candidates D, C, A (only B exists)** (medium)
-   Do instead: `arteria osm fetch --candidate d|c|a` + `network build` per polygon, then
-   decide whether to build one unified SJC network (B connects to A's Anel Viário) or
-   per-corridor networks; record the choice in an ADR if it is hard to reverse.
 2. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
 3. **[2026-10-24] Desk: run `nox -s smoke` for real**
