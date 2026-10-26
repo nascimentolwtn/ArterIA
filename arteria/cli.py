@@ -259,6 +259,9 @@ def network_validate(
     for finding in report.findings:
         typer.echo(f"[{finding.severity}] {finding.check}: {finding.message}")
 
+    if report.stats:
+        typer.echo("stats: " + ", ".join(f"{k}={v}" for k, v in report.stats.items()))
+
     if report.has_blocking_issues:
         raise typer.Exit(code=1)
 
