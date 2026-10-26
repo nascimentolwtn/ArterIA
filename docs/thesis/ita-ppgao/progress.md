@@ -5,6 +5,23 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-26 (validador adaptado, rede única SJC, benchmark local, smoke real; commits 72ab33e, a55c9d7, 814f4c9, ffcbd8e)
+
+**O que foi feito (no produto).** (1) `72ab33e`: `arteria network validate` adaptado a redes SUMO reais (componentes fortemente conexos, pares de arestas opostas, becos de borda); 729 erros -> 0 na rede real do corredor B. (2) `a55c9d7` e ADR 0016: redes OSM->SUMO construídas também para D, C e A; decisão de rede única de SJC (11.035 arestas, 94% no maior componente roteável), com B/D/C/A como áreas de avaliação. (3) `814f4c9`: benchmark do PC de desenvolvimento (6c/12t, 9,7 GiB RAM): NSGA-II de 10k execuções inviável localmente (~35-45 h); lotes de sementes com 4 workers. (4) `ffcbd8e`: `nox -s smoke` passa com SUMO real (wheel `eclipse-sumo`), de processo.
+
+**Por que importa.** Cumpre o próximo passo (a) da entrada anterior: o achado metodológico (verificação afinada em fixtures não se transfere a redes reais) tem agora o "depois". A rede única muda a premissa do Cap. 3: o corredor B deixa de ser rede isolada e o efeito de borda do recorte (4.1.3) tende a diminuir, mas os 6% fora do maior componente exigem explicação. O benchmark limita o desenho experimental (nº de avaliações de otimização).
+
+**Impacto no produto técnico.** `chapters/04-metodologia.md`: nota de atualização em 4.1.2 (sem alterar prosa assentada). `outline.md`: nota de atualização (Cap. 3/4). Status dos capítulos inalterado. Os números vêm do texto dos commits informado pelo chamador; contagens de avisos pós-adaptação e os 94% não foram conferidos nesta trilha.
+
+**Perguntas abertas e riscos.**
+1. **Enquadramento operacional/FAB: NÃO validado por nenhum orientador do PPGAO; nenhum foi contatado.** Risco central, inalterado.
+2. "0 erros" não equivale a rede correta: confirmar que a adaptação não apenas silenciou verificações; revisão no `netedit` segue pendente.
+3. Rede única versus por corredor (pergunta 4 da entrada anterior) foi decidida pelo produto (ADR 0016); a dissertação deve decidir se adota essa unidade de análise e como justificar o recorte B dentro dela.
+4. Escala dos cenários de interdição (corredor, não evacuação; ADR 0013) segue sem formalização com orientador.
+5. Orçamento computacional: o desenho de otimização do Cap. 4 deve caber em ~35-45 h por 10k execuções ou reduzir o número de avaliações.
+
+**Próximos passos.** Ler ADR 0016 e registrar alternativas consideradas no Cap. 4; documentar contagens antes/depois do validador; `RunManifest` da construção da rede; buscar orientador do PPGAO.
+
 ## 2026-10-26 (marco v1.0: primeira execução real ponta a ponta; commits 72ef5cb, 25eb78f, 1d2c6ad, ca6b153 e mudanças não commitadas)
 
 **O que foi feito (no produto).** Primeira execução real no desktop WSL2: `arteria studyarea build` (Nominatim) -> `arteria osm fetch --candidate b` (Geofabrik Sudeste recortado com osmium) -> `arteria network build` (`osmium cat` PBF->XML, depois `netconvert`) -> `sumo-gui` com 1.800 veículos aleatórios (415 viagens inviáveis descartadas). Só o corredor B foi renderizado; A, C e D têm polígonos sem rede. Correções: `netconvert` não lê PBF; três consultas Nominatim falhavam ou erravam (uma resolvia ~30 km ao norte); `ARTERIA_DATA` passou a ser `data/` gitignorado. Fontes: CHANGELOG [1.0], `docs/local/sjc-quickstart.md`, `.claude/napkin.md`. ADR 0014 (WSL2 como SO único de mesa) e os commits de setup são de processo, sem conteúdo de pesquisa para esta trilha.

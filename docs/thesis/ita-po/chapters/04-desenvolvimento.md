@@ -34,4 +34,14 @@ Conclusão deste rascunho, limitada ao que as observações sustentam: o validad
 - Revisão manual em `netedit` contra imagem de satélite/OSM: não realizada ou não documentada. TODO(evidência).
 - Semáforos inferidos: a quantidade de junções semafóricas (18) inclui as geradas por inferência? Não verificado. TODO(evidência).
 - Proveniência (`arteria/provenance.py`): TODO(evidência) confirmar que a execução registrou hash do extrato, versão do SUMO (1.28.0) e flags do `netconvert` em `manifest.json`.
-- Extensão do domínio: rede unificada vs. por corredor (B conecta-se ao Anel Viário de A) é decisão futura do ArterIA.
+- Extensão do domínio: ver 4.1.4 (decidida pela ADR 0016 em 2026-10-26).
+
+### 4.1.4 Rede única de SJC e validador adaptado (RASCUNHO, 2026-10-26)
+
+A ADR 0016 (`docs/adr/0016-unified-sjc-network.md`, Accepted) decide construir uma única rede de SJC, recortada pelo envelope retangular dos polígonos de todos os candidatos, com B, D, C e A como áreas de avaliação nomeadas (conjuntos de arestas e, depois, TAZs). Justificativa declarada: os polígonos não são independentes (B e C tocam A; D está a cerca de 0,3 km de A), e recortar cada um isoladamente corta fluxos de passagem em fronteiras arbitrárias. Alternativa considerada: redes por candidato, mantidas apenas para checagens visuais, sem servir de base de resultados.
+
+Medidas reportadas na ADR (construção padrão `osmium extract` + `netconvert`, SUMO 1.28), maior componente fortemente conexo: B, 2.074 arestas, 85,1%; D, 1.203, 69,9%; C, 919, 86,9%; A, 2.256, 88,3%; envelope, 11.035 arestas, 94,0%. A rede única tem cerca de 1,7 vez a soma das quatro redes por polígono e, portanto, simulações mais lentas; a ADR admite uma rede derivada menor se isso prejudicar o laço do otimizador. Persistem becos sem saída de borda e uma cauda não roteável de 6%.
+
+O commit `72ab33e` adapta `arteria network validate` a redes reais (componentes fortemente conexos, pares de arestas opostas no lugar de `oneway`, becos sem saída de borda). Segundo o relato do commit, os 729 erros da rede B caem a 0. Leitura cautelosa: isso demonstra que o instrumento deixou de produzir os achados espúrios da Seção 4.1.2, não que a rede esteja livre de defeitos; os 2 casos de `traffic_light_logic` e a cauda não roteável devem ser reavaliados. TODO(evidência): reexecutar sobre a rede única e reportar estatística por componente.
+
+Ambiente computacional: `docs/local/dev-pc-benchmark.md` (commit `814f4c9`) registra o PC de desenvolvimento (6 núcleos/12 threads, 9,7 GiB de RAM) e estima 35 a 45 h para um NSGA-II de 10 mil execuções, tido como inviável localmente; adota-se lote por sementes com 4 workers. Valores extraídos do relato do commit; TODO(evidência): conferir o documento antes de citar números. `nox -s smoke` passa com SUMO real (`eclipse-sumo`, commit `ffcbd8e`): teste de fumaça, não validação.

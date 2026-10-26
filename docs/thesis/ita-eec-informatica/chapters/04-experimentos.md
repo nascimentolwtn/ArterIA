@@ -26,7 +26,11 @@ TODO(evidência): protocolo de treino/validação/teste, número de sementes (fe
 2. B conecta-se ao Anel Viário (A); uma rede recortada em B isola efeitos de transbordamento da Dutra/BR-116 que são parte do problema.
 3. A escolha do corredor da dissertação deve ser decisão acadêmica, a tomar com orientador(a), e não herdar a prioridade de engenharia.
 
-TODO(evidência): estatísticas da rede de B (ver 3.2); análise de componentes; contagem de semáforos (18 junções semafóricas, 2 sem `<tlLogic>`, informadas pelo responsável); decisão rede unificada vs. por corredor (impacta o tamanho do grafo e o número de agentes).
+TODO(evidência): estatísticas da rede de B (ver 3.2); análise de componentes; contagem de semáforos (18 junções semafóricas, 2 sem `<tlLogic>`, informadas pelo responsável); decisão rede unificada vs. por corredor (resolvida em favor da rede única pela ADR 0016: B é área de avaliação dentro da rede de 11.035 arestas; falta definir como isso afeta o número de agentes e o escopo de recompensa por área).
+
+## 4.2.1 Orçamento computacional (RASCUNHO)
+
+O benchmark do PC de desenvolvimento (`docs/local/dev-pc-benchmark.md`, 2026-10-26, `814f4c9`) registra: Intel Core i5-11400F, 6 núcleos/12 threads; 9,7 GiB de RAM visíveis ao WSL2 (limite `memory=10GB` em `.wslconfig`); 831 GB livres em disco. Teste sintético de CPU em Python indica escala efetiva de cerca de 5-6 trabalhadores (execução única e ruidosa, não benchmark rigoroso). Nenhum benchmark de SUMO foi executado nessa sessão. Estimativas do próprio documento: lotes de 10 sementes viáveis com 4 trabalhadores (cerca de 40 minutos ou mais); calibração `duaIterate` viável durante a noite; campanha NSGA-II planejada de 10 mil execuções mesoscópicas inviável localmente (estimativa de 35-45 h com 4-5 trabalhadores), com sugestão de campanha inicial menor (por exemplo, 500 pacotes x 3 sementes) ou nó em nuvem/universidade. Implicação para esta trilha: o treinamento de MARL, que exige muitos episódios, enfrentará restrição ainda mais severa; o protocolo experimental deve prever um simulador reduzido (corredor) ou o surrogate em GNN como motivação central, e declarar a limitação de hardware. Estas são estimativas do produto, não medições de treinamento. TODO(evidência): medir passos/s de SUMO na rede unificada e consumo de memória por execução.
 
 ## 4.3 Calibração, métricas e execuções (stub)
 

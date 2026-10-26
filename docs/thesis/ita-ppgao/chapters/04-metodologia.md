@@ -39,6 +39,8 @@ FIGURA(TODO): tabela "verificação / contagem / natureza / ação metodológica
 
 Observação: as classificações acima foram registradas pelo responsável do produto na primeira execução; a verificação individual dos itens (por exemplo, quantos dos 727 erros de conectividade correspondem a componentes órfãos de fato) ainda não foi feita. TODO(evidência).
 
+Atualização (commit `72ab33e`): o validador foi adaptado a redes SUMO reais, com análise de componentes fortemente conexos (SCC), detecção de pares de arestas opostas e distinção de becos sem saída de borda, correspondendo às ações previstas na tabela acima. Segundo o registro do commit, os 729 erros na rede real do corredor B passaram a 0. Essa redução resulta de verificações mais adequadas à rede real, não de correção da rede; a contagem de avisos após a adaptação e a verificação individual dos achados não foram conferidas por esta trilha. TODO(evidência): estado antes/depois por verificação (contagens de avisos e de componentes órfãos).
+
 ### 4.1.3 Efeito de borda do recorte
 
 Recortar a rede a um polígono remove vias que, na realidade, oferecem rotas alternativas. Três consequências metodológicas precisam ser tratadas antes de qualquer métrica de acesso ou resiliência:

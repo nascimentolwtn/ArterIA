@@ -5,6 +5,28 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-26 (14)
+
+Commits `ffcbd8e` (smoke real com SUMO), `814f4c9` (benchmark do PC de desenvolvimento), `a55c9d7` (ADR 0016, rede única de SJC) e `72ab33e` (validador adaptado a redes reais), mais merges `8948351`, `736af5d`, `467ba96`, `e9b9d64`.
+
+**O que foi feito (no repositório):** redes OSM->SUMO construídas para D, C e A além de B; decisão (ADR 0016, Accepted) por uma única rede SJC de 11.035 arestas (94,0% no maior componente fortemente conexo), com B/D/C/A como áreas de avaliação; validador reescrito para redes reais (SCC, pares de arestas opostas, becos de borda), com 729 erros -> 0 na rede B; benchmark local (6c/12t, 9,7 GiB; NSGA-II de 10 mil execuções estimado em 35-45 h, inviável localmente; lotes por sementes com 4 workers); `nox -s smoke` passa com SUMO real.
+
+**Por que importa para a trilha PG/PO:**
+- **Fecha a pergunta aberta 1 da entrada (13)** (rede unificada vs. por corredor) do lado do ArterIA. Para a formulação, $G$ passa a ser a rede única e cada candidato define um subconjunto de arestas de avaliação. O domínio de $y$ (intervenções) e as métricas $F(y)$ podem ser escopados por área, e transbordamentos entre corredores são medidos em vez de cortados. Em contrapartida, a linha de base, a demanda e a calibração ficam atreladas aos ids de arestas dessa rede (a ADR diz ser difícil de reverter).
+- **Reduz o risco de efeito de borda, sem eliminá-lo.** A cauda não roteável (6%) e os becos de borda persistem; o impacto sobre as 415 viagens inviáveis da entrada (13) não foi reavaliado.
+- **Custo computacional agora quantificado (Seção 12 do pré-projeto).** Rede ~1,7x maior e orçamento local de ~35-45 h para 10 mil avaliações tornam concreto o argumento para o surrogate e para amostragem ativa; o desenho experimental precisa de orçamento de avaliações compatível (lotes de sementes, quantidade de réplicas por ponto de Pareto, ligação com `replication.py`). Valores são estimativas do relato do commit; o documento de benchmark não foi lido integralmente nesta rodada.
+- **Validador:** o "0 erros" é evidência sobre o instrumento. Não deve ser citado como qualidade da rede (mesma cautela da entrada (13)).
+- **Fronteira:** nada disso é linha de base calibrada nem resultado; demanda segue ADR 0013.
+
+**Impacto na tese:** Cap. 4 ganhou a Seção 4.1.4 (rascunho); Cap. 3 e Cap. 5 não foram alterados, mas a nota da Seção 3.x sobre domínio de $G$ deve ser lida à luz da ADR 0016. `outline.md` atualizado (linha de status do Cap. 4). Nenhuma edição em `pre-projeto.md`.
+
+**Perguntas abertas/riscos:**
+1. Recorte da dissertação: com a rede única, o corredor-alvo vira uma área de avaliação; a escolha final (B ou outro) segue em aberto e, agora, é decidível sem reconstruir a rede.
+2. Orçamento de avaliações para o NSGA-II vs. Bayesiana vs. surrogate: o limite local de ~35-45 h por 10 mil execuções exige definir tamanho de população/gerações e número de sementes antes do desenho experimental.
+3. Persistem: tratamento da incerteza estrutural da rede (entrada (13), pergunta 2); manifesto de proveniência não verificado; orientador(a) não contatado(a); $f_7$ sem base OD.
+
+**Próximos passos:** (i) ler `docs/local/dev-pc-benchmark.md` e conferir os números; (ii) reportar a estatística de componentes da rede única validada; (iii) rascunhar orçamento de avaliações no Cap. 3.
+
 ## 2026-10-26 (13)
 
 Marco v1.0 do ArterIA (`CHANGELOG.md` [1.0], 2026-10-26; mudanças ainda não commitadas em `arteria/network/build.py`, `cities/sjc/study-areas.yaml`/`.geojson`, `docs/visualization-plan.md`; commits `72ef5cb` ADR 0014, `25eb78f`/`1d2c6ad`/`ca6b153` docs de setup). Primeira execução real ponta a ponta no desktop WSL2: `arteria studyarea build` (Nominatim) -> `arteria osm fetch --candidate b` (extrato Geofabrik Sudeste recortado com `osmium`) -> `arteria network build` (`osmium cat` PBF->XML, depois `netconvert`) -> `sumo-gui` com 1.800 veículos aleatórios (`randomTrips.py`; 415 viagens inviáveis descartadas). Só o Candidato B (Av. Andrômeda <-> DCTA / Jardim Satélite) foi renderizado; D, C e A têm polígonos sem rede. Fecha o item "execução de bancada ainda não relatada" das entradas (8) e (6).

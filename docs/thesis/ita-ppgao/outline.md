@@ -19,6 +19,8 @@ Nota: o Capítulo 3 ainda não tem arquivo próprio; seu conteúdo permanece nas
 
 Atualização (marco v1.0, 2026-10-26): primeira execução real da cadeia (Nominatim, Geofabrik/osmium, `osmium cat`, `netconvert`, `sumo-gui` com 1.800 veículos aleatórios; só corredor B). Alimenta os Capítulos 3, 4 (seção 4.1: construção e validação da rede) e 5 (rascunho de estudo de caso). Achados do validador em rede real (729 erros/7.562 avisos, em grande parte ruído de verificação afinada em fixtures) viram argumento metodológico. É teste de roteabilidade, não baseline calibrado.
 
+Atualização (commits `72ab33e`, `a55c9d7`, ADR 0016): validador adaptado a redes reais (SCC, pares opostos, becos de borda; 729 erros -> 0 na rede B) e decisão de rede única de SJC (11.035 arestas, 94% no maior componente roteável) com B/D/C/A como áreas de avaliação. Alimenta Cap. 3 (caracterização da rede) e Cap. 4 (4.1.2 atualizado; nova seção de rede única versus por corredor, a escrever). Benchmark local (`docs/local/dev-pc-benchmark.md`): otimização de 10k execuções inviável no desktop (~35-45 h), relevante ao desenho experimental do Cap. 4. Sem resultado operacional; sem orientador.
+
 ## 1. Introdução e Enquadramento Operacional
 
 Já coberto: título provisório, resumo, problema de pesquisa e justificativa, e a distinção explícita entre "mobilidade urbana de SJC" e "logística de acesso a instalações da FAB" (Seções 1-3 e 13 do pré-projeto).
