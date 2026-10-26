@@ -7,6 +7,7 @@ All notable changes to ArterIA are documented in this file, in plain language fo
 ### Added
 
 - **Networks for candidates D, C and A, and a decision to use one unified SJC network (ADR 0016).** Clipped OSM extracts and `netconvert` networks now exist for all four candidates (SUMO 1.28 from the `eclipse-sumo` wheel; B's result reproduced exactly). Because B and C touch A and D sits about 0.3 km from it, the project builds a single network over the envelope of all four polygons (11,035 edges, 94% in the main routable component, against 70-88% for the separate ones) and treats B, D, C and A as evaluation areas inside it. New `arteria osm fetch --candidate all` clips that envelope. Generated networks are gitignored;
+- `nox -s smoke` now runs for real: it builds a small hand-written toy network (`tests/fixtures/smoke/`) with `netconvert`, simulates it with `sumo`, and fails on any SUMO error or fewer than 10 completed trips. Verified passing (50 vehicles) on the desk, which satisfies the second half of the roadmap's P0 exit criterion. It still skips cleanly where no SUMO binary is installed.
 
 ### Changed
 

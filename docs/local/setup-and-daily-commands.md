@@ -130,8 +130,8 @@ arteria doctor                 # Python/SUMO/netconvert/osmium versions, SUMO_HO
 nox -s lint                    # ruff check . && mypy arteria
 nox -s tests                   # pytest (toy fixtures only)
 nox -s lint tests              # both — same as a remote Claude session's R1
-nox -s smoke                   # skips cleanly without a `sumo` binary;
-                                # real toy-network run still TODO (lands with Phase 2)
+nox -s smoke                   # skips cleanly without `sumo`/`netconvert`; otherwise builds
+                                # tests/fixtures/smoke/ with netconvert, runs sumo, checks trips
 arteria city new <name>        # scaffold cities/<name>/ from cities/_template/
 arteria studyarea build --city sjc --user-agent "<yours>"
                                 # (P1.4) geocodes cities/sjc/study-areas.yaml via
