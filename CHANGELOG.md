@@ -1,12 +1,22 @@
 # Changelog
 
-All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/) once the project has a first runnable release; before that, versions mark planning milestones.
+All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
 ## [Unreleased]
 
+## [1.0] - 2026-10-26
+
 ### Added
 
+- **First real end-to-end run: São José dos Campos is visible in `sumo-gui`.** At the desk (WSL2), the full chain ran against real tools and data for the first time: `arteria studyarea build` (Nominatim) -> `arteria osm fetch --candidate b` (Geofabrik Sudeste extract clipped by `osmium`) -> `arteria network build` (`netconvert`) -> `sumo-gui` with 1,800 uncalibrated `randomTrips.py` vehicles (415 further trips were unroutable and discarded). Only candidate B (Av. Andrômeda <-> DCTA / Jardim Satélite) is rendered so far; candidates D, C and A have polygons but no network yet. This is a routability and visual check, not a calibrated baseline or a validated corridor choice.
+- First-run findings on the network validator (`arteria network validate`, 729 errors / 7,562 warnings on the real candidate-B network), recorded as open work rather than fixed: the 7,522 `oneway_status` warnings are a false positive (SUMO's `.net.xml` has no `oneway` attribute, so that check can't work on real networks); the 727 `connectivity` errors are measured from a single start junction on a clipped extract and so are expected, not real disconnections; the 40 `dead_end` warnings are mostly clip-boundary edges; and the 2 `traffic_light_logic` errors are real netconvert output — two bicycle-only crossing clusters typed `traffic_light` with no `<tlLogic>` (2 of 18 traffic-light junctions), probably harmless but unverified. The validator was tuned to toy fixtures; adapting it to real networks is tracked in `.claude/napkin.md`.
 - ADR 0014 (desk environment: WSL2 as the sole primary OS): the desk machine runs WSL2 (Ubuntu) only, not split with native Windows — the repo, `ARTERIA_DATA`, and `ARTERIA_PRIVATE` live on WSL2's native Linux filesystem, SUMO's GUI tools (`sumo-gui`/`netedit`) run inside WSL2 via WSLg, and Windows is only reached into for occasional Windows-only tools. Avoids the Windows/WSL2 9P filesystem performance penalty for `make`/`git`/`pip`-heavy work and the dual-install version-drift risk the roadmap previously flagged. `docs/roadmap.md`'s "Local features" intro and `docs/local/setup-and-daily-commands.md`'s one-time setup steps (long paths, Defender exclusions, environment variables) are updated to match; reconciling the remaining Windows-native `L<n>` scripts (power hygiene, scheduled runs) is tracked in `.claude/napkin.md`.
+
+### Fixed
+
+- `arteria network build` now converts a `.osm.pbf` input to OSM XML with `osmium cat` before calling `netconvert`, which cannot read PBF (first real run failed with "invalid multi-byte sequence"). The other default `netconvert` flags were accepted as written.
+- Three SJC study-area geocoding queries that failed or landed in the wrong place on real Nominatim (DCTA street address, "Bairro São Bento", plain "Centro", which resolved ~30 km north) now use working landmark queries in `cities/sjc/study-areas.yaml`.
+- `ARTERIA_DATA` is now a gitignored `data/` folder inside the repo checkout (still on WSL2's native filesystem, per ADR 0014); generated SUMO network files (`.net.xml`, `.osm.xml`, `.rou.xml`, `.trips.xml`) are gitignored too.
 
 ## [0.3] - 2026-10-25
 

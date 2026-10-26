@@ -19,3 +19,12 @@ cities/*/private/
 *.fcd.xml
 outputs/
 .env
+
+# Local ARTERIA_DATA (ADR 0014): downloaded/generated data, never committed
+/data/
+
+# Generated SUMO network artifacts (P0.6/ADR 0004): only patches/configs are versioned
+cities/*/network/*.net.xml
+cities/*/network/*.osm.xml
+cities/*/network/*.rou.xml
+cities/*/network/*.trips.xml

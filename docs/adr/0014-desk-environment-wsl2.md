@@ -38,7 +38,7 @@ optimizing for.
   ("WSL2 option... for long runs") is superseded: WSL2 is not an occasional
   escape hatch, it is where all desk work happens.
 - The repo clone, `ARTERIA_DATA`, and `ARTERIA_PRIVATE` all
-  live on WSL2's native Linux filesystem (e.g. `~/arteria-data`), never
+  live on WSL2's native Linux filesystem (e.g. the gitignored `data/` inside the repo checkout), never
   under `/mnt/c/...`. Nothing performance-sensitive (build, `git`, `pip`,
   `nox`) runs against a Windows-mounted path.
 - SUMO (including `sumo-gui`/`netedit`) is installed inside WSL2, not

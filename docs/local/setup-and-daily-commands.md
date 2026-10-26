@@ -44,7 +44,7 @@ echo 'export SUMO_HOME="$(~/git/ArterIA/.venv/bin/python -c "import sumo; print(
 # sumo-gui --window-size 400,300
 
 # ARTERIA_DATA
-echo 'export ARTERIA_DATA="$HOME/arteria-data"' >> ~/.bashrc
+echo 'export ARTERIA_DATA="$HOME/git/ArterIA/data"' >> ~/.bashrc
 source ~/.bashrc
 mkdir -p "$ARTERIA_DATA"
 
@@ -106,10 +106,10 @@ arteria doctor
 5. **Environment variables**
    ```bash
    # in ~/.bashrc (or ~/.profile)
-   export ARTERIA_DATA="$HOME/arteria-data"
+   export ARTERIA_DATA="$HOME/git/ArterIA/data"   # gitignored /data/ inside the repo
    export ARTERIA_PRIVATE="$HOME/arteria-private"   # plain directory outside git; only once restricted data exists
    ```
-   Create `~/arteria-data/` (see the directory layout in `docs/roadmap.md`
+   Create `data/` in the repo (gitignored) (see the directory layout in `docs/roadmap.md`
    → "Recommended local directory layout", adapted to Linux paths).
    `ARTERIA_PRIVATE` isn't needed until restricted data (OD microdata,
    counts, signal plans) actually arrives.
@@ -202,15 +202,12 @@ which uses SUMO's own bundled `randomTrips.py` instead.
 
 ## When does SJC become visible in SUMO?
 
-As of 2026-10-25: **the code exists; running it at the desk is the only
-step left.** `arteria osm fetch`, `arteria network build`, and
-`arteria network validate` are implemented and unit-tested against toy
-fixtures (remote sessions have no real `sumo`/`netconvert`/`osmium`
-binary or network access, per ADR 0009, so none of the three has run
-against real SJC data yet). `docs/local/sjc-quickstart.md` is the exact
-desk sequence: geocode a study-area polygon for real (needs real network
-to Nominatim), fetch + clip the real OSM extract, build and validate the
-network, open it in `sumo-gui`/`netedit`, and see uncalibrated traffic
-move on it via SUMO's bundled `randomTrips.py`. None of that is a
-calibrated baseline or a validated corridor choice — see that file's
-"What this is NOT" section.
+As of 2026-10-26: **it already is, for candidate B.** The full chain ran for
+real at the desk: `arteria studyarea build` (Nominatim), `arteria osm fetch
+--candidate b` (Geofabrik + `osmium extract`), `arteria network build`
+(`osmium cat` to OSM XML, then `netconvert`) and `sumo-gui` with SUMO's bundled
+`randomTrips.py` traffic. Candidates D, C and A have study-area polygons but no
+network yet, and `arteria network validate` still reports mostly false positives
+on real networks (see `.claude/napkin.md`). `docs/local/sjc-quickstart.md` is the
+exact sequence. None of it is a calibrated baseline or a validated corridor
+choice — see that file's "What this is NOT" section.

@@ -61,7 +61,8 @@ def build_network(
     extra_options: Sequence[str] = (),
     run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
 ) -> NetworkBuildResult:
-    """Run `netconvert` against `osm_pbf_path`, writing `output_path`, then
+    """Run `netconvert` against `osm_pbf_path` (PBF is first converted to OSM XML
+    with `osmium cat`; `.osm.xml` input is passed through), writing `output_path`, then
     validate the result with `validate_network`. `run` is injected (ADR
     0009: no `netconvert` binary here); tests use a fake that writes a toy
     `.net.xml` to `output_path`, since the real binary's job can't be
@@ -75,10 +76,25 @@ def build_network(
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # netconvert reads OSM XML only (first real run: "invalid multi-byte
+    # sequence" on a .pbf), so convert PBF input with `osmium cat` first.
+    osm_input = osm_pbf_path
+    if osm_pbf_path.suffix == ".pbf":
+        osm_input = osm_pbf_path.with_suffix("").with_suffix(".osm.xml")
+        convert = run(
+            ["osmium", "cat", str(osm_pbf_path), "-o", str(osm_input), "--overwrite"],
+            capture_output=True,
+            text=True,
+        )
+        if convert.returncode != 0:
+            raise NetconvertError(
+                f"osmium cat failed (exit {convert.returncode}): {convert.stderr}"
+            )
+
     cmd = [
         "netconvert",
         "--osm-files",
-        str(osm_pbf_path),
+        str(osm_input),
         "--output-file",
         str(output_path),
         *default_netconvert_options(),

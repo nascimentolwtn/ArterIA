@@ -33,27 +33,27 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-25] Desk: run the full studyarea -> osm fetch -> network build chain for real**
-   Do instead: all the code exists now — `docs/local/sjc-quickstart.md` is the exact
-   sequence (`arteria studyarea build` -> `arteria osm fetch --candidate b` ->
-   `arteria network build` -> `arteria network validate` -> `netedit`/`sumo-gui` ->
-   `randomTrips.py` for a quick visual). None of it has run against real
-   `sumo`/`netconvert`/`osmium`/Nominatim/Geofabrik yet (ADR 0009: no network, no
-   binaries remotely) — this is the first real contact. Expect to need to adjust
-   `default_netconvert_options()` (`arteria/network/build.py`) against the installed
-   `netconvert --help`, and the `osmium extract` flags against `osmium --help`; note
-   whatever changes in a commit so the next remote session doesn't reintroduce the
-   same unverified assumption. Treat all output as draft/uncalibrated — check the
-   study-area polygon against satellite imagery/OSM, and don't treat `randomTrips.py`
-   traffic as anything but a routability sanity check.
-2. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
+1. **[2026-10-26] Adapt `arteria network validate` to real networks (first-run findings)**
+   Do instead: the candidate-B build (`cities/sjc/network/sjc.net.xml`) gave 729 errors /
+   7,562 warnings, mostly validator false positives. Drop or replace the `oneway_status`
+   check (real `.net.xml` has no `oneway` attribute; use opposite-edge pairs instead),
+   skip internal `:`-prefixed edges, replace the single-start-junction `connectivity`
+   check with strongly-connected-component sizes (report the main component and
+   orphans), treat clip-boundary `dead_end`s separately, and check whether the 2
+   `traffic_light_logic` hits (bicycle-only clusters, no `<tlLogic>`) matter in `sumo`.
+   Add a real-network fixture slice to the tests.
+2. **[2026-10-26] Build and unify networks for candidates D, C, A (only B exists)** (medium)
+   Do instead: `arteria osm fetch --candidate d|c|a` + `network build` per polygon, then
+   decide whether to build one unified SJC network (B connects to A's Anel Viário) or
+   per-corridor networks; record the choice in an ADR if it is hard to reverse.
+3. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
    Do instead: check before committing to local calibration/optimizer run plans.
-3. **[2026-10-24] Desk: run `nox -s smoke` for real**
+4. **[2026-10-24] Desk: run `nox -s smoke` for real**
    Do instead: this session's `nox -s smoke` only confirmed it skips cleanly with no
    `sumo` binary (correct for remote). At the desk, with SUMO installed, confirm it
    actually passes against a real toy network — the roadmap's P0 exit criterion needs
    both halves.
-4. **[2026-10-26] Reconcile Windows-native roadmap L-items with ADR 0014 (WSL2-primary desk)** (small)
+5. **[2026-10-26] Reconcile Windows-native roadmap L-items with ADR 0014 (WSL2-primary desk)** (small)
    Do instead: L4 (long paths), L5 (Defender exclusions), L7 (power hygiene/Task
    Scheduler), and L18 (scheduled runs) were all written as
    Windows-native `scripts/win/*.ps1`/registry/Task Scheduler items. Under ADR 0014
@@ -62,7 +62,7 @@ None open.
    `scripts/linux/...` + systemd-timer/`cron` equivalent instead of `powercfg`/Task
    Scheduler. Update `docs/roadmap.md`'s L-item table once the actual
    desk scripts get written (L1/L6/L7/L18), not before.
-5. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
+6. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
    Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
    remote session's network policy. At the desk: confirm Geosanja still serves Master
    Plan/zoning layers and check for a distinct road-network layer; confirm IBGE's Base
