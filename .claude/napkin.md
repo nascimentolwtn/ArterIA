@@ -33,14 +33,7 @@ None open.
 
 ## Backlog Features
 
-2. **[2026-10-24] Benchmark dev PC against 8-core / 32 GB guideline** (small)
-   Do instead: check before committing to local calibration/optimizer run plans.
-3. **[2026-10-24] Desk: run `nox -s smoke` for real**
-   Do instead: this session's `nox -s smoke` only confirmed it skips cleanly with no
-   `sumo` binary (correct for remote). At the desk, with SUMO installed, confirm it
-   actually passes against a real toy network — the roadmap's P0 exit criterion needs
-   both halves.
-4. **[2026-10-26] Reconcile Windows-native roadmap L-items with ADR 0014 (WSL2-primary desk)** (small)
+1. **[2026-10-26] Reconcile Windows-native roadmap L-items with ADR 0014 (WSL2-primary desk)** (small)
    Do instead: L4 (long paths), L5 (Defender exclusions), L7 (power hygiene/Task
    Scheduler), and L18 (scheduled runs) were all written as
    Windows-native `scripts/win/*.ps1`/registry/Task Scheduler items. Under ADR 0014
@@ -49,7 +42,7 @@ None open.
    `scripts/linux/...` + systemd-timer/`cron` equivalent instead of `powercfg`/Task
    Scheduler. Update `docs/roadmap.md`'s L-item table once the actual
    desk scripts get written (L1/L6/L7/L18), not before.
-5. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
+2. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
    Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
    remote session's network policy. At the desk: confirm Geosanja still serves Master
    Plan/zoning layers and check for a distinct road-network layer; confirm IBGE's Base
@@ -57,8 +50,7 @@ None open.
    completeness for the SJC area (Kontur's OSM Road Completeness map, or JOSM/QGIS vs.
    satellite) before relying on it for the pilot corridor. Update
    `cities/sjc/data-manifest.yaml` notes with what's actually found.
-
-7. **[2026-10-26] Desk: confirm unsignalised `traffic_light` clusters load in `sumo`** (small)
+3. **[2026-10-26] Desk: confirm unsignalised `traffic_light` clusters load in `sumo`** (small)
    Do instead: the 2 candidate-B clusters with no `<tlLogic>` are now validator warnings
    (no `tl=` connection uses them); run `sumo -n cities/sjc/network/sjc.net.xml` once to confirm no warning/error.
 
