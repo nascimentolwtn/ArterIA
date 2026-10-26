@@ -244,7 +244,7 @@ real at the desk: `arteria studyarea build` (Nominatim), `arteria osm fetch
 --candidate b` (Geofabrik + `osmium extract`), `arteria network build`
 (`osmium cat` to OSM XML, then `netconvert`) and `sumo-gui` with SUMO's bundled
 `randomTrips.py` traffic. Candidates D, C and A have study-area polygons but no
-network yet, and `arteria network validate` still reports mostly false positives
-on real networks (see `.claude/napkin.md`). `docs/local/sjc-quickstart.md` is the
+network yet. `arteria network validate` now handles real networks (0 errors on
+candidate B; see the CHANGELOG). `docs/local/sjc-quickstart.md` is the
 exact sequence. None of it is a calibrated baseline or a validated corridor
 choice — see that file's "What this is NOT" section.

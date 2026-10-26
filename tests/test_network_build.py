@@ -69,8 +69,8 @@ def test_build_network_success_with_broken_toy_network_reports_findings(tmp_path
         run=_fake_run_writing("toy-net-broken.net.xml"),
     )
 
-    assert result.validation_errors == 5
-    assert result.validation_warnings == 2
+    assert result.validation_errors == 4
+    assert result.validation_warnings == 3
 
 
 def test_build_network_command_shape_includes_type_files_and_extra_options(tmp_path: Path):
