@@ -202,7 +202,7 @@ fails with "can't open file '/tools/randomTrips.py'", and a one-off fix is
 
 ```bash
 # replay the same traffic (same routes, same vehicles) — press Play, or add --start
-sumo-gui -n cities/sjc/network/sjc.net.xml -r cities/sjc/network/sjc-random.rou.xml --start
+sumo-gui -n cities/sjc/network/sjc.net.xml -r cities/sjc/network/sjc-random.rou.xml --start --delay 200
 
 # just look at the street network, no vehicles
 sumo-gui -n cities/sjc/network/sjc.net.xml
