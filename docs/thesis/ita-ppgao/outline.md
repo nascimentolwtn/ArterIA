@@ -2,6 +2,23 @@
 
 > Este é um esqueleto de capítulos, não um rascunho. Cada item abaixo resume, em 2-4 linhas, o que já está coberto pelo `pre-projeto.md` e o que ainda falta pesquisar ou escrever para transformar aquele material em capítulo de dissertação/produto técnico.
 
+## Status por capítulo (2026-10-26, Profundidade: completo por autorização do dono; sem orientador)
+
+| Cap. | Arquivo | Status | Evidência ainda necessária |
+|---|---|---|---|
+| 1 Introdução | — | stub | Validação do enquadramento por orientador do PPGAO; narrativa contínua; ICA 37-461 |
+| 2 Revisão | — | stub | Revisão de AO/logística de defesa; dissertações do PPGAO |
+| 3 Área | — (ver nota abaixo) | outline | Auditoria da rede contra imagem; dados operacionais FAB (nenhum) |
+| 4 Metodologia | `chapters/04-metodologia.md` | rascunho (só 4.1; demais outline) | Verificação individual dos achados do validador; manifesto de proveniência; contagens |
+| 5 Cenários/Resultados | `chapters/05-estudo-de-caso-corredor-b.md` | rascunho (5.1-5.4); 5.5 stub | Tudo que for quantitativo: nenhum resultado existe |
+| 6 Recomendações | — | stub | Depende do Cap. 5 |
+| 7 Conclusão | — | stub | Depende dos demais |
+| 8 Referências | `references.bib` | outline (2 entradas) | Literatura de AO/defesa; qualidade OSM |
+
+Nota: o Capítulo 3 ainda não tem arquivo próprio; seu conteúdo permanece nas notas abaixo até haver rede auditada.
+
+Atualização (marco v1.0, 2026-10-26): primeira execução real da cadeia (Nominatim, Geofabrik/osmium, `osmium cat`, `netconvert`, `sumo-gui` com 1.800 veículos aleatórios; só corredor B). Alimenta os Capítulos 3, 4 (seção 4.1: construção e validação da rede) e 5 (rascunho de estudo de caso). Achados do validador em rede real (729 erros/7.562 avisos, em grande parte ruído de verificação afinada em fixtures) viram argumento metodológico. É teste de roteabilidade, não baseline calibrado.
+
 ## 1. Introdução e Enquadramento Operacional
 
 Já coberto: título provisório, resumo, problema de pesquisa e justificativa, e a distinção explícita entre "mobilidade urbana de SJC" e "logística de acesso a instalações da FAB" (Seções 1-3 e 13 do pré-projeto).

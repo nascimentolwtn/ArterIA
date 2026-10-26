@@ -113,6 +113,7 @@ O resultado esperado não é um algoritmo isolado, mas um **sistema de apoio à 
 - **Risco de overfitting do surrogate**: um modelo treinado sobre um conjunto limitado de configurações de rede pode generalizar mal para combinações de intervenções não amostradas, exigindo validação cruzada cuidadosa e quantificação explícita de incerteza.
 - **Viabilidade jurídica e política das intervenções**: restrições formais do Plano Diretor e do PlanMob podem não capturar integralmente barreiras políticas ou sociais à implantação real, de modo que a recomendação final deve ser lida como evidência técnica, não como decisão administrativa.
 - **Erro de especificação do modelo de equilíbrio**: a aproximação de comportamento dos usuários (rotas, elasticidade de demanda) no SUMO é, em si, uma simplificação da realidade, cujos parâmetros de calibração introduzem incerteza adicional propagada a todo o pipeline.
+- **Incerteza estrutural da rede viária**: a rede $G$ derivada do OpenStreetMap por `netconvert` pode conter omissões, atributos inferidos (inclusive semáforos, quando inferidos automaticamente) e efeitos de borda do recorte espacial sobre conectividade e acessibilidade; essas imperfeições alimentam o nível inferior como erro estrutural, anterior à calibração de demanda. Mitigação prevista: validação da rede real (não apenas de fixtures), revisão manual documentada em `netedit` e registro de proveniência (versão do SUMO, parâmetros do `netconvert`, hash do extrato). Nota de 2026-10-26; ver `chapters/03-formulacao-metodologia.md`.
 
 ## 13. O que evitar
 

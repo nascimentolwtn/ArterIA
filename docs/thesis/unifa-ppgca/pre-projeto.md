@@ -62,6 +62,8 @@ Pesquisa de método misto, predominantemente qualitativa no núcleo teórico-con
 - **Modelagem quantitativa de resiliência:** simulação de tráfego calibrada (SUMO) sob cenários de interdição, reaproveitando a arquitetura de simulação já planejada para o ArterIA, mas com cenários desenhados para medir resiliência de acesso, não para otimizar pacotes de intervenção de mobilidade geral.
 - **Coleta qualitativa complementar** (entrevistas, análise documental de planejamento institucional), sujeita a aprovação de comitê de ética e a eventuais restrições de acesso a informação institucional da FAB, tratada aqui como etapa condicional e não como pré-requisito para a viabilidade mínima do projeto.
 
+> **Nota de atualização (2026-10-26).** A rede viária real do Corredor B (acesso Av. Andrômeda <-> DCTA) foi construída pela primeira vez a partir de dados abertos do OpenStreetMap e renderizada em simulação, como teste de rotabilidade; não se trata de linha de base calibrada nem de seleção de corredor. A construção e a validação da rede (incluindo efeito de borda do recorte, completude do OSM e semáforos inferidos) passam a ser etapa metodológica a documentar; ver `notas-rede-corredor-b.md`. O enquadramento de segurança/defesa segue **não validado** por orientador do PPGCA.
+
 ## 10. Métricas de avaliação
 
 - Tempo de acesso sob condição normal versus sob cenários de interdição.

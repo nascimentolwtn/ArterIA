@@ -1,0 +1,66 @@
+# Capítulo 3 — Arquitetura do Sistema
+
+> Status: **rascunho parcial** (apenas as Seções 3.2 a 3.5 têm prosa; 3.1 e 3.6 em `stub`).
+> RASCUNHO: texto sujeito a revisão com orientador(a), ainda não contatado(a). Nenhum resultado de RL/GNN existe; as seções abaixo descrevem a construção e a verificação da **rede de simulação**, pré-condição do grafo de RL/GNN.
+> Rastreabilidade: caminhos de arquivo e commits do repositório ArterIA citados em cada afirmação. Itens sem lastro estão como `TODO(evidência)` ou `TODO(citação)`.
+
+## 3.1 Visão geral da arquitetura (stub)
+
+TODO(evidência): diagrama de componentes (pipeline de dados, ambiente TraCI, agentes + GNN, infraestrutura de experimentação), conforme Seção 9 de `pre-projeto.md`. FIGURA(TODO): diagrama de componentes com as fronteiras de execução (sessão remota vs. desktop, ADR 0009).
+
+## 3.2 Construção da rede de simulação (RASCUNHO)
+
+A rede viária do recorte é obtida por uma cadeia de quatro etapas implementada no pacote `arteria` e executada no desktop (WSL2, ADR 0014):
+
+1. **Delimitação da área de estudo.** `arteria studyarea build` geocodifica, via Nominatim, uma lista de pontos de referência por candidato (`cities/sjc/study-areas.yaml`), toma o fecho convexo e o expande por uma distância (buffer), produzindo um polígono provisório em GeoJSON (`arteria/network/study_area.py`; saída em `cities/sjc/study-areas.geojson`). O polígono é rascunho, a ser conferido contra imagem de satélite.
+2. **Extração OSM.** `arteria osm fetch --candidate b` obtém o extrato regional Sudeste do Geofabrik e o recorta ao polígono com `osmium extract` (`arteria/network/osm_fetch.py`).
+3. **Conversão para rede SUMO.** `arteria network build` converte o PBF recortado para OSM XML com `osmium cat` e, em seguida, invoca `netconvert` (`arteria/network/build.py`). A conversão intermediária foi necessária porque `netconvert` não lê PBF (primeira execução real falhou com "invalid multi-byte sequence"; correção registrada em `CHANGELOG.md`, [1.0]). Os sinalizadores padrão de importação OSM são: `--geometry.remove`, `--roundabouts.guess`, `--ramps.guess`, `--junctions.join`, `--tls.guess-signals`, `--tls.discard-simple`, `--tls.join`, `--output.street-names` e `--output.original-names`; segundo o `CHANGELOG.md` ([1.0]), os demais sinalizadores padrão foram aceitos como escritos.
+4. **Inspeção e demanda de teste.** A rede foi aberta em `sumo-gui` com 1.800 veículos gerados por `randomTrips.py`; 415 viagens inviáveis (sem rota) foram descartadas pelo gerador. O objetivo é exclusivamente verificar roteabilidade e plausibilidade visual.
+
+**Escopo da execução.** Somente o candidato B (Av. Andrômeda ↔ DCTA / Jardim Satélite) teve rede construída; os candidatos D, C e A possuem polígonos, mas não rede. A escolha entre rede unificada de SJC e redes por corredor está em aberto (o corredor B conecta-se ao Anel Viário do candidato A; `.claude/napkin.md`, item de backlog de 2026-10-26). A ordem B > D > C > A é prioridade de engenharia de produto, não critério acadêmico de seleção de corredor (`cities/sjc/candidate-corridors.md`).
+
+**Ressalvas.** (i) A demanda de `randomTrips.py` não guarda relação com a demanda real de SJC; o cenário de treinamento/avaliação será sempre "cenário sintético calibrado a fluxos observados" (ADR 0013), nunca "o tráfego real de SJC". (ii) O resultado não é baseline calibrado nem escolha validada de corredor. (iii) Não constitui evidência para este capítulo além do registro de que o pipeline executa de ponta a ponta.
+
+TODO(evidência): tamanho da rede (número de arestas, junções, comprimento total) medido a partir de `cities/sjc/network/sjc.net.xml`, ainda não reportado à trilha. Nenhum número foi estimado neste rascunho.
+TODO(citação): citar SUMO (ver `references.bib`, chave `lopez2018sumo`) e documentação do `netconvert` para versão 1.28.0 (versão informada pelo responsável; a ser confirmada em `manifest.json`).
+
+## 3.3 Validação estrutural da rede: fixtures de brinquedo vs. rede real (RASCUNHO)
+
+O validador (`arteria network validate`, `arteria/network/validate.py`) foi desenvolvido e ajustado exclusivamente contra *fixtures* de brinquedo escritas à mão (ADR 0009). Sua primeira aplicação a uma rede real (candidato B) produziu **729 erros e 7.562 avisos**. A análise do responsável do projeto indica que a maior parte é ruído de um validador mal calibrado para redes reais, e não defeito da rede:
+
+| Verificação | Contagem | Diagnóstico | Ação prevista |
+|---|---|---|---|
+| `oneway_status` | 7.522 avisos | Falso positivo: o `.net.xml` do SUMO não possui atributo `oneway`; 5.448 dessas arestas são internas (prefixo `:`) | Substituir por detecção de pares de arestas opostas; ignorar arestas internas |
+| `connectivity` | 727 erros | Medida a partir de uma única junção inicial em extrato recortado; esperada | Substituir por análise de componentes fortemente conexos (principal vs. órfãos) |
+| `dead_end` | 40 avisos | Majoritariamente arestas de borda do recorte | Tratar separadamente os becos de borda |
+| `traffic_light_logic` | 2 erros | Reais: dois aglomerados de travessia só-bicicleta (`allow="bicycle"`) tipados `traffic_light` sem `<tlLogic>` (2 de 18 junções semafóricas); impacto na simulação não verificado | Verificar no `sumo` se há efeito; decidir correção em `netedit` ou parâmetro |
+
+Fonte: `CHANGELOG.md` [1.0] e `.claude/napkin.md` (backlog 2026-10-26). Conferência aritmética: 727 + 2 = 729 erros e 7.522 + 40 = 7.562 avisos; as quatro categorias esgotam os totais relatados.
+
+**Interpretação metodológica (hipóteses, sem resultado experimental).**
+
+- *Validação sobre fixtures não transfere para redes reais.* Os verificadores devem ser reescritos contra a semântica do formato `.net.xml` (arestas internas, ausência de `oneway`) e testados com uma fatia de rede real incluída nos testes (tarefa em `.claude/napkin.md`).
+- *Conectividade em extrato recortado é, por construção, parcial.* A métrica adequada é a distribuição dos tamanhos dos componentes fortemente conexos (algoritmo de Tarjan, `tarjan1972`), com declaração do componente principal e dos órfãos; trechos órfãos devem ser excluídos ou marcados antes de se definirem observações e ações.
+- *Efeito de borda.* Arestas de corte criam fontes e sumidouros artificiais; viagens entre origens/destinos dentro do recorte podem exigir rotas que, na rede completa, usariam vias externas ao recorte. Isto afeta métricas de tempo de viagem e de acessibilidade. TODO(evidência): quantificar a fração de viagens inviáveis atribuível ao recorte (as 415 viagens descartadas não foram classificadas por causa).
+- *Completude e qualidade do OSM.* A qualidade do OSM varia no espaço (TODO(citação): `haklay2010osm`, `barrington2017osm` para completude); a revisão manual em `netedit` é etapa metodológica a documentar (patches versionados, nunca o `.net.xml` gerado — ADR 0004). TODO(evidência): spot-check de completude de SJC ainda não realizado (`.claude/napkin.md`, item 6).
+- *Semáforos inferidos.* `--tls.guess-signals` e `--tls.join` inferem a presença e o agrupamento de semáforos a partir de heurísticas; constituem fonte de incerteza e podem gerar casos como os 2 aglomerados sem `<tlLogic>`. Sem planos semafóricos reais (`data-manifest.yaml`: `deferred`), os tempos são os padrão do `netconvert`.
+
+## 3.4 Rede como grafo: implicações para observação, ação e GNN (RASCUNHO — hipóteses de projeto)
+
+O Objetivo específico 1 (Seção 8 do `pre-projeto.md`) exige representação formal da rede como grafo heterogêneo e dinâmico. A rede `.net.xml` contém arestas, faixas, junções, conexões e programas semafóricos; a passagem para o grafo de RL/GNN exige decisões que a qualidade da rede condiciona:
+
+1. **Arestas internas (prefixo `:`).** Representam trajetórias dentro de junções (5.448 das 7.522 ocorrências em `oneway_status` na rede do corredor B). Decisão em aberto: excluí-las do grafo de GNN (junção como nó) ou mantê-las como arestas. A escolha altera o tamanho do grafo e o alcance do *message passing*. TODO(evidência): comparação empírica das duas opções, se viável.
+2. **Componentes órfãos.** Componentes desconectados do principal não participam de roteamento realista; incluí-los na observação adiciona nós sem fluxo. Proposta: filtrar pelo componente fortemente conexo principal antes de construir o grafo.
+3. **Nós/arestas de borda do recorte.** Conforme 3.3, têm grau e fluxo artificiais; propõe-se um atributo binário `borda` nas features de nó/aresta, para que a política e o surrogate possam distinguir comportamento de fronteira de comportamento interior. Hipótese, ainda não testada.
+4. **Semáforos inferidos.** O tipo e o programa semafórico são features candidatas de nó; sua incerteza (3.3) sugere marcar a origem (`inferido` vs. `observado`). Controle de sinalização permanece fora do escopo central (Seção 6 do pré-projeto).
+5. **Fidelidade do grafo vs. conclusões do surrogate.** Erros estruturais do grafo (arestas ausentes por OSM incompleto, restrições de giro erradas) propagam-se para o surrogate: ele aprende a dinâmica da rede *simulada*, não a de SJC. A dissertação deve distinguir validade interna (surrogate vs. SUMO) de validade externa (SUMO vs. cidade).
+
+Nenhuma dessas escolhas foi implementada; não há código de extração de grafo (GNN) no repositório até esta data. TODO(evidência): protótipo de conversão `.net.xml` → grafo (por exemplo, com `sumolib`; TODO(citação): confirmar API) e estatísticas do grafo resultante.
+
+## 3.5 Proveniência e reprodutibilidade (RASCUNHO)
+
+Cada construção de rede deve ser rastreável a: extrato Geofabrik (data e hash do PBF), polígono (hash do GeoJSON), versão do `osmium`, versão do SUMO (1.28.0 segundo o responsável), lista exata de sinalizadores do `netconvert` e eventuais patches de `netedit`. O repositório dispõe de `arteria/provenance.py` (`RunManifest`: SHA do git, versão do SUMO, semente, hash de configuração, *checksums* de entrada; commit `eefc81c`), mas, até esta data, nenhum comando de construção de rede o invoca (conforme a nota de rastreio do `outline.md`). `ARTERIA_DATA` passou a ser um diretório `data/` ignorado pelo git, dentro do repositório (`CHANGELOG.md` [1.0]); os arquivos de rede gerados também são ignorados. TODO(evidência): confirmar se `arteria network build` grava manifesto; caso contrário, registrar como lacuna de reprodutibilidade.
+
+## 3.6 Ambiente TraCI, agentes e GNN (stub)
+
+TODO(evidência): nada implementado. Contrato ação → transformação de rede: ver `arteria/interventions/apply.py` (`apply_intervention()`), sete dos dez tipos de catálogo despachados (após `2624762`); `reversible_lane`, `new_connector` e `transit_signal_priority` sem transformação.

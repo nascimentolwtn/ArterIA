@@ -2,19 +2,25 @@
 
 > Esqueleto de alto nível derivado de `pre-projeto.md`. Não é rascunho de conteúdo — serve apenas para orientar a estrutura da dissertação e mapear o que já está coberto versus o que ainda falta pesquisar/escrever.
 
+> Profundidade `completo` desde 2026-10-26. Cada capítulo tem arquivo em `chapters/` e status (`stub` / `outline` / `rascunho` / `revisado`). Log: `progress-log.md`.
+
 ## 1. Introdução
 
+- **Status**: stub (`chapters/01-introducao.md`). **Evidência ainda necessária**: pergunta de pesquisa formal; validação do título com orientador(a).
 - **Já coberto no pré-projeto**: motivação, problema de pesquisa (Seção 3), contexto de SJC (Seção 4), recorte geográfico (Seção 5), objetivo geral e específicos (Seções 7-8), contribuição esperada (Seção 11).
 - **Falta pesquisar/escrever**: texto narrativo de introdução propriamente dito (contextualização, pergunta de pesquisa formal, estrutura do documento); versão final do título após validação com orientador.
 
 ## 2. Fundamentação Teórica em IA/RL/GNN
 
+- **Status**: stub (`chapters/02-fundamentacao.md`). **Evidência ainda necessária**: revisão estruturada de MARL/GNN; novo subtópico (2026-10-26): qualidade de dados OSM e conectividade de grafos viários.
 - **Já coberto no pré-projeto**: levantamento inicial de trabalhos relacionados em três linhas — RL multiagente para alocação de faixas/configuração de grafos, GNNs como surrogate, RL para controle de sinalização (Seção 6); lista de referências-base (Seção 16).
 - **Falta pesquisar/escrever**: revisão sistemática mais profunda (busca estruturada, não apenas lista curada) de RL multiagente cooperativo (MARL), arquiteturas de GNN para grafos dinâmicos/heterogêneos, bi-level network design problem; formalização matemática de MDP/POMDP multiagente e de convoluções em grafo que serão usadas; comparação crítica entre candidatos de algoritmo (ex. MAPPO, QMIX, actor-critic com crítico centralizado).
 - **Nota de rastreio (2026-10-25, commit `71638f1`; identidade confirmada em `bf725e9`)**: `cities/sjc/candidate-corridors.md` descreve o Candidato D de área de estudo — confirmado pelo responsável do projeto em `bf725e9` como a rotatória do Jardim Colinas/desvio elevado da Ponte Estaiada ("bolinho caipira", apelido do próprio responsável) — enquadrado como questão operacional de tempo de semáforo/prioridade (roadmap P5.2), não de topologia. É o primeiro candidato concreto de SJC mapeando para a terceira linha de fundamentação da Seção 6 do pré-projeto (RL para controle de sinalização, Wei et al. 2016; Tong et al. 2018), já demarcada ali como correlata mas não central ao escopo desta dissertação; a confirmação reforça essa demarcação, não a altera. Em `bf725e9`, o responsável também priorizou D como 2º candidato a ser trabalhado no ArterIA (ordem B > D > C > A) — ver nota de rastreio correspondente no Capítulo 3 sobre o risco de essa priorização de produto puxar implementação de retemporização de semáforo antes de qualquer primitiva estrutural adicional. TODO(evidência): revisitar quando o roteiro do ArterIA chegar a essa primitiva.
 
 ## 3. Arquitetura do Sistema
 
+- **Status**: rascunho parcial (`chapters/03-arquitetura-do-sistema.md`; Seções 3.2-3.5 em rascunho, 3.1 e 3.6 em stub). **Evidência ainda necessária**: estatísticas da rede de B; análise de componentes fortemente conexos; protótipo de conversão `.net.xml` → grafo; manifesto de proveniência efetivamente gravado pela construção da rede.
+- **Nota de rastreio (2026-10-26, marco v1.0)**: primeira execução real do pipeline OSM→rede (corredor B). Validador: 729 erros / 7.562 avisos, majoritariamente espúrios por ter sido afinado em fixtures; 2 erros reais de `traffic_light_logic` (2 de 18 junções). Fecha o TODO(evidência) da nota de `f3473fd`/`a659e1d` abaixo: a execução ocorreu, com a fricção `netconvert` não ler PBF corrigida. Decisão em aberto: rede unificada vs. por corredor. Conteúdo desenvolvido no capítulo.
 - **Já coberto no pré-projeto**: desenho conceitual em quatro componentes — pipeline de dados, ambiente de treinamento via TraCI, arquitetura de agentes + GNN compartilhada, infraestrutura de experimentação (Seção 9); integração prevista com a estrutura `cities/sjc/` do ArterIA.
 - **Falta pesquisar/escrever**: especificação técnica detalhada (diagramas de componentes, contratos de interface observação/ação/recompensa, escolha concreta de framework de RL e de GNN, formato de dados/versionamento de experimentos); decisões de arquitetura que mereçam ADR formal.
 - **Nota de rastreio (2026-10-24, commit `eefc81c`)**: `arteria/provenance.py` (`RunManifest`: git SHA, versão do SUMO, seed, hash de config, checksums de entrada, gravado em `runs/<cidade>/<run_id>/manifest.json`) é o primeiro artefato real endereçando a lacuna "versionamento de experimentos" acima, mencionada no Objetivo específico 4 do pré-projeto (Seção 8). Ainda é código de biblioteca sem nenhum comando de execução chamando-o (integração prevista para as Fases 3/4/7 do roteiro); não cobre checkpoints de modelo, trajetórias de treinamento nem métricas de convergência. TODO(evidência): revisitar quando algum comando de treinamento/avaliação passar a gravar esse manifesto de fato.
@@ -33,6 +39,8 @@
 
 ## 4. Experimentos
 
+- **Status**: rascunho parcial (`chapters/04-experimentos.md`; 4.2 "Estudo de caso: corredor B" em rascunho, sem valor probatório). **Evidência ainda necessária**: desenho experimental, sementes, baselines, calibração por contagens (todas `deferred`), escolha acadêmica do corredor.
+- **Nota de rastreio (2026-10-26, marco v1.0)**: o teste de rotabilidade de B (1.800 veículos aleatórios, 415 viagens inviáveis descartadas) ocorreu; segue sendo marco de engenharia, não evidência. Classificar causa das 415 inviabilidades é pendência.
 - **Já coberto no pré-projeto**: cronograma tentativo por semestre (Seção 14), métricas de avaliação definidas (Seção 10), baselines propostos (regras fixas, metaheurísticas, configuração atual de SJC) e intervenção real de referência (Linha Verde) (Seções 8, 11).
 - **Falta pesquisar/escrever**: desenho experimental detalhado (protocolo de treino/validação/teste, número de seeds/repetições, cenários de demanda específicos a simular, critérios de parada); construção e calibração efetiva do modelo SUMO do corredor escolhido; definição final do corredor/subárea dentro de SJC.
 - **RESOLVIDO parcialmente (2026-10-25, commit `975fec7`, ADR 0013)**: "cenários de demanda específicos a simular" tem, agora, um caminho fixo e permanente — nunca Pesquisa OD real (microdados `declined`, não apenas `deferred`), sempre demanda sintética via modelo gravitacional + calibração por contagem (`routeSampler`/GEH). Isso remove a incerteza de depender de uma eventual liberação de dado, mas não produz, por si só, nenhuma contagem real do recorte escolhido. Terminologia exigida ao descrever esse cenário: "cenário sintético calibrado a fluxos observados" — nunca "o tráfego real de SJC". TODO(evidência): revisitar quando a calibração P4 de fato rodar contra contagens reais, e verificar que essa terminologia é respeitada em qualquer descrição do cenário de treinamento/avaliação.
@@ -48,21 +56,25 @@
 
 ## 5. Resultados
 
+- **Status**: stub (`chapters/05-resultados.md`). **Evidência ainda necessária**: tudo.
 - **Já coberto no pré-projeto**: nada ainda — é um pré-projeto, sem resultados experimentais.
 - **Falta pesquisar/escrever**: todo o capítulo depende da execução dos experimentos (Capítulo 4); inclui apresentação de métricas de tráfego e de ML/engenharia (Seção 10), comparação política aprendida vs. baselines vs. simulação completa, e resultados de generalização entre cenários de demanda.
 
 ## 6. Discussão
 
+- **Status**: stub (`chapters/06-discussao.md`). **Evidência ainda necessária**: resultados; validade interna vs. externa do surrogate.
 - **Já coberto no pré-projeto**: riscos e limitações já identificados de forma explícita (Seção 12: dados limitados, validação apenas em simulação, custo computacional, overfitting a um corredor, instabilidade de MARL); compromissos para evitar que o trabalho seja apenas "RL com aplicação ilustrativa" (Seção 11); lista do que evitar (Seção 13).
 - **Falta pesquisar/escrever**: interpretação crítica dos resultados reais à luz dessas limitações; discussão sobre generalização para outros corredores/cidades; comparação honesta com a literatura de controle de sinalização (por que alocação estrutural é diferente/mais difícil).
 - **Nota de rastreio (2026-10-24, commit `cdbdb01`; resolvida por ora em `dcf417b`)**: caso o escopo experimental venha a incluir uma segunda cidade de validação (ver nota no Capítulo 4), qualquer alegação de generalização da política de RL e/ou do surrogate em GNN entre cidades deve registrar explicitamente que, sob a ADR 0002 emendada, toda cidade adicional começa em modo "somente dados abertos" (sem pesquisa OD, sem contato municipal) — ou seja, dados de treinamento mais diversos, porém ainda sintéticos quanto à demanda em todas as cidades, não uma validação externa independente desse viés. O commit `dcf417b` registrou a decisão do responsável do projeto de manter SJC como única cidade por ora, o que torna esta ressalva momentaneamente *moot*: não há segunda cidade a generalizar para. TODO(evidência): não hipotetizar resultado de generalização multi-cidade enquanto não houver segunda cidade de fato escalonada.
 
 ## 7. Conclusão
 
+- **Status**: stub (`chapters/07-conclusao.md`). **Evidência ainda necessária**: tudo.
 - **Já coberto no pré-projeto**: contribuição dupla pretendida — engenharia de sistema reprodutível e evidência empírica sobre viabilidade de GNN como surrogate (Seção 11).
 - **Falta pesquisar/escrever**: síntese final pós-resultados, trabalhos futuros concretos, avaliação de até que ponto os objetivos específicos (Seção 8) foram atingidos.
 
 ## 8. Referências
 
+- **Status**: `references.bib` iniciado com 5 entradas (SUMO, OSM, OSMnx, Tarjan), metadados a conferir; as 10 referências do pré-projeto ainda não convertidas.
 - **Já coberto no pré-projeto**: lista inicial de 10 referências, incluindo trabalhos de RL/GNN e documentos institucionais de SJC (PlanMob, Plano Diretor, Pesquisa OD) (Seção 16).
 - **Falta pesquisar/escrever**: expansão para revisão de literatura completa (Capítulo 2); formatação ABNT/padrão exigido pelo PG/EEC; inclusão de referências de métodos (bibliotecas, frameworks de RL/GNN, SUMO) conforme forem adotadas.

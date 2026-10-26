@@ -2,6 +2,21 @@
 
 > Esqueleto superficial de capítulos, derivado de `pre-projeto.md`. Não é um rascunho de capítulo — apenas aponta o que já está coberto e o que falta pesquisar/escrever em cada parte. Deve ser revisado com o(a) orientador(a) assim que definido(a).
 
+## Status por capítulo (Profundidade: completo, desde 2026-10-26)
+
+| Cap. | Arquivo | Status | Evidência ainda necessária |
+|---|---|---|---|
+| 1 | `chapters/01-introducao.md` | stub | corredor final confirmado; orientador(a) |
+| 2 | `chapters/02-revisao-literatura.md` | stub | revisão sistemática; fontes sobre incerteza de redes OSM |
+| 3 | `chapters/03-formulacao-metodologia.md` | stub (+ seção 3.x em rascunho: incerteza estrutural da rede) | notação final; decisão sobre tratamento da incerteza estrutural; contagens reais |
+| 4 | `chapters/04-desenvolvimento.md` | rascunho (Seção 4.1: construção e validação da rede) | validador adaptado; revisão em `netedit`; manifesto de proveniência da execução; linha de base calibrada |
+| 5 | `chapters/05-estudo-de-caso-corredor-b.md` | stub (esboço, sem resultados) | todos os resultados |
+| 6 | `chapters/06-discussao.md` | stub | resultados |
+| 7 | `chapters/07-conclusao.md` | stub | resultados |
+| 8 | `references.bib` | outline (5 entradas, campos TODO) | expansão pela revisão |
+
+Atualização 2026-10-26: primeira rede real (Candidato B) construída e renderizada; validador gerou 729 erros / 7.562 avisos majoritariamente espúrios. Ver Cap. 4, Seção 4.1, e `progress.md` (13). Não é linha de base calibrada.
+
 ## 1. Introdução
 
 Cobertura atual: o pré-projeto já traz problema de pesquisa, justificativa, contexto de SJC, recorte geográfico e objetivos (Seções 2–5, 7–8). Boa parte do texto introdutório pode ser adaptado diretamente dessas seções.

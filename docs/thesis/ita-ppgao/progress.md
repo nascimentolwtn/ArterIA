@@ -1,9 +1,30 @@
 # Log de Progresso — Trilha PPGAO/ITA (AO-EL)
 
 Status: ativo
-Profundidade: leve
+Profundidade: completo (promovido em 2026-10-26 por autorização explícita do dono; exceção registrada: a condição de aceite do enquadramento por orientador do PPGAO NÃO foi cumprida)
 
 ---
+
+## 2026-10-26 (marco v1.0: primeira execução real ponta a ponta; commits 72ef5cb, 25eb78f, 1d2c6ad, ca6b153 e mudanças não commitadas)
+
+**O que foi feito (no produto).** Primeira execução real no desktop WSL2: `arteria studyarea build` (Nominatim) -> `arteria osm fetch --candidate b` (Geofabrik Sudeste recortado com osmium) -> `arteria network build` (`osmium cat` PBF->XML, depois `netconvert`) -> `sumo-gui` com 1.800 veículos aleatórios (415 viagens inviáveis descartadas). Só o corredor B foi renderizado; A, C e D têm polígonos sem rede. Correções: `netconvert` não lê PBF; três consultas Nominatim falhavam ou erravam (uma resolvia ~30 km ao norte); `ARTERIA_DATA` passou a ser `data/` gitignorado. Fontes: CHANGELOG [1.0], `docs/local/sjc-quickstart.md`, `.claude/napkin.md`. ADR 0014 (WSL2 como SO único de mesa) e os commits de setup são de processo, sem conteúdo de pesquisa para esta trilha.
+
+**Achados do validador na rede real do corredor B (729 erros / 7.562 avisos).** Em grande parte ruído de verificação afinada em fixtures: 7.522 avisos `oneway_status` (falso positivo; 5.448 em arestas internas); 727 erros `connectivity` (única junção inicial, extrato recortado); 40 avisos `dead_end` (borda do recorte); 2 erros `traffic_light_logic` reais, provavelmente inofensivos (travessias só-bicicleta sem `<tlLogic>`, 2 de 18 junções semafóricas; impacto não verificado). Classificação conforme registro do responsável do produto; verificação individual não feita por esta trilha.
+
+**Por que importa para o problema operacional.** Estabelece, pela primeira vez, que há rede real roteável do corredor candidato a acesso único, e expõe que a validação de rede precisa ser pensada para redes reais recortadas (efeito de borda, qualidade do OSM, semáforos inferidos, revisão manual, proveniência). Isso é matéria de método para o PPGAO (o que um planejador pode concluir com este nível de maturidade). Não produz evidência sobre acesso, resiliência ou continuidade.
+
+**Impacto no produto técnico.** Criados `chapters/04-metodologia.md` (seção 4.1, rascunho), `chapters/05-estudo-de-caso-corredor-b.md` (rascunho, inclui quadro "pode/não pode afirmar") e `references.bib` (2 entradas: SUMO, OSM; conferir paginação). `outline.md` ganhou tabela de status por capítulo. `pre-projeto.md`, Seção 12: bullet de maturidade atualizado. Todos os rascunhos estão rotulados; não há resultado quantitativo além dos números de execução acima.
+
+**Promoção de Profundidade (decisão registrada).** O dono autorizou expressamente expandir a trilha para completo nesta rodada. O prompt do agente condiciona o modo completo também ao aceite de um orientador do PPGAO, o que não ocorreu. Adotou-se a estrutura completa (capítulos e bib) por autorização do dono, como exceção, mantendo `progress.md` (em vez de `progress-log.md`) por instrução do chamador. Se o dono preferir, reverter para leve basta remover a nota acima; os rascunhos continuam válidos como material de trabalho.
+
+**Perguntas abertas e riscos.**
+1. **Enquadramento operacional/FAB: NÃO validado por nenhum orientador do PPGAO; nenhum foi contatado.** Risco central, inalterado.
+2. Risco de descaracterização: o único corredor construído é de mobilidade geral até que o recorte logístico-militar seja validado (Seção 12 do pré-projeto).
+3. O quickstart declara que nada do que ele produz pertence a capítulo de tese; os rascunhos de Cap. 4/5 respeitam isso (descrevem procedimento e limites, sem resultados), mas o dono deve confirmar que quer esse material no corpus da trilha.
+4. Rede unificada versus por corredor; regra de portais de borda; origem das 415 viagens inviáveis; impacto dos 2 nós semafóricos sem `<tlLogic>`; contagens para calibração (hoje `deferred`).
+5. Delimitação de escala dos cenários de interdição (corredor, não evacuação em rede; ADR 0013) ainda pendente de formalização com orientador.
+
+**Próximos passos.** (a) Quando o validador for adaptado (componentes fortemente conexos, pares de arestas opostas), registrar o estado antes/depois no Cap. 4; (b) após revisão no `netedit`, documentar patches e discrepâncias; (c) gerar `RunManifest` para a construção da rede; (d) buscar orientador do PPGAO; (e) literatura sobre qualidade de OSM e validação de redes de simulação (TODO(citação)).
 
 ## 2026-10-25 (revisão do commit 2624762 — correção da lacuna do dispatcher sinalizada na nota de reconciliação de merge, entrada abaixo)
 

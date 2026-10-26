@@ -1,9 +1,32 @@
 # Log de progresso — Mestrado ITA PG/PO
 
 Status: ativo
-Profundidade: leve
+Profundidade: completo (promovido em 2026-10-26 por autorização explícita do dono do ArterIA; ver entrada 2026-10-26 (13). Desvio consciente da estrutura "completo" padrão: este arquivo continua sendo o log, em vez de ser substituído por `progress-log.md`, para preservar o histórico de 12 entradas sem renomear/reordenar; entradas novas seguem no topo, como até aqui. Os rascunhos de capítulo estão em `chapters/`, e `references.bib` foi criado.)
 
 ---
+
+## 2026-10-26 (13)
+
+Marco v1.0 do ArterIA (`CHANGELOG.md` [1.0], 2026-10-26; mudanças ainda não commitadas em `arteria/network/build.py`, `cities/sjc/study-areas.yaml`/`.geojson`, `docs/visualization-plan.md`; commits `72ef5cb` ADR 0014, `25eb78f`/`1d2c6ad`/`ca6b153` docs de setup). Primeira execução real ponta a ponta no desktop WSL2: `arteria studyarea build` (Nominatim) -> `arteria osm fetch --candidate b` (extrato Geofabrik Sudeste recortado com `osmium`) -> `arteria network build` (`osmium cat` PBF->XML, depois `netconvert`) -> `sumo-gui` com 1.800 veículos aleatórios (`randomTrips.py`; 415 viagens inviáveis descartadas). Só o Candidato B (Av. Andrômeda <-> DCTA / Jardim Satélite) foi renderizado; D, C e A têm polígonos sem rede. Fecha o item "execução de bancada ainda não relatada" das entradas (8) e (6).
+
+**O que foi feito (no repositório):** correções da primeira execução real: `netconvert` não lê PBF (conversão via `osmium cat` adicionada); três consultas Nominatim falhavam ou erravam (o texto "Centro" resolvia ~30 km ao norte); `ARTERIA_DATA` passou a ser `data/` gitignorado no repositório (ADR 0014). `arteria network validate` na rede real: 729 erros / 7.562 avisos, majoritariamente ruído porque o validador foi afinado em fixtures de brinquedo: (a) 7.522 avisos `oneway_status` são falso positivo (o `.net.xml` não tem atributo `oneway`; 5.448 são arestas internas ":"); (b) 727 erros `connectivity` vêm de uma única junção inicial num extrato recortado, esperados; (c) 40 avisos `dead_end`, majoritariamente borda do recorte; (d) 2 erros `traffic_light_logic` reais, provavelmente inofensivos (dois clusters de travessia só-bicicleta tipo `traffic_light` sem `<tlLogic>`; 2 de 18 junções semafóricas; impacto na simulação não verificado).
+
+**Por que importa para a trilha PG/PO:**
+- **Primeiro dado empírico sobre o nível inferior, e ele é sobre a rede, não sobre tráfego.** Passa a existir uma rede $G$ real de SJC (Candidato B), o que torna concreta a fonte de erro que a Seção 12 do pré-projeto só trata de forma genérica: a incerteza estrutural de $G$ (completude/qualidade do OSM, efeito de borda do recorte, semáforos inferidos) propaga-se ao oráculo $\mathcal{L}(y)$ e, portanto, a $F(y)$, ao treino do surrogate e à fronteira de Pareto. Isso é um tema de formulação/incerteza de modelo, e entra como seção nova do Capítulo 3 (rascunho) e do Capítulo 4 (rascunho).
+- **Lição metodológica: validar em rede real, não só em fixtures.** O validador (`396caf7`) passou nos testes de brinquedo e produziu centenas de achados espúrios na primeira rede real. A conclusão defensável é sobre o instrumento de controle de qualidade, não sobre a rede: o número bruto de erros/avisos não mede a qualidade da rede. Falta a versão adaptada (pares de arestas opostas no lugar de `oneway`; componentes fortemente conexos no lugar de uma junção inicial) antes que qualquer contagem de erros seja reportável.
+- **Efeito de borda do recorte** afeta conectividade e acessibilidade (e, portanto, qualquer métrica de acesso de emergência ou equidade) e o roteamento: as 415 viagens inviáveis de 2.215 aleatórias (1.800 + 415; soma aritmética dos números reportados) são consistentes com isso, mas não provam a causa, que não foi investigada.
+- **Fronteira do que isto é:** teste de rotabilidade e inspeção visual. Não é linha de base calibrada, nem escolha validada de corredor, nem resultado. Demanda segue o regime da ADR 0013 (sintética calibrada por contagem, sem microdados OD); o tráfego do `sumo-gui` é `randomTrips.py`, sem calibração. A escolha de B como primeira rede reflete a prioridade de construção do ArterIA (B>D>C>A), não a decisão do recorte da dissertação.
+- **Decisão futura do ArterIA com impacto na formulação:** rede unificada vs. por corredor (B conecta-se ao Anel Viário do Candidato A). Muda o domínio de $G$, o tamanho de $y$ e o efeito de borda. Não decidido.
+
+**Impacto na tese:** Profundidade promovida a completo. Criados `chapters/01` a `07` (01, 02, 06, 07 `stub`; 03 `stub` com uma seção em rascunho sobre incerteza estrutural da rede; 04 `rascunho` da Seção 4.1, construção e validação da rede; 05 `stub` com esboço do estudo de caso do corredor B, sem resultados; todos rotulados) e `references.bib`. `outline.md` ganhou status por capítulo e "evidência ainda necessária". Uma linha de limitação sobre incerteza estrutural da rede foi acrescentada à Seção 12 do `pre-projeto.md`. Nenhuma outra edição de formulação.
+
+**Perguntas abertas/riscos:**
+1. Rede unificada vs. por corredor (decisão do ArterIA; afeta domínio de $G$).
+2. Como tratar a incerteza estrutural da rede no desenho experimental: ignorar (rede fixa como "verdade"), análise de sensibilidade a variantes da rede (com/sem correções manuais em `netedit`, com/sem `--tls.guess-signals`), ou ensemble de redes. Decisão de orientador(a).
+3. Impacto dos 2 erros `traffic_light_logic` na simulação não verificado; revisão manual em `netedit` ainda não documentada como etapa. Risco de reprodutibilidade: o `manifest.json` (`arteria/provenance.py`) deve registrar hash do extrato, SUMO 1.28.0 e flags de `netconvert`; não verificado nesta rodada que a execução real gerou esse manifesto.
+4. Pendência anterior mantida: $f_7$ sem base OD (entrada (10)); corredor final da dissertação ainda não confirmado; orientador(a) ainda não contatado(a).
+
+**Próximos passos:** (i) quando o validador for adaptado, reportar a estatística por componente conexo em vez de contagem bruta; (ii) decidir o tratamento da incerteza estrutural (pergunta 2) com orientador(a); (iii) manter o rascunho `chapters/05-estudo-de-caso-corredor-b` sem resultados até existir linha de base calibrada.
 
 ## 2026-10-25 (12)
 

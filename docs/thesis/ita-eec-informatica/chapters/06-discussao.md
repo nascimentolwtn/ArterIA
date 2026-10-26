@@ -1,0 +1,7 @@
+# Capítulo 6 — Discussão
+
+> Status: **stub**.
+
+Fonte de fundo: `../pre-projeto.md`, Seções 12 e 13.
+
+TODO(evidência): interpretação à luz de limitações. Pontos já identificáveis sem resultados: (i) validade interna (surrogate vs. SUMO) vs. externa (SUMO vs. SJC); (ii) efeito de borda do recorte; (iii) incerteza de OSM e de semáforos inferidos; (iv) demanda sintética sem OD (ADR 0013).

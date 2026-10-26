@@ -1,7 +1,15 @@
 # Progresso — Trilha de Mestrado ITA PG/EEC (Área Informática)
 
 Status: ativo
-Profundidade: leve
+Profundidade: completo
+
+> **Promovida a `completo` em 2026-10-26 por autorização explícita do dono do repositório.** A partir desta data, o registro append-only (mais recente ao final) vive em `progress-log.md`; este arquivo fica congelado como histórico do modo `leve` (mais recente no topo), exceto pela entrada de promoção abaixo. Capítulos em `chapters/`, bibliografia em `references.bib`.
+
+---
+
+## 2026-10-26 (promoção para `Profundidade: completo`; marco v1.0, corredor B)
+
+Decisão: promover a trilha porque o marco v1.0 (primeira rede real do corredor B construída e renderizada; achados do validador sobre qualidade de grafo) gerou material metodológico sustentado por evidência de repositório, em particular a distinção entre validação em fixtures e validação em rede real, e as implicações da qualidade do grafo para observação/ação de agentes e GNN. Detalhes, impacto por capítulo e perguntas abertas: `progress-log.md`, entrada de 2026-10-26. Não implica escolha do PG/EEC como programa; a decisão de programa e de orientador(a) segue pendente e deve ser tratada pelo usuário.
 
 ---
 
