@@ -5,6 +5,26 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-27 (b) (desde 0125f01: checagem aérea aprovada; Fase 2, reprodutibilidade do build; trabalho NÃO commitado)
+
+**Origem.** Contexto repassado pelo chamador, conferido em `CHANGELOG.md` [Unreleased] e `docs/roadmap.md` (Fase 2). Código e arquivos de `cities/sjc/network/` não foram lidos; números não reproduzidos aqui.
+
+**O que foi feito (no produto).** (1) Checagem aérea pelo responsável (Google Earth, 2026-10-27) aprovou corredores A, B, C, D, ligação A–B e áreas estendidas B/C, inclusive a extensão de C a oeste/sudoeste. Rede unificada: 14.225 arestas, 6.655 junções, 93,1% no maior componente (substitui 11.035 arestas e "corredor B isolado" em textos anteriores). (2) Fase 2: snapshot OSM fixado (Geofabrik Sudeste, PBF de 2026-10-25, sha256 em `cities/sjc/network/osm-snapshot.yaml`); patches como segunda passada do `netconvert` (`arteria/network/patches.py`); comandos `arteria network diff` e `rebuild`; rebuild reproduz o hash de conteúdo da rede (timestamp do cabeçalho excluído); validação 0 erros/127 avisos; rebuild ~16 s. (3) Nenhum GTFS público de SJC encontrado; P2.6 adiada.
+
+**Por que importa.** Atende o pré-requisito de rastreabilidade das entradas anteriores (versão do snapshot antes de citar comprimentos) e resolve a verificação aérea pendente no nível do responsável. Torna a construção da rede auditável, o que sustenta a alegação de método (qualidade e reprodutibilidade de rede OSM->SUMO) mais forte desta trilha. Ausência de GTFS limita cenários com transporte coletivo (relevante à continuidade de deslocamento de pessoal).
+
+**Impacto no produto técnico.** `chapters/04-metodologia.md`: notas de atualização acrescentadas em 4.1.3 (rede unificada, 14.225 arestas) e 4.1.5 (snapshot, patches, rebuild); prosa assentada preservada. `outline.md`: nota de atualização no bloco de status. Cap. 5 não alterado (ainda cita corredor B; revisar ao reescrever). Status dos capítulos inalterado.
+
+**RESSALVAS.** Hash reproduzido prova determinismo, não correção. "0 erros/127 avisos" não foi decomposto por esta trilha. A verificação aérea foi do dono do produto, não de orientador nem de especialista da FAB. DCTA segue sem nó viário (proxy: área do portão). Nada valida o enquadramento operacional/FAB.
+
+**Perguntas abertas e riscos.**
+1. **Enquadramento operacional/FAB: NÃO validado por nenhum orientador do PPGAO; nenhum foi contatado.** Risco central, inalterado.
+2. A unidade de análise da dissertação (B e ligação A–B versus rede unificada) segue sem decisão.
+3. Sem GTFS, cenários com ônibus exigiriam rotas manuais; definir se transporte coletivo entra no escopo.
+4. Os 127 avisos e os 6,9% de junções fora do componente principal precisam de caracterização antes de citar a qualidade da rede.
+
+**Próximos passos.** Revisar Cap. 5 (trocar "corredor B isolado"); tabela de avisos por verificação no Cap. 4; registrar versão do `osmium`/`netconvert` e `RunManifest`; buscar orientador do PPGAO.
+
 ## 2026-10-27 (trabalho NÃO commitado sobre o commit b24377a: corredores A/B/C/D e ligação A–B na rede unificada, áreas B e C estendidas, desk check de dados, SUMO 1.28)
 
 **Origem e ressalva de rastreabilidade.** Itens vêm do working tree (não commitado), lidos em `cities/sjc/corridors/README.md`, `docs/adr/0016-unified-sjc-network.md` (seção "Update 2026-10-27") e `CHANGELOG.md` [Unreleased]; `study-areas.yaml` e `data-manifest.yaml` não foram relidos nesta trilha, e a medição de tags OSM vem do texto informado pelo chamador. Nenhum número foi reproduzido aqui.

@@ -12,7 +12,7 @@ TODO(evidência): protocolo de treino/validação/teste, número de sementes (fe
 **Natureza do que foi feito.** Em 2026-10-26, a cadeia `studyarea build` → `osm fetch --candidate b` → `network build` → `sumo-gui` foi executada pela primeira vez contra ferramentas e dados reais, no desktop WSL2 (`CHANGELOG.md`, [1.0]). Trata-se de **teste de rotabilidade e inspeção visual**, não de experimento.
 
 **Fatos registrados.**
-- Rede construída apenas para o corredor B; D, C e A têm polígonos sem rede.
+- Rede construída apenas para o corredor B; D, C e A têm polígonos sem rede. [Defasado desde a ADR 0016: existe hoje uma rede unificada de SJC com 14.225 arestas; o registro acima descreve a primeira execução de 2026-10-26, mantido como histórico. Em 2026-10-27, B passou a ter também uma linha de eixo por arestas (derivada) e a área estendida de 5,31 para 7,67 km², com geometria conferida em imagem aérea pelo responsável.]
 - Demanda de teste: 1.800 veículos aleatórios (`randomTrips.py`); 415 viagens adicionais inviáveis foram descartadas.
 - Validador estrutural: 729 erros e 7.562 avisos, majoritariamente falsos positivos ou efeitos de recorte (detalhamento em `chapters/03-arquitetura-do-sistema.md`, Seção 3.3).
 - Pendente: classificar as 415 inviabilidades (rede desconexa, restrições de giro, borda do recorte, ou erro de OSM).
@@ -26,7 +26,7 @@ TODO(evidência): protocolo de treino/validação/teste, número de sementes (fe
 2. B conecta-se ao Anel Viário (A); uma rede recortada em B isola efeitos de transbordamento da Dutra/BR-116 que são parte do problema.
 3. A escolha do corredor da dissertação deve ser decisão acadêmica, a tomar com orientador(a), e não herdar a prioridade de engenharia.
 
-TODO(evidência): estatísticas da rede de B (ver 3.2); análise de componentes; contagem de semáforos (18 junções semafóricas, 2 sem `<tlLogic>`, informadas pelo responsável); decisão rede unificada vs. por corredor (resolvida em favor da rede única pela ADR 0016: B é área de avaliação dentro da rede de 11.035 arestas; falta definir como isso afeta o número de agentes e o escopo de recompensa por área).
+TODO(evidência): estatísticas da rede de B (ver 3.2); análise de componentes; contagem de semáforos (18 junções semafóricas, 2 sem `<tlLogic>`, informadas pelo responsável); decisão rede unificada vs. por corredor (resolvida em favor da rede única pela ADR 0016: B é área de avaliação dentro da rede unificada, hoje de 14.225 arestas e 6.655 junções após a extensão das áreas de B e C em 2026-10-27, ver 3.2, que supera as 11.035 arestas da ADR 0016 inicial; falta definir como isso afeta o número de agentes e o escopo de recompensa por área).
 
 ## 4.2.1 Orçamento computacional (RASCUNHO)
 

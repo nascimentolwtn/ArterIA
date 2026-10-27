@@ -5,6 +5,29 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-27 (16)
+
+Trabalho NÃO commitado no working tree (último commit `0125f01`): `arteria/network/{patches,diff,rebuild,snapshot}.py`, `arteria/cli.py`, `build.py`, `osm_fetch.py`, `provenance.py`, `cities/sjc/network/` (incl. `osm-snapshot.yaml`), testes novos, `CHANGELOG.md`, `docs/roadmap.md`. Fontes lidas por esta trilha: CHANGELOG [Unreleased] e linhas de P2 do roadmap; o código e os arquivos de snapshot NÃO foram lidos. Também cobre o commit `0125f01` (log nas 4 trilhas) e a checagem aérea relatada pelo responsável.
+
+**O que foi feito (conforme CHANGELOG/relato):**
+- Checagem aérea (Google Earth) em 2026-10-27: corredores A, B, C, D, ligação A-B e áreas estendidas de B/C aprovados "por ora", incluindo a extensão de C a oeste/sudoeste. Supera as ressalvas (a) e (b) da entrada (15); (c) a (d) seguem. A rede unificada vigente tem 14.225 arestas e 6.655 junções, 93,1% das junções no componente principal; o número de 11.035 arestas (ADR 0016, entradas (14)) é histórico.
+- Fase 2, reprodutibilidade: snapshot OSM fixado (Geofabrik Sudeste, PBF de 2026-10-25, sha256), `arteria network rebuild` (verifica snapshot, recorta, `netconvert`, valida, compara com referência, grava proveniência), `arteria network diff`, mecanismo de patches como segunda passada do `netconvert` (nenhum patch necessário ainda), hash de conteúdo reproduzido em duas execuções (timestamp do `netconvert` ignorado), validação com 0 erros/127 avisos, rebuild de cerca de 16 s. Nenhum GTFS público de SJC achado: P2.6 adiada.
+
+**Por que importa para a trilha PG/PO:**
+- **Fecha em parte o risco de reprodutibilidade registrado em (13)/(14)/(15)** (ids de arestas atrelados a um build): há agora um build determinístico e um diff auditável, base para amarrar linha de base, demanda e $F(y)$ a uma versão de rede. É resultado sobre o instrumento, não sobre a rede ou o tráfego.
+- **Insumo para a incerteza estrutural de $G$ (Cap. 3, 3.x):** `diff` e patches tornam viável, em tese, a análise de sensibilidade a variantes da rede (pergunta 2 de (13)); ainda não exercida (nenhum patch real).
+- **Corredores aprovados reduz o risco de geometria**, mas não escolhe o recorte da dissertação nem valida demanda; a verificação é visual de um avaliador.
+- **GTFS ausente:** objetivos que dependem de transporte coletivo (confiabilidade de ônibus, faixas de ônibus, prioridade semafórica) não têm base de dados; afeta o catálogo $\mathcal{I}$ e as métricas da Seção 10 para a evidência empírica.
+
+**Impacto na tese:** Cap. 4: Seção 4.1.5 atualizada (ressalvas (i)/(ii) superadas, nota sobre 11.035 vs. 14.225) e nova Seção 4.1.6 (rascunho). `outline.md` atualizado. Cap. 3 e `pre-projeto.md` sem alteração.
+
+**Perguntas abertas/riscos:**
+1. Aprovação aérea sem critério/registro arquivado; para a dissertação convém documentar o que foi checado (atributos, sentido, conversões).
+2. Reprodutibilidade demonstrada só em uma máquina e SUMO 1.28; efeito de atualizar o snapshot OSM sobre ids de arestas e resultados não medido.
+3. Sem GTFS: decidir se transporte coletivo entra com dados manuais ou fica fora do escopo empírico. Persistem: recorte da dissertação, tratamento da incerteza estrutural, orientador(a) não contatado(a), $f_7$ sem base OD.
+
+**Próximos passos:** (i) ler `osm-snapshot.yaml` e `rebuild.py` e conferir números antes de citar; (ii) após commit, registrar hashes; (iii) documentar o método de medição da completude de tags.
+
 ## 2026-10-27 (15)
 
 Trabalho NÃO commitado no working tree (último commit `b24377a`): `CHANGELOG.md` [Unreleased], `cities/sjc/corridors/` (novo; `README.md`, `corridors.geojson`, `summary.json`, KML, PNG, scripts), `cities/sjc/study-areas.yaml`/`.geojson`, `candidate-corridors.md`, `data-manifest.yaml`, ADR 0002 e 0016 (editadas), `docs/roadmap.md`, `.claude/napkin.md`. Nada foi lido além de `cities/sjc/corridors/README.md` e do que consta do relato recebido; os demais arquivos e o `git diff` não foram inspecionados por esta trilha.

@@ -70,5 +70,26 @@ Profundidade: completo
 1. Agente/recompensa por corredor (subgrafo) versus por junção: decisão de modelagem pendente; risco de quatro corredores excederem o escopo de um mestrado.
 2. Os percentuais de 4% e 5% vêm do relato do CHANGELOG, não verificados aqui; metodologia (denominador, escopo) precisa ser citada antes de entrarem no Cap. 3.
 3. Sem GeoSanja/IBGE confirmados, atributos de ruas locais serão imputados ou omitidos.
-4. Verificação aérea dos corredores e da direção de C pelo responsável pendente; até lá, rascunho.
+4. Verificação aérea dos corredores e da direção de C pelo responsável pendente; até lá, rascunho. [Resolvida na entrada seguinte, 2026-10-27 (2).]
 5. Orientador(a) não contatado(a); arquitetura de agentes não validada.
+
+---
+
+## 2026-10-27 (2) — Checagem aérea aprovada; reprodutibilidade da construção da rede (Fase 2; trabalho NÃO commitado; base `0125f01`)
+
+**Commits:** nenhum. Fontes: `CHANGELOG.md` [Unreleased] e `docs/roadmap.md` (Fase 2), lidos; código novo (`arteria/network/{snapshot,rebuild,diff,patches}.py`, `cities/sjc/network/osm-snapshot.yaml`) NÃO lido nem reexecutado; números abaixo são relatos do CHANGELOG.
+
+**O que foi feito.**
+1. Checagem aérea do responsável (2026-10-27, Google Earth): corredores A, B, C, D, ligação A-B e áreas estendidas de B e C aprovados, incluindo a extensão de C a oeste/sudoeste. Supera duas ressalvas da entrada anterior (geometria sem imagem aérea; direção de C não confirmada). Números vigentes da rede unificada: 14.225 arestas, 6.655 junções, 93,1% das junções no componente principal (substituem 11.035 arestas/94,0% da ADR 0016 inicial).
+2. Reprodutibilidade (Fase 2): snapshot OSM fixado (Geofabrik Sudeste, PBF de 2026-10-25, sha256), `arteria network rebuild` reproduz o hash de conteúdo da rede (cabeçalho de timestamp do `netconvert` ignorado), duas execuções idênticas, 0 erros/127 avisos, ~16 s; patches como segunda passada do `netconvert` (nenhum necessário ainda); `arteria network diff` (demonstração: B isolada vs. unificada, 12.175 arestas adicionadas/24 removidas/137 alteradas). Teste de desktop confirma que todas as arestas dos corredores existem na rede. Nenhum GTFS público de SJC encontrado: P2.6 adiada.
+
+**Por que importa.** Ids de aresta estáveis e reconstruíveis são pré-condição de qualquer ambiente de RL/GNN sobre o grafo (baseline, demanda e calibração dependem deles; ADR 0016). A falta de GTFS implica que a rede não terá ônibus por ora, restringindo intervenções de faixa de ônibus/prioridade semafórica, correlatas e não centrais ao escopo; o objeto estrutural (faixas/sentidos) não é afetado de imediato.
+
+**Impacto na tese.** Cap. 3: 3.2 (atualização de tamanhos, corredores, aprovação aérea) e 3.5 (mecanismo de reprodutibilidade) em `rascunho`, via anexos; texto antigo preservado como histórico. Cap. 4: dois trechos de 4.2 sinalizados como defasados/atualizados. `outline.md`: notas no Cap. 3. Demais capítulos inalterados.
+
+**Perguntas abertas/riscos.**
+1. As frações 94,0% (arestas, ADR 0016) e 93,1% (junções, relato atual) usam unidades distintas; não comparar sem verificar o validador.
+2. Formato do registro de proveniência do `rebuild` e relação com `RunManifest` não verificados; reprodutibilidade cobre só a construção da rede, não treinamento/simulação.
+3. Sem GTFS, nenhuma demanda/rota de transporte público; decisão de fonte alternativa (rotas manuais) pendente do responsável.
+4. Todo o material está no working tree; se mudar antes do commit, os anexos precisam de revisão.
+5. Agente/recompensa por corredor versus junção segue sem decisão; escopo de quatro corredores pode exceder um mestrado. Orientador(a) não contatado(a).

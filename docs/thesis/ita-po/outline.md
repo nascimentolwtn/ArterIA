@@ -15,7 +15,9 @@
 | 7 | `chapters/07-conclusao.md` | stub | resultados |
 | 8 | `references.bib` | outline (5 entradas, campos TODO) | expansão pela revisão |
 
-Atualização 2026-10-27 (15): corredores A, B (derivado), C, D e ligação A-B desenhados como sequências de arestas na rede única (14.225 arestas, 6.655 junções, 0 erros de validação); polígonos de B e C estendidos. Geometria derivada do OSM, não verificada por imagem aérea; direção da extensão de C não confirmada. Ver Cap. 4, Seção 4.1.5, e `progress.md` (15). Evidência ainda necessária: verificação aérea; método de medição da completude de tags.
+Atualização 2026-10-27 (16): checagem aérea do responsável aprovou corredores A-D, ligação A-B e áreas estendidas de B/C (verificação visual, sem critério arquivado); rede unificada vigente = 14.225 arestas / 6.655 junções (a cifra de 11.035 arestas é histórica, rede pré-extensão). Fase 2: build reprodutível (snapshot OSM fixado, `network rebuild`/`diff`, mecanismo de patches ainda sem uso real, hash de conteúdo reproduzido, 0 erros/127 avisos, ~16 s); sem GTFS público de SJC (P2.6 adiada). Ver Cap. 4, Seção 4.1.6 (rascunho), e `progress.md` (16). Evidência ainda necessária: leitura do código/snapshot; reprodutibilidade em outra máquina; transporte público sem dados.
+
+Atualização 2026-10-27 (15) (ressalvas de verificação aérea superadas por (16)): corredores A, B (derivado), C, D e ligação A-B desenhados como sequências de arestas na rede única (14.225 arestas, 6.655 junções, 0 erros de validação); polígonos de B e C estendidos. Geometria derivada do OSM, não verificada por imagem aérea; direção da extensão de C não confirmada. Ver Cap. 4, Seção 4.1.5, e `progress.md` (15). Evidência ainda necessária: verificação aérea; método de medição da completude de tags.
 
 Atualização 2026-10-26 (14): ADR 0016 adota rede única de SJC (11.035 arestas) com B/D/C/A como áreas de avaliação; validador adaptado (729 -> 0 erros na rede B); benchmark local indica NSGA-II de 10 mil execuções inviável (~35-45 h). Ver Cap. 4, Seção 4.1.4. Evidência ainda necessária no Cap. 4: validação da rede única por componente; orçamento de avaliações.
 

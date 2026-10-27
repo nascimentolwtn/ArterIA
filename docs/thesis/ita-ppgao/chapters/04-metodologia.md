@@ -51,6 +51,8 @@ Recortar a rede a um polígono remove vias que, na realidade, oferecem rotas alt
 
 TODO(decisão): rede unificada versus por corredor (decisão futura do produto, ainda em aberto).
 
+Atualização (2026-10-27; ADR 0016 e `CHANGELOG.md` [Unreleased], trabalho não commitado): a decisão foi tomada pelo produto em favor de rede unificada de SJC. Após a extensão das áreas B e C, a rede reconstruída tem 14.225 arestas e 6.655 junções, com 93,1% das junções no maior componente (números informados pelo chamador/CHANGELOG, não reproduzidos aqui; a cifra anterior de 11.035 arestas está superada). O corredor B deixa de ser tratado como rede isolada: é um subconjunto de arestas da rede unificada, e desvios externos ao antigo polígono passam a existir no modelo. Os 6,9% de junções fora do maior componente ainda exigem explicação. A verificação aérea dos corredores A, B, C, D, da ligação A–B e das áreas estendidas B/C foi feita pelo responsável do produto em 2026-10-27 (Google Earth; registro no CHANGELOG), sem revisão por especialista do PPGAO. TODO(decisão): a dissertação deve decidir se adota a rede unificada como unidade de análise e como justificar o recorte B dentro dela.
+
 ### 4.1.4 Qualidade do OSM e revisão manual como etapa documentada
 
 A rede deriva de dados colaborativos (OSM). Completude e correção de atributos (sentido, número de faixas, restrições de conversão, velocidade) variam e não foram auditadas para o recorte. A semaforização é parcialmente inferida (`--tls.guess-signals`), o que introduz incerteza sobre pontos de controle que podem não existir, ou deixar de existir, na realidade. Propõe-se tratar a revisão manual no `netedit` como etapa operacional documentada do método, e não como ajuste informal. Esboço da etapa, a ser refinado:
@@ -66,6 +68,8 @@ TODO(citação): literatura sobre qualidade de dados OSM e sua adequação a mod
 ### 4.1.5 Proveniência e reprodutibilidade
 
 Para que a rede construída seja reconstruível por terceiros, devem ser registrados: data e versão do extrato Geofabrik e seu hash; versão do `osmium`; versão do SUMO (1.28.0 na execução registrada); opções completas do `netconvert`; polígono utilizado; patches manuais aplicados. A execução de 2026-10-26 não gerou `RunManifest` (ver 4.1.1).
+
+Atualização (2026-10-27; Fase 2 do roadmap, trabalho não commitado, lido em `CHANGELOG.md` [Unreleased] e `docs/roadmap.md`; não verificado por esta trilha): o produto passou a implementar parte dos itens acima. (i) Snapshot OSM fixado (Geofabrik Sudeste, timestamp do PBF 2026-10-25), com sha256 registrado em `cities/sjc/network/osm-snapshot.yaml`. (ii) Correções manuais como patches aplicados em segunda passada do `netconvert` (`arteria/network/patches.py`), conforme o item 3 do esboço de 4.1.4. (iii) Comandos `arteria network diff` e `arteria network rebuild` (`arteria/network/{diff,rebuild,snapshot}.py`); o rebuild reproduz o hash de conteúdo da rede (cabeçalho de timestamp removido do cálculo), com duração informada de cerca de 16 s. (iv) Validação informada: 0 erros e 127 avisos. Ressalvas: reprodutibilidade de hash prova determinismo do build, não correção da rede; "0 erros" segue sujeito à ressalva de 4.1.2; a camada de transporte público (GTFS) não foi montada, pois nenhum GTFS público de SJC foi encontrado (P2.6 adiada), o que limita cenários com ônibus. A versão de `osmium`/`netconvert` e o `RunManifest` do build continuam como TODO(evidência).
 
 ### 4.1.6 Limites do que a rede atual sustenta
 
