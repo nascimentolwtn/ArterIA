@@ -49,3 +49,10 @@ cuts those flows at an arbitrary boundary.
   tail (6% outside the main component) remain. Network validator adaptation to
   real networks is tracked separately in `.claude/napkin.md`.
 - Polygons are drafts; if they move, rebuild and re-pin edge ids.
+
+## Update 2026-10-27
+
+Owner feedback extended the B (south through Jd. Satélite) and C (west/south-west
+around Parque Vicentina Aranha) polygons. The envelope was rebuilt: 14,225 edges,
+6,655 junctions, 93.1% of junctions in the main component, 0 validation errors
+(the 11,035-edge figure above is the earlier, smaller envelope). Edge ids changed.

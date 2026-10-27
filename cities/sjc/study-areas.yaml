@@ -9,6 +9,12 @@
 # against satellite imagery/OSM before using it for any real P2.1 OSM
 # extraction, same as the roadmap already expects for OSM completeness.
 #
+# NOTE (2026-10-27): re-running Nominatim drifted some older landmark results, which
+# would have moved A/D. study-areas.geojson therefore pins the 2026-10-25 A and D
+# polygons and builds B and C as convex_hull(old polygon U buffered hull of the
+# extension queries marked "Extension"/"extension" below). Re-running the build from
+# scratch will not reproduce A/D exactly.
+#
 # Priority order per the owner's 2026-10-25 decision: B > D > C > A.
 
 candidates:
@@ -21,10 +27,16 @@ candidates:
       - "Vila Letônia, São José dos Campos, SP, Brazil"
       - "Vila São Bento, São José dos Campos, SP, Brazil"
       - "Avenida Florestan Fernandes, São José dos Campos, SP, Brazil"  # connects to A, per owner's decision
+      # Southern extension (owner feedback 2026-10-27): the loop/one-way structure continues
+      # south through Jd. Satélite. Verified 2026-10-27: all land in Jd. Satélite, lat -23.229..-23.235.
+      - "Avenida Cassiopéia, Jardim Satélite, São José dos Campos"   # -23.2293, -45.8851
+      - "Avenida Perseu, Jardim Satélite, São José dos Campos"       # -23.2287, -45.8911
+      - "Avenida Perseu, 12233-190, São José dos Campos"             # -23.2345, -45.8910 (south end)
     buffer_m: 400
     note: >
       Polygon connects to candidate A's Anel Viário segment (owner decision,
-      2026-10-25) rather than standing alone.
+      2026-10-25) rather than standing alone. Extended south through Jd. Satélite
+      (Av. Cassiopéia / Av. Perseu) on owner feedback, 2026-10-27.
 
   - id: d
     name: "Jardim Colinas roundabout / Ponte Estaiada"
@@ -44,8 +56,17 @@ candidates:
       - "Praça Afonso Pena, Centro, São José dos Campos"  # plain "Centro" geocodes ~30 km north (-22.91, -45.96)
       - "São Dimas, São José dos Campos, SP, Brazil"
       - "Vila Adyana, São José dos Campos, SP, Brazil"
+      # Extension (owner feedback 2026-10-27): the one-way turn/loop structure continues
+      # around Parque Vicentina Aranha. Verified 2026-10-27: all in SJC, Vila Adyana / Vila Ema /
+      # Jd. Esplanada, i.e. west and south-west of the original polygon (not literally north).
+      - "Parque Vicentina Aranha, São José dos Campos"               # -23.1983, -45.8953
+      - "Avenida Barão do Rio Branco, Jardim Esplanada, São José dos Campos"  # -23.1978, -45.9048
+      - "Rua Madre Paula de São José, Vila Ema, São José dos Campos" # -23.2029, -45.9002
+      - "Rua José Francisco Alves, Vila Ema, São José dos Campos"    # -23.2059, -45.9025
     buffer_m: 300
-    note: null
+    note: >
+      Extended west/south-west to Parque Vicentina Aranha, Av. Rio Branco,
+      R. Madre Paula de São José and R. José Francisco Alves (owner, 2026-10-27).
 
   - id: a
     name: "Anel Viário and its access roads"

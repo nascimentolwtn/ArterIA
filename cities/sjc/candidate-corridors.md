@@ -86,6 +86,11 @@ segment rather than standing as a fully separate study area, matching the
 westbound/eastbound detour description above (the Anel Viário is part of
 the eastbound return loop).
 
+**Extended south, 2026-10-27 (owner feedback):** the loop/one-way structure
+continues southbound through Jd. Satélite, so B's polygon now also covers
+Av. Cassiopéia and Av. Perseu (about 5.3 to 7.7 km2; area grew southward to
+about -23.238). Draft, needs the owner's aerial check.
+
 **Future extension (optional, not current priority):** the same DCTA ↔
 Dutra dependency also exists northbound, toward the Vista Verde
 neighborhood — logged here for later consideration, not part of the
@@ -103,6 +108,13 @@ your actual destination, or peel off toward another neighborhood entirely.
 Also the most tractable of the three on the brief's "feasibility of lane
 reallocation without major land acquisition" criterion — narrower
 residential/commercial streets, no earthworks implied.
+
+**Extended 2026-10-27 (owner feedback):** C's polygon now also covers Parque
+Vicentina Aranha, Av. Barão do Rio Branco, R. Madre Paula de São José and
+R. José Francisco Alves, where the one-way turn/loop structure continues
+(about 1.5 to 4.2 km2). Geocoding places these streets west/south-west of the
+original polygon (Vila Adyana / Jd. Esplanada / Vila Ema), not north; the owner
+should confirm that is the area meant.
 
 ## Candidate D — Jardim Colinas roundabout / Ponte Estaiada
 

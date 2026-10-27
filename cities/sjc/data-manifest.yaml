@@ -17,7 +17,7 @@
 # sources listed first (osm-network-extract, geosanja-plano-diretor-zoneamento,
 # ibge-faces-logradouros) — no contact with anyone required for those.
 #
-# Last reviewed: 2026-10-24.
+# Last reviewed: 2026-10-26 (desk check of the three public network sources).
 
 sources:
   - id: osm-network-extract
@@ -36,13 +36,19 @@ sources:
       Self-service: Geofabrik publishes a daily `sudeste` (southeast Brazil)
       PBF extract; clip to the study-area polygon with `osmium extract`, or
       query Overpass directly for a small pilot corridor. No municipal
-      contact needed. Coverage/completeness for SJC specifically has not
-      been measured by this session (outbound access to
-      overpass-api.de/nominatim.openstreetmap.org is blocked from this
-      remote session's network policy) — check it at the desk, e.g. via
-      JOSM/QGIS against satellite imagery, or the public Kontur OSM Road
-      Completeness map, before relying on raw OSM alone for a corridor with
-      no field verification.
+      contact needed. Desk check 2026-10-26: Geofabrik, Overpass and Nominatim
+      are all reachable now (the earlier block was a remote-session policy).
+      Kontur's OSM Road Completeness map is only an interactive web map, so
+      it gave no checkable number. What was measured instead is tag
+      completeness of the candidate-B clip (739 highway ways, local extract
+      from the 2026-10-25 Geofabrik Sudeste download): motorway/trunk/primary
+      have name, lanes, maxspeed tags almost fully (primary: lanes 95%,
+      maxspeed 73%); secondary is partial (name 90%, lanes 61%, maxspeed 42%);
+      residential (245 ways) has name 84% but lanes 4% and maxspeed 5%, so
+      SUMO falls back on defaults there. This measures tagging, NOT geometric
+      or missing-street completeness: no independent reference (IBGE faces,
+      satellite) could be compared, so geometric completeness is still
+      unverified and nothing here is a completeness percentage.
 
   - id: geosanja-plano-diretor-zoneamento
     name: "Geosanja — Plano Diretor and Zoneamento map layers"
@@ -59,13 +65,15 @@ sources:
     sha256: null
     status: public_available
     notes: >
-      Portal: sjc.sp.gov.br/geosanja, per the city's own 2019 announcement
-      (shapefile download via a "geo-metadados" tab). This session could not
-      fetch the portal directly to confirm it still carries a distinct
-      "sistema viário" (street-network) layer beyond the Master
-      Plan/zoning maps, or today's exact download steps — browsing and
-      downloading it is self-service and needs no request, just do it at
-      the desk and update this entry's notes with what's actually there.
+      Desk check 2026-10-26: sjc.sp.gov.br/geosanja redirects (HTTP 200) to
+      geo.sjc.sp.gov.br, a new Angular web-GIS app titled "GeoSanja"
+      (geosanja.sjc.sp.gov.br also answers). The layer catalogue is loaded
+      dynamically from a GeoServer backend (WMS) after the page starts, so it
+      could not be listed with curl, and the old shapefile "geo-metadados"
+      download tab was not visible in the static page. NOT confirmed:
+      whether Master Plan/zoning layers are still offered, whether they can
+      be downloaded, or whether a distinct road-network layer exists. Needs
+      a real browser session (interactive, not scripted) to settle it.
 
   - id: ibge-faces-logradouros
     name: "IBGE — Base de Faces de Logradouros do Brasil"
@@ -81,12 +89,17 @@ sources:
     sha256: null
     status: public_available
     notes: >
-      2022 edition ("Resultados Preliminares" as of the source found):
-      shp/json, organized by UF/município, via the product page at
-      ibge.gov.br ("Malhas Territoriais" > "Base de Faces de Logradouros do
-      Brasil"). Confirm it has moved past "preliminary" status before citing
-      it as ground truth, and check the exact download path at the desk —
-      this session could not fetch ibge.gov.br directly to confirm it.
+      Desk check 2026-10-26: the product page on www.ibge.gov.br is behind a
+      Cloudflare challenge (HTTP 403 to curl), so its current status text
+      could not be read; "still preliminary or not" is UNKNOWN. The file
+      servers ftp.ibge.gov.br and geoftp.ibge.gov.br are reachable, but the
+      guessed folder for the 2022 faces base returned 404 and no
+      "logradouros"/"faces" folder appears in the Censo_Demografico_2022
+      listing or under geoftp organizacao_do_territorio/malhas_territoriais
+      (only limites_interestaduais, malhas_de_setores_censitarios and
+      malhas_municipais). The real download path is therefore unknown; find
+      it by browsing the product page in a normal browser. Not used as a
+      cross-check yet.
 
   - id: planmob-diagnostico-prognostico
     name: "PlanMob SJC — Diagnóstico e Prognóstico"

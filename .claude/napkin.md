@@ -33,26 +33,18 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-26] Reconcile Windows-native roadmap L-items with ADR 0014 (WSL2-primary desk)** (small)
-   Do instead: L4 (long paths), L5 (Defender exclusions), L7 (power hygiene/Task
-   Scheduler), and L18 (scheduled runs) were all written as
-   Windows-native `scripts/win/*.ps1`/registry/Task Scheduler items. Under ADR 0014
-   (WSL2 sole primary, repo + `ARTERIA_DATA` on native `ext4`) L4/L5 are already
-   N/A (see `docs/local/setup-and-daily-commands.md`); L7/L18 need a
-   `scripts/linux/...` + systemd-timer/`cron` equivalent instead of `powercfg`/Task
-   Scheduler. Update `docs/roadmap.md`'s L-item table once the actual
-   desk scripts get written (L1/L6/L7/L18), not before.
-2. **[2026-10-24] Desk check: Geosanja/IBGE downloads + OSM completeness for SJC** (small, unblocks trusting P2.1 network sources)
-   Do instead: `sjc.sp.gov.br/geosanja` and `ibge.gov.br` are both unreachable from this
-   remote session's network policy. At the desk: confirm Geosanja still serves Master
-   Plan/zoning layers and check for a distinct road-network layer; confirm IBGE's Base
-   de Faces de Logradouros (2022) has moved past "preliminary"; spot-check OSM road
-   completeness for the SJC area (Kontur's OSM Road Completeness map, or JOSM/QGIS vs.
-   satellite) before relying on it for the pilot corridor. Update
-   `cities/sjc/data-manifest.yaml` notes with what's actually found.
-3. **[2026-10-26] Desk: confirm unsignalised `traffic_light` clusters load in `sumo`** (small)
-   Do instead: the 2 candidate-B clusters with no `<tlLogic>` are now validator warnings
-   (no `tl=` connection uses them); run `sumo -n cities/sjc/network/sjc.net.xml` once to confirm no warning/error.
+1. **[2026-10-26] Browser follow-up: GeoSanja layers + IBGE faces path** (small)
+   Do instead: curl desk check (see `cities/sjc/data-manifest.yaml`) was partial.
+   In a real browser: open geo.sjc.sp.gov.br and list layers (Master Plan/zoning,
+   any road-network layer, download option); open the IBGE "Base de Faces de
+   Logradouros" page (Cloudflare blocks curl) for its status and download path;
+   then compare OSM street names/geometry for the pilot corridor against IBGE
+   faces or satellite (OSM tag completeness already measured, geometry not).
+
+2. **[2026-10-27] Owner aerial-checks C, D, A, the A-B link, and the extended B and C** (small)
+   Do instead: open `cities/sjc/corridors/sjc-corridors.kml` in Google Earth, compare lines
+   with the streets named in `cities/sjc/corridors/README.md` (B's centreline is new too; B was extended south via Av. Cassiopéia/Av. Perseu and C west via Parque Vicentina Aranha/Rio Branco/Madre Paula/José Francisco Alves on 2026-10-27 — confirm these cover the loop/one-way structure you meant, and that C's extension is west, not north);
+   report wrong/missing streets, then adjust waypoints in `build_corridors.py` and re-run.
 
 ## User Directives
 
