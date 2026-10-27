@@ -1,6 +1,6 @@
-# SJC corridor centrelines on the unified network (DRAFT, owner aerial check pending)
+# SJC corridor centrelines on the unified network (owner aerial-checked 2026-10-27)
 
-Candidates A, C, D, plus a derived B centreline and an A-B connecting route, drawn as
+**Status: the owner aerial-checked all corridors (A, B, C, D, the A-B link and the extended B and C) on 2026-10-27 and found them good for now; the C extension direction (west/south-west) is accepted.** Candidates A, C, D, plus a derived B centreline and an A-B connecting route, drawn as
 ordered SUMO edge sequences on `cities/sjc/network/sjc.net.xml` (ADR 0016; the net is
 gitignored, rebuild with `arteria osm fetch --candidate all` + `arteria network build`).
 Edge ids are tied to that build; if the polygons or the OSM snapshot change, rerun.
@@ -16,8 +16,7 @@ A red, B blue, C orange, D green, A-B link magenta), `corridors-overview.png`,
 Corridor B never had an edge-level definition in the repo: it exists only as the
 study-area polygon in `study-areas.geojson` (the part the owner aerial-checked). The
 polygons are included in the KML (B and C were extended on 2026-10-27, see below). The B centreline here is **derived by
-the same method as C, D, A** so the A-B link has real end points; treat it as new and
-unchecked.
+the same method as C, D, A** so the A-B link has real end points; it passed the owner's aerial check on 2026-10-27.
 
 ## Method and assumptions
 
@@ -54,7 +53,7 @@ The link's edges: A to B `910567309#0 ... 1485678942#7, -329309717#7`; B to A
 
 - **C** was extended to Parque Vicentina Aranha, Av. Rio Branco, R. Madre Paula de Sao Jose and
   R. Jose Francisco Alves (1.54 to 4.17 km2). All four geocode in Vila Adyana / Jd. Esplanada /
-  Vila Ema, i.e. **west and south-west** of the old C polygon, not north; the owner should confirm.
+  Vila Ema, i.e. **west and south-west** of the old C polygon, not north; accepted by the owner after the aerial check.
 - **B** was extended south through Jd. Satelite along Av. Cassiopeia and Av. Perseu (5.31 to
   7.67 km2, south edge -23.2298 to -23.2381).
 - The unified net was rebuilt for the larger envelope: 14,225 edges, 6,655 junctions, 93.1% of
@@ -68,7 +67,7 @@ The link's edges: A to B `910567309#0 ... 1485678942#7, -329309717#7`; B to A
   asymmetry (B to A is 400 m longer) comes from one-way ramps near the interchange.
 - B's detour is visible in the net: A->DCTA-side routing goes through the Dutra
   (709 m) one way and through the Viaduto Talim loop the other way, matching
-  `candidate-corridors.md`. This is a result of the OSM geometry, not yet verified on aerials.
+  `candidate-corridors.md`. This is a result of the OSM geometry, confirmed by the owner's aerial check (2026-10-27).
 - No fwd/rev leg was unroutable.
 
 ## Ambiguities (most defensible reading chosen)

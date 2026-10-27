@@ -41,11 +41,6 @@ None open.
    then compare OSM street names/geometry for the pilot corridor against IBGE
    faces or satellite (OSM tag completeness already measured, geometry not).
 
-2. **[2026-10-27] Owner aerial-checks C, D, A, the A-B link, and the extended B and C** (small)
-   Do instead: open `cities/sjc/corridors/sjc-corridors.kml` in Google Earth, compare lines
-   with the streets named in `cities/sjc/corridors/README.md` (B's centreline is new too; B was extended south via Av. Cassiopéia/Av. Perseu and C west via Parque Vicentina Aranha/Rio Branco/Madre Paula/José Francisco Alves on 2026-10-27 — confirm these cover the loop/one-way structure you meant, and that C's extension is west, not north);
-   report wrong/missing streets, then adjust waypoints in `build_corridors.py` and re-run.
-
 ## User Directives
 
 1. **[2026-10-24] Keep responses concise; avoid trailing summaries**

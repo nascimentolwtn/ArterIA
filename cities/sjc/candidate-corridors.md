@@ -89,7 +89,7 @@ the eastbound return loop).
 **Extended south, 2026-10-27 (owner feedback):** the loop/one-way structure
 continues southbound through Jd. Satélite, so B's polygon now also covers
 Av. Cassiopéia and Av. Perseu (about 5.3 to 7.7 km2; area grew southward to
-about -23.238). Draft, needs the owner's aerial check.
+about -23.238). Aerial-checked by the owner 2026-10-27, good for now.
 
 **Future extension (optional, not current priority):** the same DCTA ↔
 Dutra dependency also exists northbound, toward the Vista Verde
