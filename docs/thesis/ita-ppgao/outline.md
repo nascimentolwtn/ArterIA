@@ -21,6 +21,8 @@ Atualização (marco v1.0, 2026-10-26): primeira execução real da cadeia (Nomi
 
 Atualização (commits `72ab33e`, `a55c9d7`, ADR 0016): validador adaptado a redes reais (SCC, pares opostos, becos de borda; 729 erros -> 0 na rede B) e decisão de rede única de SJC (11.035 arestas, 94% no maior componente roteável) com B/D/C/A como áreas de avaliação. Alimenta Cap. 3 (caracterização da rede) e Cap. 4 (4.1.2 atualizado; nova seção de rede única versus por corredor, a escrever). Benchmark local (`docs/local/dev-pc-benchmark.md`): otimização de 10k execuções inviável no desktop (~35-45 h), relevante ao desenho experimental do Cap. 4. Sem resultado operacional; sem orientador.
 
+Atualização (2026-10-27, trabalho não commitado sobre `b24377a`): corredores A, B (centro derivado), C, D e ligação A–B desenhados como sequências de arestas na rede unificada (`cities/sjc/corridors/`); áreas B e C estendidas; rede com 14.225 arestas/6.655 junções, 0 erros de validação. Alimenta Cap. 3 (caracterização da rede; assimetria de acesso a B visível em nível de aresta) e Cap. 4 (4.1.2: rede unificada). TODO(evidência): geometria derivada do OSM, SEM verificação aérea pelo responsável; direção da extensão de C (oeste/sudoeste) a confirmar; tags OSM em ruas residenciais escassas (lanes ~4%, maxspeed ~5% no candidato B, medição informada pelo chamador). GeoSanja/IBGE não confirmados. Sem orientador; sem validação do enquadramento FAB.
+
 ## 1. Introdução e Enquadramento Operacional
 
 Já coberto: título provisório, resumo, problema de pesquisa e justificativa, e a distinção explícita entre "mobilidade urbana de SJC" e "logística de acesso a instalações da FAB" (Seções 1-3 e 13 do pré-projeto).

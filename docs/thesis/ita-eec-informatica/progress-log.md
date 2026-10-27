@@ -46,3 +46,29 @@ Profundidade: completo
 3. Detalhe do `72ab33e` (destino dos 2 erros `traffic_light_logic`; distribuição de componentes) não verificado nesta entrada, apenas a mensagem do commit.
 4. Orçamento computacional: MARL com SUMO em 9,7 GiB de RAM é restritivo; decisão de nuvem/nó universitário pendente. Estimativas não medidas.
 5. Orientador(a) não contatado(a); arquitetura de agentes não validada.
+
+---
+
+## 2026-10-27 — Corredores como sequências de arestas na rede unificada; áreas B e C estendidas; desk check de tags OSM (trabalho NÃO commitado; base `b24377a`)
+
+**Commits:** nenhum. Registro do working tree: `cities/sjc/corridors/` (README, `corridors.geojson`, `summary.json`, KML, `build_corridors.py`), `cities/sjc/study-areas.{yaml,geojson}`, `candidate-corridors.md`, `data-manifest.yaml`, ADR 0016, `CHANGELOG.md` [Unreleased]. Itens sujeitos a mudança antes do commit.
+
+**O que foi feito (no repositório, segundo README/CHANGELOG; não reexecutado aqui).**
+1. Corredores A, B (derivado), C, D e ligação A-B desenhados como sequências ordenadas de arestas SUMO sobre a rede unificada (ADR 0016), por caminho de menor custo dirigido entre pontos de referência do OSM, roteando cada trecho nos dois sentidos. Exemplo: ligação A-B com 14 arestas/883 m (A para B) e 18 arestas/1.286 m (B para A); nenhum trecho inroteável. A assimetria é atribuída pelo README a rampas de mão única, a partir da geometria OSM.
+2. Áreas de estudo estendidas: B de 5,31 para 7,67 km2 (ao sul, Av. Cassiopeia/Av. Perseu) e C de 1,54 para 4,17 km2 (Parque Vicentina Aranha, Av. Rio Branco etc.). Rede unificada reconstruída: 14.225 arestas, 6.655 junções, 93,1% das junções no componente principal, 0 erros de validação (eram 11.035 arestas na ADR 0016 inicial). Ids de arestas mudaram com a reconstrução.
+3. Desk check de dados de SJC: completude de tags OSM medida no candidato B: vias principais bem etiquetadas; ruas residenciais com `lanes` em ~4% e `maxspeed` em ~5%. GeoSanja e IBGE NÃO confirmados como fontes disponíveis.
+4. SUMO 1.28 carrega a rede real sem avisos; os 2 clusters `traffic_light` sem programa carregam como não semaforizados (inofensivos).
+5. Reconciliação do roteiro com a ADR 0014 (WSL2): dev-process, sem conteúdo para a trilha; não registrado em capítulo.
+
+**Ressalvas obrigatórias.** Toda a geometria dos corredores deriva do OSM e AINDA NÃO foi verificada por imagem aérea pelo responsável. O corredor B por arestas é novo (antes só existia o polígono, checado por imagem aérea); não herda aquela verificação. A direção da extensão de C (oeste/sudoeste, não norte) aguarda confirmação do responsável. Nada disso é validação nem escolha acadêmica de corredor; nenhum agente, GNN ou recompensa foi conectado a estes artefatos.
+
+**Por que importa.** (i) Sequências de arestas dão a primeira definição concreta de "corredor" como subgrafo orientado, útil para delimitar observação, ação e recompensa por área (pergunta aberta 1 da entrada anterior) sem tratar 14 mil arestas como espaço de ação. (ii) O desk check (lanes ~4%, maxspeed ~5% em ruas residenciais) indica que atributos de faixa/velocidade serão em grande parte imputados fora das vias principais, afetando as características de aresta da GNN e sendo candidato a fator de ablação (reforça o risco de qualidade do grafo já registrado). (iii) Assimetrias direcionais (883 m vs 1.286 m) são exemplos reais do que a representação em grafo orientado deve preservar.
+
+**Impacto na tese.** `outline.md`: nota no Cap. 3. Prosa de capítulos NÃO alterada: o número 11.035 em `chapters/03` (3.2) e `chapters/04` (TODO de 4.2) está defasado frente a 14.225 e deve ser atualizado após o commit e a resolução das ressalvas, para não consolidar números provisórios.
+
+**Perguntas abertas/riscos.**
+1. Agente/recompensa por corredor (subgrafo) versus por junção: decisão de modelagem pendente; risco de quatro corredores excederem o escopo de um mestrado.
+2. Os percentuais de 4% e 5% vêm do relato do CHANGELOG, não verificados aqui; metodologia (denominador, escopo) precisa ser citada antes de entrarem no Cap. 3.
+3. Sem GeoSanja/IBGE confirmados, atributos de ruas locais serão imputados ou omitidos.
+4. Verificação aérea dos corredores e da direção de C pelo responsável pendente; até lá, rascunho.
+5. Orientador(a) não contatado(a); arquitetura de agentes não validada.

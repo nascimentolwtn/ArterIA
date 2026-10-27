@@ -5,6 +5,34 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-27 (15)
+
+Trabalho NÃO commitado no working tree (último commit `b24377a`): `CHANGELOG.md` [Unreleased], `cities/sjc/corridors/` (novo; `README.md`, `corridors.geojson`, `summary.json`, KML, PNG, scripts), `cities/sjc/study-areas.yaml`/`.geojson`, `candidate-corridors.md`, `data-manifest.yaml`, ADR 0002 e 0016 (editadas), `docs/roadmap.md`, `.claude/napkin.md`. Nada foi lido além de `cities/sjc/corridors/README.md` e do que consta do relato recebido; os demais arquivos e o `git diff` não foram inspecionados por esta trilha.
+
+**O que foi feito (no repositório, conforme relato):**
+- Corredores A, D, C, B (B derivado pelo mesmo método, pois nunca teve definição em nível de aresta) e ligação A-B desenhados como sequências ordenadas de arestas SUMO na rede unificada, por menor caminho dirigido entre waypoints OSM (custo = comprimento, x8 fora das ruas preferidas), nos dois sentidos. Exemplos do README: ligação A-B de 883 m (A para B) e 1.286 m (B para A, assimetria por rampas de mão única); trajeto B-DCTA via Dutra (~709 m) em um sentido e via laço do Viaduto Talim no outro; nenhuma perna inroteável.
+- Polígonos de B (5,31 -> 7,67 km²) e C (1,54 -> 4,17 km²) estendidos; rede unificada reconstruída: 14.225 arestas, 6.655 junções, 93,1% das junções no componente principal, 0 erros de validação (a ADR 0016 anterior citava 11.035 arestas e 94,0% das arestas no maior SCC; as duas porcentagens usam denominadores diferentes e não são comparáveis).
+- Desk check de dados de SJC: completude de tags OSM medida no candidato B (vias principais bem etiquetadas; ruas residenciais com `lanes` em ~4% e `maxspeed` em ~5%). GeoSanja/IBGE NÃO confirmados.
+- SUMO 1.28 carrega a rede real sem avisos; clusters `traffic_light` sem programa são tratados como não semaforizados (relato: inofensivos; não verificado por esta trilha). Isso atenua, sem fechar, o risco (3) da entrada (13).
+- Reconciliação do roadmap (itens L) com a ADR 0014 (WSL2): puramente dev-process, sem registro adicional nesta trilha.
+
+**RESSALVAS obrigatórias:** (a) toda a geometria dos corredores deriva do OSM e AINDA NÃO foi verificada por imagem aérea pelo responsável; (b) a direção da extensão de C (oeste/sudoeste: Vila Adyana, Jd. Esplanada, Vila Ema, não norte) aguarda confirmação do responsável; (c) a definição de B em nível de aresta é nova e não checada; (d) C é uma área (labirinto), não uma linha, e D é uma junção; as "sequências" são leituras mais defensáveis, não a delimitação do problema. Nada disto é validação, linha de base calibrada ou resultado.
+
+**Por que importa para a trilha PG/PO:**
+- **Primeira representação em nível de aresta do domínio de avaliação.** Ao ligar corredores a ids de arestas, o conjunto de arestas por área (ADR 0016) deixa de ser abstrato; é o insumo natural para definir o subconjunto de $G$ sobre o qual $F(y)$ é agregada e para escopar $y$ por área. Os ids são amarrados a um build específico e mudam a cada reconstrução (o próprio README relata isso), de modo que a reprodutibilidade depende do manifesto de proveniência (risco já em (13)/(14)).
+- **A-B como caso concreto de interação entre áreas.** A assimetria de 400 m e o laço do viaduto mostram em dados OSM o tipo de transbordamento que justificou a rede única; ainda é uma propriedade da geometria OSM, não evidência de demanda ou de benefício de um conector (ADR 0013 continua limitando alegações de rede).
+- **Sensibilidade do recorte.** Estender B e C em dois dias, a partir de feedback do responsável, e a mudança de ids de arestas confirmam que o recorte é decisão ainda móvel; o recorte da dissertação não deve ser congelado a partir destes polígonos.
+- **Incerteza estrutural (Cap. 3, 3.x):** a medição de completude de tags (residenciais com `lanes` ~4%, `maxspeed` ~5%) é o primeiro dado quantitativo sobre a fonte de incerteza em $G$ e implica que atributos de capacidade e velocidade nessas vias vêm de padrões do `netconvert`, não de dado observado. Número do relato; método de medição e universo (arestas? vias OSM?) não verificados aqui. Cautela: vale apenas para o candidato B.
+
+**Impacto na tese:** Cap. 4 ganhou a Seção 4.1.5 (rascunho, com as ressalvas acima); `outline.md` atualizado. Cap. 3 e `pre-projeto.md` sem alteração.
+
+**Perguntas abertas/riscos:**
+1. Verificação aérea das geometrias e confirmação da direção de extensão de C pendentes com o responsável; até lá, nenhuma figura de corredor deve ir à dissertação sem legenda "derivado de OSM, não verificado".
+2. Recorte da dissertação (B, D, C ou A) segue não decidido; agora é decidível em termos de conjunto de arestas, mas a comparação de custo de implementação (`new_connector` para B ainda sem transformação) permanece.
+3. Tratamento da incerteza estrutural de $G$ (pergunta 2 de (13)) e orientador(a) não contatado(a) permanecem.
+
+**Próximos passos:** (i) após a checagem aérea, fixar o texto da 4.1.5 e remover o rótulo de rascunho; (ii) documentar o método de medição da completude de tags antes de citar os percentuais; (iii) confirmar que o manifesto registra a versão do build e o hash de `sjc.net.xml` associados aos ids de arestas.
+
 ## 2026-10-26 (14)
 
 Commits `ffcbd8e` (smoke real com SUMO), `814f4c9` (benchmark do PC de desenvolvimento), `a55c9d7` (ADR 0016, rede única de SJC) e `72ab33e` (validador adaptado a redes reais), mais merges `8948351`, `736af5d`, `467ba96`, `e9b9d64`.

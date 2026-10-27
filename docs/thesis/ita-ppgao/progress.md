@@ -5,6 +5,30 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-27 (trabalho NÃO commitado sobre o commit b24377a: corredores A/B/C/D e ligação A–B na rede unificada, áreas B e C estendidas, desk check de dados, SUMO 1.28)
+
+**Origem e ressalva de rastreabilidade.** Itens vêm do working tree (não commitado), lidos em `cities/sjc/corridors/README.md`, `docs/adr/0016-unified-sjc-network.md` (seção "Update 2026-10-27") e `CHANGELOG.md` [Unreleased]; `study-areas.yaml` e `data-manifest.yaml` não foram relidos nesta trilha, e a medição de tags OSM vem do texto informado pelo chamador. Nenhum número foi reproduzido aqui.
+
+**O que foi feito (no produto, não validado).** (1) Corredores A, C, D, B (centro derivado) e ligação A–B desenhados como sequências ordenadas de arestas SUMO na rede unificada (`cities/sjc/corridors/`: GeoJSON, KML, resumo, PNG, script de regeneração), por waypoints OSM, menor caminho dirigido, ida e volta. (2) Áreas de estudo B (5,31 -> 7,67 km²) e C (1,54 -> 4,17 km²) estendidas por feedback do responsável; rede unificada reconstruída: 14.225 arestas, 6.655 junções, 93,1% das junções no maior componente, 0 erros de validação (antes, 11.035 arestas). (3) SUMO 1.28 carrega a rede real sem avisos; os dois clusters semafóricos sem programa são tratados como não semaforizados (CHANGELOG). (4) Desk check de dados: completude de tags OSM medida no candidato B (vias principais bem etiquetadas; ruas residenciais com `lanes` ~4% e `maxspeed` ~5%); GeoSanja e IBGE NÃO confirmados. (5) Reconciliação dos itens L do roadmap com a ADR 0014 (WSL2): puramente de processo, sem conteúdo para esta trilha.
+
+**Por que importa.** O achado mais relevante é a ligação A–B em ambos os sentidos (883 m e 1.286 m, assimetria atribuída a rampas de mão única) e o desvio de B visível na rede (um sentido pela Dutra, outro pelo laço do Viaduto Talim), segundo o README: é a primeira representação em nível de aresta da assimetria de acesso à DCTA que esta trilha registra desde o commit `71638f1`. Ainda é geometria derivada do OSM, não evidência operacional. O dado de tags (ruas residenciais com `lanes`/`maxspeed` raramente etiquetados) é limitação concreta para qualquer atributo de capacidade/velocidade nesses trechos: o modelo usaria valores padrão do `netconvert`.
+
+**Impacto no produto técnico.** `outline.md`: nota no Cap. 3 (corredores como arestas, limites). `chapters/04-metodologia.md` e `05-estudo-de-caso-corredor-b.md` não foram alterados (prosa assentada preservada); a seção 4.1.2 e o Cap. 5 devem, quando revisados, trocar "corredor B isolado" por "B derivado na rede unificada". Status dos capítulos inalterado.
+
+**RESSALVAS obrigatórias.**
+- **Toda a geometria dos corredores deriva do OSM e AINDA NÃO foi verificada por imagem aérea pelo responsável.** O centro de B é novo e não verificado (o README afirma que B nunca teve definição em nível de aresta; só o polígono foi verificado por imagem, e a extensão sul não consta como verificada).
+- **A direção da extensão de C (oeste/sudoeste, não norte) ainda precisa de confirmação do responsável.**
+- "0 erros de validação" e "carrega sem avisos" não equivalem a rede correta (ver pergunta 2 da entrada anterior).
+- DCTA não tem nó viário; usa-se a área do portão (Praça Mal.-do-Ar Eduardo Gomes) como proxy. O que é "acesso à instalação" para a FAB não foi definido.
+- Nada aqui valida o enquadramento operacional/FAB.
+
+**Perguntas abertas e riscos.**
+1. **Enquadramento operacional/FAB: NÃO validado por nenhum orientador do PPGAO; nenhum foi contatado.** Risco central, inalterado.
+2. Verificação aérea dos corredores e confirmação da direção de C pendentes com o responsável; arestas mudam a cada reconstrução (ids ligados ao build), o que exige registrar versão do snapshot OSM (RunManifest) antes de citar qualquer comprimento.
+3. A tese precisa decidir se o recorte é B (e a ligação A–B) ou se a unidade de análise é a rede unificada (ADR 0016); a ligação A–B só tem sentido FAB se o orientador validar a DCTA como caso.
+
+**Próximos passos.** Aguardar verificação aérea do responsável antes de citar comprimentos/sequências de ruas em capítulo; registrar alternativas do ADR 0016 no Cap. 4; contagem de tags OSM por classe de via como tabela do Cap. 3 (TODO(evidência), reproduzir a medição); buscar orientador do PPGAO.
+
 ## 2026-10-26 (validador adaptado, rede única SJC, benchmark local, smoke real; commits 72ab33e, a55c9d7, 814f4c9, ffcbd8e)
 
 **O que foi feito (no produto).** (1) `72ab33e`: `arteria network validate` adaptado a redes SUMO reais (componentes fortemente conexos, pares de arestas opostas, becos de borda); 729 erros -> 0 na rede real do corredor B. (2) `a55c9d7` e ADR 0016: redes OSM->SUMO construídas também para D, C e A; decisão de rede única de SJC (11.035 arestas, 94% no maior componente roteável), com B/D/C/A como áreas de avaliação. (3) `814f4c9`: benchmark do PC de desenvolvimento (6c/12t, 9,7 GiB RAM): NSGA-II de 10k execuções inviável localmente (~35-45 h); lotes de sementes com 4 workers. (4) `ffcbd8e`: `nox -s smoke` passa com SUMO real (wheel `eclipse-sumo`), de processo.

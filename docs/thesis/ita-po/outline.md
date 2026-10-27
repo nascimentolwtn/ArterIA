@@ -15,6 +15,8 @@
 | 7 | `chapters/07-conclusao.md` | stub | resultados |
 | 8 | `references.bib` | outline (5 entradas, campos TODO) | expansão pela revisão |
 
+Atualização 2026-10-27 (15): corredores A, B (derivado), C, D e ligação A-B desenhados como sequências de arestas na rede única (14.225 arestas, 6.655 junções, 0 erros de validação); polígonos de B e C estendidos. Geometria derivada do OSM, não verificada por imagem aérea; direção da extensão de C não confirmada. Ver Cap. 4, Seção 4.1.5, e `progress.md` (15). Evidência ainda necessária: verificação aérea; método de medição da completude de tags.
+
 Atualização 2026-10-26 (14): ADR 0016 adota rede única de SJC (11.035 arestas) com B/D/C/A como áreas de avaliação; validador adaptado (729 -> 0 erros na rede B); benchmark local indica NSGA-II de 10 mil execuções inviável (~35-45 h). Ver Cap. 4, Seção 4.1.4. Evidência ainda necessária no Cap. 4: validação da rede única por componente; orçamento de avaliações.
 
 Atualização 2026-10-26: primeira rede real (Candidato B) construída e renderizada; validador gerou 729 erros / 7.562 avisos majoritariamente espúrios. Ver Cap. 4, Seção 4.1, e `progress.md` (13). Não é linha de base calibrada.
