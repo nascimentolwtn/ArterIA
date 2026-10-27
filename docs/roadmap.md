@@ -311,7 +311,7 @@ This section covers work on the developer's desk machine: tool installation, loc
 ### Entry-point conventions
 
 - **One CLI, `arteria`** (Typer, installed from `pyproject.toml`). Every subcommand takes `--city <name>`, reads `cities/<city>/city.yaml`, writes a run manifest (P0.7) and is idempotent (skips a step when input checksums are unchanged).
-- **`scripts/win/*.ps1`** only for Windows-specific setup that needs the OS (registry, Defender, Task Scheduler); no domain logic.
+- **`scripts/linux/*.sh`** for desk setup and OS-level helpers inside WSL2 (SUMO install, power/sleep inhibition, scheduled runs); no domain logic. `scripts/win/*.ps1` is limited to the one-off WSL2 bootstrap (L6), since the desk runs WSL2 only (ADR 0014).
 - **`noxfile.py`** as the cross-platform task runner, so the same commands run on Windows, WSL2 and Linux: `nox -s lint tests smoke build-sjc calibrate-sjc` (recorded in ADR 0002; avoids make/just on Windows). Remote Claude sessions only ever run `lint tests` (R1); `smoke` (real SUMO binary) and everything past it stays desktop-only.
 - **`ARTERIA_DATA`** points at the large-data root outside git; **`ARTERIA_PRIVATE`** at a plain local directory outside git for non-public data.
 
@@ -340,10 +340,10 @@ The repo stores only manifests, checksums, patches, configs and small fixtures (
 | L1 | SUMO install and version pin | Auto | P0.3 | `scripts/win/setup-sumo.ps1 -Version <city.yaml>`; preferred: `eclipse-sumo` + `libsumo` + `traci` pip wheels pinned in the lockfile (same version on Windows, WSL2 and remote sessions); MSI/zip fallback for full sumo-gui | `sumo_version` -> binaries, `SUMO_HOME`, version reported by `arteria doctor` |
 | L2 | Environment check | Auto | P0.3, P0.5 | `arteria doctor` | -> Python/SUMO/netconvert/osmium versions, `SUMO_HOME`, long paths, disk/RAM, `ARTERIA_DATA` writable, `ARTERIA_PRIVATE` present? |
 | L3 | Python environment | Auto | P0.3 | `uv sync`, `nox -s dev` | `pyproject.toml`/`uv.lock` -> `.venv` |
-| L4 | Long paths | Manual (one-time, admin) | P0.1 | `scripts/win/enable-longpaths.ps1` (`LongPathsEnabled=1`, `git config core.longpaths true`) | -> registry/git config |
-| L5 | Defender exclusions for speed | Manual (admin, user consent) | P4, P7 | `scripts/win/defender-exclusions.ps1` (exclude `ARTERIA_DATA` and `sumo.exe`/`netconvert.exe`; never the repo or Downloads) | -> Defender prefs, documented rollback |
+| L4 | Long paths | Manual (one-time, admin) | P0.1 | *N/A under ADR 0014:* repo and `ARTERIA_DATA` live on WSL2 native `ext4`, which has no 260-character path limit; no script needed (see `docs/local/setup-and-daily-commands.md`) | - |
+| L5 | Defender exclusions for speed | Manual (admin, user consent) | P4, P7 | *N/A under ADR 0014:* data and binaries live inside the WSL2 ext4 VHDX, which Defender does not scan file by file; no exclusions needed (see `docs/local/setup-and-daily-commands.md`) | - |
 | L6 | WSL2 option | Semi | P0.3, P7.3 | `scripts/win/setup-wsl.ps1` + `scripts/linux/setup-sumo.sh` | -> Linux-parity env for long runs; copy data to WSL ext4 for I/O-heavy runs |
-| L7 | Long-run power hygiene | Manual | P4, P7 | `scripts/win/longrun-mode.ps1` (`powercfg` no sleep on AC, Windows Update active hours) | -> machine stays awake overnight |
+| L7 | Long-run power hygiene | Manual | P4, P7 | `scripts/linux/longrun-mode.sh` wrapping long jobs in `systemd-inhibit --what=sleep:idle` (or `caffeine`-style inhibit); the Windows host sleep/active-hours setting is documented as a manual step (WSL2 stops when the host sleeps) | -> machine stays awake overnight |
 
 ### Network and data pipelines
 
@@ -364,7 +364,7 @@ The repo stores only manifests, checksums, patches, configs and small fixtures (
 | L15 | Headless replicated runs | Auto | P3.6, P4.6, P6.1 | `arteria sim run --city sjc --scenario <s> --seeds 10 --workers N` (libsumo per process; TraCI on free ports when multi-client) | -> `runs/sjc/<run-id>/` |
 | L16 | DUE / calibration | Auto (long) | P4.3-P4.5, P4.7 | `arteria calibrate demand --city sjc`, `arteria calibrate params --optimizer spsa\|optuna --resume` | observations, baseline -> calibrated routes/params, GEH/RMSE HTML report |
 | L17 | Optimizer runs | Auto (very long, checkpointed) | P7.2, P7.3, P7.6, P7.7 | `arteria optimize run --city sjc --study <id> --algo nsga2 --budget 2000 --workers N --resume` | -> `optim/sjc/<study>/` (state, package-hash cache, Pareto front) |
-| L18 | Scheduled overnight runs | Semi | P4, P7 | `scripts/win/schedule-run.ps1 -Command "..." -At 22:00` (Task Scheduler) | -> scheduled task; morning `arteria runs status` |
+| L18 | Scheduled overnight runs | Semi | P4, P7 | `scripts/linux/schedule-run.sh --command "..." --at 22:00` (systemd user timer, `cron`/`at` fallback; the job runs under `systemd-inhibit`) | -> scheduled timer; morning `arteria runs status` |
 | L19 | *Retired:* self-hosted GitHub runner | - | - | Not planned: heavy work runs directly at the desk (L15-L18), queued from the phone via R6. ID kept so it is not reused; reopen only through a new ADR if remotely triggered compute is ever wanted | - |
 
 Resource handling: workers default to physical cores - 1; per-worker RAM cap from `city.yaml`; refuse to start workers beyond 80% of free RAM; checkpoints every generation/K trials via atomic rename; `--resume` after sleep, reboot or Ctrl+C.

@@ -23,7 +23,7 @@ A heavier alternative — packaging each city as its own installable plugin (ent
 - **Repository layout:**
   - `arteria/` — the shared Python package, city-agnostic: `network/`, `demand/`, `calibration/`, `interventions/`, `optimize/`, `evaluate/`, `report/`.
   - `cities/<city>/` — per-city data: `city.yaml` config (ADR 0003), data-source manifest, calibration artifacts, scenarios, results. `cities/_template/` seeds a new city.
-  - `scripts/` — setup and platform-specific helpers only (`scripts/win/*.ps1` for Windows-only OS tasks: registry, Defender, Task Scheduler; no domain logic lives here).
+  - `scripts/` — setup and platform-specific helpers only (`scripts/linux/*.sh` for WSL2/Linux desk tasks such as power inhibition and scheduled runs, per ADR 0014; no domain logic lives here).
   - `tests/` — unit tests against toy fixtures; no real SUMO binary or city data required to run them.
 - **Task runner:** `nox`, defined in a single cross-platform `noxfile.py`, with sessions `lint`, `tests`, `smoke` (real toy-network SUMO run, desktop-only), `build-<city>`, `calibrate-<city>`. Remote Claude sessions only ever run `nox -s lint tests` (R1); everything from `smoke` onward needs a real `sumo`/`netconvert` binary and stays desktop-only.
 - **Single CLI:** one Typer-based command, `arteria`, is the only entry point into `arteria/` functionality. Every subcommand takes `--city <name>`, reads `cities/<city>/city.yaml`, writes a run manifest (P0.7), and is idempotent (skips a step when input checksums are unchanged).
