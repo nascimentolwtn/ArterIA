@@ -15,6 +15,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
+from arteria.network.patches import patch_options
 from arteria.network.validate import validate_network
 
 
@@ -27,6 +28,7 @@ class NetworkBuildResult(BaseModel):
     log: str
     validation_errors: int
     validation_warnings: int
+    patch_files: list[str] = []
 
 
 def default_netconvert_options() -> list[str]:
@@ -59,6 +61,7 @@ def build_network(
     output_path: Path,
     type_files: Sequence[Path] = (),
     extra_options: Sequence[str] = (),
+    patch_files: Sequence[Path] = (),
     run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
 ) -> NetworkBuildResult:
     """Run `netconvert` against `osm_pbf_path` (PBF is first converted to OSM XML
@@ -70,6 +73,11 @@ def build_network(
 
     `extra_options` is appended last, after `default_netconvert_options()`
     and any `--type-files`, so a caller can override or add flags.
+
+    `patch_files` (roadmap P2.3, `arteria.network.patches`) are plain-XML
+    corrections applied in a second `netconvert` pass over the first pass's
+    output (`<stem>.base.net.xml`), because SUMO only patches an existing
+    `.net.xml`, not an OSM import. No patches means no second pass.
     """
     if not osm_pbf_path.exists():
         raise FileNotFoundError(f"OSM PBF not found: {osm_pbf_path}")
@@ -91,12 +99,13 @@ def build_network(
                 f"osmium cat failed (exit {convert.returncode}): {convert.stderr}"
             )
 
+    base_path = output_path.with_name(output_path.name.removesuffix(".net.xml") + ".base.net.xml")
     cmd = [
         "netconvert",
         "--osm-files",
         str(osm_input),
         "--output-file",
-        str(output_path),
+        str(base_path if patch_files else output_path),
         *default_netconvert_options(),
     ]
     if type_files:
@@ -106,11 +115,29 @@ def build_network(
     result = run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         raise NetconvertError(f"netconvert failed (exit {result.returncode}): {result.stderr}")
+    log = result.stdout + result.stderr
+
+    if patch_files:
+        patch_cmd = [
+            "netconvert",
+            "--sumo-net-file",
+            str(base_path),
+            "--output-file",
+            str(output_path),
+            *patch_options(patch_files),
+        ]
+        patched = run(patch_cmd, capture_output=True, text=True)
+        if patched.returncode != 0:
+            raise NetconvertError(
+                f"netconvert patch pass failed (exit {patched.returncode}): {patched.stderr}"
+            )
+        log += patched.stdout + patched.stderr
 
     report = validate_network(output_path)
     return NetworkBuildResult(
         net_xml_path=str(output_path),
-        log=result.stdout + result.stderr,
+        log=log,
         validation_errors=len(report.by_severity("error")),
         validation_warnings=len(report.by_severity("warning")),
+        patch_files=[str(p) for p in patch_files],
     )

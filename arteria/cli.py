@@ -145,7 +145,14 @@ def osm_fetch(
         None,
         "--source-url",
         help="Regional OSM extract to download if --pbf-path isn't given. "
-        "Defaults to the Geofabrik 'sudeste' extract (default_geofabrik_url()).",
+        "Defaults to the URL in osm-snapshot.yaml, else the Geofabrik 'sudeste' "
+        "extract (default_geofabrik_url()).",
+    ),
+    update_snapshot: bool = typer.Option(
+        False,
+        "--update-snapshot",
+        help="Skip the checksum checks and re-pin cities/<city>/network/osm-snapshot.yaml "
+        "to the source and extract just used.",
     ),
 ) -> None:
     """Fetch (or reuse) a regional OSM PBF and clip it to a study-area
@@ -153,37 +160,25 @@ def osm_fetch(
 
     Needs real network access and a real `osmium` binary — blocked in
     remote Claude sessions (ADR 0009). Run this at the desk.
+
+    With a pinned `osm-snapshot.yaml`, the source PBF and the clipped extract
+    must match the recorded sha256; a mismatch fails without overwriting the pin.
     """
-    from arteria.network.osm_fetch import (
-        OsmExtractError,
-        OsmFetchError,
-        default_geofabrik_url,
-        download_source_pbf,
-        extract_candidate_polygon,
-        extract_osm,
-    )
+    from arteria.network.osm_fetch import OsmExtractError, OsmFetchError, fetch_candidate
+    from arteria.network.snapshot import SnapshotMismatchError
 
     city_dir = Path.cwd() / "cities" / city
-    raw_dir = city_dir / "network" / "raw"
-
     try:
-        if pbf_path is not None:
-            source_pbf = pbf_path
-        else:
-            url = source_url or default_geofabrik_url()
-            source_pbf = raw_dir / url.rsplit("/", 1)[-1]
-            if source_pbf.exists():
-                typer.echo(f"Reusing cached {source_pbf}")
-            else:
-                download_source_pbf(url, source_pbf)
-                typer.echo(f"Downloaded {url} -> {source_pbf}")
-
-        polygon = extract_candidate_polygon(city_dir / "study-areas.geojson", candidate)
-        output_path = raw_dir / f"{city}-{candidate}.osm.pbf"
-        extract_result = extract_osm(
-            pbf_path=source_pbf, polygon_geojson=polygon, output_path=output_path
+        extract_result = fetch_candidate(
+            city=city,
+            city_dir=city_dir,
+            candidate=candidate,
+            pbf_path=pbf_path,
+            source_url=source_url,
+            update_snapshot=update_snapshot,
+            log=typer.echo,
         )
-    except (OsmFetchError, OsmExtractError, FileNotFoundError) as exc:
+    except (OsmFetchError, OsmExtractError, SnapshotMismatchError, FileNotFoundError) as exc:
         typer.echo(str(exc), err=True)
         raise typer.Exit(code=1) from exc
 
@@ -206,9 +201,11 @@ def network_build(
     ),
 ) -> None:
     """Run `netconvert` against `--osm-pbf`, writing `cities/<city>/network/<city>.net.xml`,
-    then validate the result.
+    then validate the result. Patches listed in `cities/<city>/network/patches/manifest.yaml`
+    are applied in a second pass.
     """
     from arteria.network.build import NetconvertError, build_network
+    from arteria.network.patches import PatchError, load_patch_files
 
     city_dir = Path.cwd() / "cities" / city
     output_path = city_dir / "network" / f"{city}.net.xml"
@@ -220,15 +217,15 @@ def network_build(
             output_path=output_path,
             type_files=type_file_paths,
             extra_options=extra,
+            patch_files=load_patch_files(city_dir / "network" / "patches"),
         )
-    except (NetconvertError, FileNotFoundError) as exc:
+    except (NetconvertError, PatchError, FileNotFoundError) as exc:
         typer.echo(str(exc), err=True)
         raise typer.Exit(code=1) from exc
 
     typer.echo(f"Wrote {result.net_xml_path}")
     typer.echo(
-        f"Validation: {result.validation_errors} error(s), "
-        f"{result.validation_warnings} warning(s)"
+        f"Validation: {result.validation_errors} error(s), {result.validation_warnings} warning(s)"
     )
     if result.validation_errors > 0:
         typer.echo("Run `arteria network validate` for the full report.")
@@ -264,6 +261,99 @@ def network_validate(
 
     if report.has_blocking_issues:
         raise typer.Exit(code=1)
+
+
+@network_app.command("diff")
+def network_diff(
+    old: Path = typer.Option(..., "--old"),
+    new: Path = typer.Option(..., "--new"),
+    json_out: Path | None = typer.Option(None, "--json", help="Write the full diff as JSON."),
+    markdown_out: Path | None = typer.Option(
+        None, "--markdown", help="Write the summary as markdown (default: print it)."
+    ),
+) -> None:
+    """Report edges, lanes and junctions added, removed or changed between two `.net.xml` files."""
+    from arteria.network.diff import diff_networks, render_markdown
+
+    try:
+        diff = diff_networks(old, new)
+    except (FileNotFoundError, OSError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    markdown = render_markdown(diff)
+    if json_out:
+        json_out.write_text(diff.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    if markdown_out:
+        markdown_out.write_text(markdown, encoding="utf-8")
+    else:
+        typer.echo(markdown)
+
+
+@network_app.command("rebuild")
+def network_rebuild(
+    city: str = typer.Option(..., "--city"),
+    update_snapshot: bool = typer.Option(
+        False,
+        "--update-snapshot",
+        help="Re-pin the OSM snapshot and the reference net hash instead of checking them.",
+    ),
+    no_diff: bool = typer.Option(
+        False, "--no-diff", help="Skip the diff against the previous net."
+    ),
+) -> None:
+    """Reproducible rebuild: verify the pinned OSM snapshot, clip the whole-city
+    envelope, `netconvert` (+ patches), validate, compare with the pinned
+    reference net, write a provenance manifest under `network/builds/`.
+
+    Exits 1 on a snapshot mismatch, a netconvert failure, validation errors, or
+    a net that differs from the pinned reference (re-pin with --update-snapshot
+    if the change is intended). Desk-only: needs `osmium` and `netconvert`.
+    """
+    from arteria.network.build import NetconvertError
+    from arteria.network.osm_fetch import OsmExtractError, OsmFetchError
+    from arteria.network.patches import PatchError
+    from arteria.network.rebuild import RebuildError, rebuild_network
+    from arteria.network.snapshot import SnapshotMismatchError
+
+    try:
+        result = rebuild_network(
+            city=city,
+            city_dir=Path.cwd() / "cities" / city,
+            repo_root=Path.cwd(),
+            update_snapshot=update_snapshot,
+            diff_previous=not no_diff,
+            log=typer.echo,
+        )
+    except (
+        RebuildError,
+        OsmFetchError,
+        OsmExtractError,
+        NetconvertError,
+        PatchError,
+        SnapshotMismatchError,
+        FileNotFoundError,
+    ) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"Wrote {result.net_path}")
+    typer.echo(f"sha256={result.net_sha256} content-sha256={result.content_sha256}")
+    typer.echo(
+        f"Validation: {result.validation_errors} error(s), {result.validation_warnings} warning(s)"
+    )
+    if result.diff_counts:
+        typer.echo("Diff vs previous net: " + json.dumps(result.diff_counts))
+    typer.echo(f"Manifest: {result.manifest_path}")
+    if result.reproduced is False:
+        typer.echo(
+            "Net differs from the pinned reference; re-run with --update-snapshot if intended.",
+            err=True,
+        )
+    if result.validation_blocking or result.reproduced is False:
+        raise typer.Exit(code=1)
+    if result.reproduced:
+        typer.echo("Reproduced: content hash equals the pinned reference.")
 
 
 if __name__ == "__main__":

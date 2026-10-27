@@ -28,3 +28,4 @@ cities/*/network/*.net.xml
 cities/*/network/*.osm.xml
 cities/*/network/*.rou.xml
 cities/*/network/*.trips.xml
+cities/*/network/builds/

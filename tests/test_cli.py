@@ -52,9 +52,9 @@ def test_osm_fetch_wires_arguments_through_with_a_local_pbf_path(
 
     def fake_extract_osm(*, pbf_path, polygon_geojson, output_path, run=None):
         calls["extract_osm_args"] = (pbf_path, polygon_geojson, output_path)
-        return osm_fetch_module.OsmExtractResult(
-            output_path=str(output_path), sha256="deadbeef"
-        )
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_bytes(b"clip")
+        return osm_fetch_module.OsmExtractResult(output_path=str(output_path), sha256="deadbeef")
 
     monkeypatch.setattr(
         osm_fetch_module, "extract_candidate_polygon", fake_extract_candidate_polygon
@@ -111,7 +111,9 @@ def test_network_build_wires_arguments_through_and_reports_validation_counts(
 
     calls: dict = {}
 
-    def fake_build_network(*, osm_pbf_path, output_path, type_files=(), extra_options=(), run=None):
+    def fake_build_network(
+        *, osm_pbf_path, output_path, type_files=(), extra_options=(), patch_files=(), run=None
+    ):
         calls["args"] = (osm_pbf_path, output_path, tuple(type_files), tuple(extra_options))
         return build_module.NetworkBuildResult(
             net_xml_path=str(output_path), log="ok", validation_errors=1, validation_warnings=2
@@ -122,9 +124,7 @@ def test_network_build_wires_arguments_through_and_reports_validation_counts(
     osm_pbf = tmp_path / "source.osm.pbf"
     osm_pbf.write_bytes(b"x")
 
-    result = runner.invoke(
-        app, ["network", "build", "--city", "sjc", "--osm-pbf", str(osm_pbf)]
-    )
+    result = runner.invoke(app, ["network", "build", "--city", "sjc", "--osm-pbf", str(osm_pbf)])
 
     assert result.exit_code == 0, result.stdout
     assert "1 error(s)" in result.stdout
@@ -150,9 +150,7 @@ def test_network_build_exits_nonzero_on_netconvert_error(tmp_path: Path, monkeyp
     osm_pbf = tmp_path / "source.osm.pbf"
     osm_pbf.write_bytes(b"x")
 
-    result = runner.invoke(
-        app, ["network", "build", "--city", "sjc", "--osm-pbf", str(osm_pbf)]
-    )
+    result = runner.invoke(app, ["network", "build", "--city", "sjc", "--osm-pbf", str(osm_pbf)])
 
     assert result.exit_code == 1
     assert "netconvert: bad option" in result.stderr
@@ -161,9 +159,7 @@ def test_network_build_exits_nonzero_on_netconvert_error(tmp_path: Path, monkeyp
 def test_network_validate_prints_findings_and_exits_nonzero_for_broken_network() -> None:
     broken = REPO_ROOT / "tests" / "fixtures" / "toy-net-broken.net.xml"
 
-    result = runner.invoke(
-        app, ["network", "validate", "--city", "sjc", "--net", str(broken)]
-    )
+    result = runner.invoke(app, ["network", "validate", "--city", "sjc", "--net", str(broken)])
 
     assert result.exit_code == 1
     assert "dead_end" in result.stdout
@@ -173,8 +169,6 @@ def test_network_validate_prints_findings_and_exits_nonzero_for_broken_network()
 def test_network_validate_exits_zero_for_clean_network() -> None:
     valid = REPO_ROOT / "tests" / "fixtures" / "toy-net-valid.net.xml"
 
-    result = runner.invoke(
-        app, ["network", "validate", "--city", "sjc", "--net", str(valid)]
-    )
+    result = runner.invoke(app, ["network", "validate", "--city", "sjc", "--net", str(valid)])
 
     assert result.exit_code == 0

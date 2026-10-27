@@ -21,6 +21,18 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from arteria.data_safety import sha256_of
+from arteria.network.snapshot import (
+    SNAPSHOT_FILENAME,
+    ExtractSnapshot,
+    OsmSnapshot,
+    SourceSnapshot,
+    fingerprint,
+    load_snapshot,
+    pbf_data_timestamp,
+    save_snapshot,
+    verify_extract,
+    verify_source,
+)
 
 
 class OsmFetchError(RuntimeError):
@@ -184,3 +196,71 @@ def extract_osm(
         return OsmExtractResult(output_path=str(output_path), sha256=sha256_of(output_path))
     finally:
         tmp_polygon_path.unlink(missing_ok=True)
+
+
+def fetch_candidate(
+    *,
+    city: str,
+    city_dir: Path,
+    candidate: str,
+    pbf_path: Path | None = None,
+    source_url: str | None = None,
+    update_snapshot: bool = False,
+    run: Callable[..., subprocess.CompletedProcess] = subprocess.run,
+    download: Callable[[str, Path], None] = _urlretrieve,
+    log: Callable[[str], None] = lambda message: None,
+) -> OsmExtractResult:
+    """Get (or reuse) the regional PBF, check it against the pinned snapshot
+    `cities/<city>/network/osm-snapshot.yaml`, clip it to `candidate`, and check
+    the clip too (roadmap P2.1).
+
+    With a snapshot present, a source or extract whose sha256 differs raises
+    `SnapshotMismatchError` and nothing is overwritten. `update_snapshot=True`
+    skips the checks and re-pins the snapshot to what was just produced; with
+    no snapshot yet, one is created.
+    """
+    raw_dir = city_dir / "network" / "raw"
+    snapshot_path = city_dir / "network" / SNAPSHOT_FILENAME
+    snapshot = load_snapshot(snapshot_path)
+    checking = snapshot is not None and not update_snapshot
+
+    url = source_url or (snapshot.source.url if snapshot else default_geofabrik_url())
+    if pbf_path is not None:
+        source_pbf = pbf_path
+    else:
+        source_pbf = raw_dir / url.rsplit("/", 1)[-1]
+        if source_pbf.exists():
+            log(f"Reusing cached {source_pbf}")
+        else:
+            download_source_pbf(url, source_pbf, download=download)
+            log(f"Downloaded {url} -> {source_pbf}")
+    if checking:
+        assert snapshot is not None
+        verify_source(snapshot, source_pbf)
+        log("Source PBF matches the pinned snapshot.")
+
+    polygon = extract_candidate_polygon(city_dir / "study-areas.geojson", candidate)
+    output_path = raw_dir / f"{city}-{candidate}.osm.pbf"
+    result = extract_osm(
+        pbf_path=source_pbf, polygon_geojson=polygon, output_path=output_path, run=run
+    )
+
+    if checking:
+        assert snapshot is not None
+        verify_extract(snapshot, candidate, output_path)
+        log(f"Extract {candidate!r} matches the pinned snapshot.")
+    else:
+        source = SourceSnapshot(
+            file=source_pbf.name,
+            url=url,
+            data_timestamp=pbf_data_timestamp(source_pbf, run=run),
+            **fingerprint(source_pbf).model_dump(),
+        )
+        pinned = snapshot or OsmSnapshot(city=city, source=source)
+        pinned.source = source
+        pinned.extracts[candidate] = ExtractSnapshot(
+            file=output_path.name, candidate=candidate, **fingerprint(output_path).model_dump()
+        )
+        save_snapshot(pinned, snapshot_path)
+        log(f"Pinned snapshot written to {snapshot_path}")
+    return result

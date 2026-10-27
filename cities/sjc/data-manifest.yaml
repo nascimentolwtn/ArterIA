@@ -50,6 +50,11 @@ sources:
       satellite) could be compared, so geometric completeness is still
       unverified and nothing here is a completeness percentage.
 
+      Pinned 2026-10-27 in `cities/sjc/network/osm-snapshot.yaml`: Sudeste PBF
+      (data timestamp 2026-10-25T21:21:21Z) sha256 309645f3...dbb7, 862,437,567
+      bytes, and the clipped whole-city envelope `sjc-all.osm.pbf` sha256
+      6e1a20d5...b751. `arteria network rebuild --city sjc` verifies both.
+
   - id: geosanja-plano-diretor-zoneamento
     name: "Geosanja — Plano Diretor and Zoneamento map layers"
     description: >
@@ -210,6 +215,14 @@ sources:
       was reported annulled; current operator/contract status needs
       confirming with SEMOB before this request is sent, since it may have
       changed since.
+
+      Desk check 2026-10-27: a web search found no public GTFS download for
+      SJC (no feed on the city portal, none surfaced in aggregator searches).
+      The city's own mobility study (sjc.sp.gov.br/media/148076, "insumos para a
+      projecao inicial de oferta e demanda") analyses GTFS for lines 101 and 319,
+      so a feed exists at SEMOB/the operators but is not published. Not
+      confirmed against the OpenStreetMap wiki GTFS list or MobilityData's
+      catalogue (not fetched). P2.6 import not implemented; status stays deferred.
 
   - id: traffic-counts
     name: "Contagens volumétricas de tráfego"

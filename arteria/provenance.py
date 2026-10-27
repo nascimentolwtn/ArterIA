@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field
 
 from arteria.data_safety import sha256_of
 
-RunKind = Literal["simulation", "calibration", "optimization"]
+RunKind = Literal["simulation", "calibration", "optimization", "network_build"]
 
 
 class InputChecksum(BaseModel):
@@ -86,9 +86,7 @@ def build_run_manifest(
     (ADR 0004) uses, so a manifest's hashes are directly comparable to a
     data-manifest entry's.
     """
-    inputs = [
-        InputChecksum(path=str(path), sha256=sha256_of(path)) for path in (input_paths or [])
-    ]
+    inputs = [InputChecksum(path=str(path), sha256=sha256_of(path)) for path in (input_paths or [])]
     return RunManifest(
         run_id=run_id or new_run_id(),
         city=city,

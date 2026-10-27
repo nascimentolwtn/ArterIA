@@ -1,0 +1,19 @@
+# Pinned OSM snapshot (roadmap P2.1). Metadata only; the PBFs live in raw/ (gitignored).
+# Re-pin deliberately with `arteria osm fetch ... --update-snapshot`.
+city: sjc
+source:
+  sha256: 309645f3a0d729fbb7d17e84056bed564c6adb53f7adb5351d3a9f493927dbb7
+  size_bytes: 862437567
+  file: sudeste-latest.osm.pbf
+  url: https://download.geofabrik.de/south-america/brazil/sudeste-latest.osm.pbf
+  data_timestamp: '2026-10-25T21:21:21Z'
+extracts:
+  all:
+    sha256: 6e1a20d5889f3d589281b00ea800ebed73cdd29dc054465a823cd6daac71b751
+    size_bytes: 1102289
+    file: sjc-all.osm.pbf
+    candidate: all
+network:
+  content_sha256: 826ce1eafd3afffa0d9a89acb1aafe08b3fca9b6b2224a8741aa13614686e932
+  netconvert_version: 1.28.0
+  patches: []

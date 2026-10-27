@@ -1,0 +1,4 @@
+# Ordered list of plain-XML netconvert patches applied on top of the OSM-built net
+# (roadmap P2.3; see arteria/network/patches.py). Empty on purpose: no correction needed yet.
+# A non-empty list triggers a second netconvert pass (--sumo-net-file + these files).
+patches: []
