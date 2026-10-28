@@ -1,6 +1,6 @@
 # ArterIA Roadmap
 
-Status: Draft (phased plan; implementation is ahead of it in places — see `CHANGELOG.md`). Date: 2026-10-24 (revised 2026-10-24: Remote features reframed as Claude app sessions, no GitHub Actions; revised 2026-10-25: version bumped to 0.3). Current version: 0.3 (network-build tooling).
+Status: Draft (phased plan; implementation is ahead of it in places — see `CHANGELOG.md`). Date: 2026-10-24 (revised 2026-10-24: Remote features reframed as Claude app sessions, no GitHub Actions; revised 2026-10-25: version bumped to 0.3; revised 2026-10-28: Phase 2 exit criteria met, version bumped to 0.4). Current version: 0.4 (Phase 2, network build, done).
 
 This roadmap turns the method in `docs/research-brief-sjc.md` (Phases 1-6) into a phased plan for a **reusable, multi-city** tool, with São José dos Campos (SJC) as the first pilot. It follows ADR 0001 (SUMO as the lower-level simulator, Python as the implementation language). Each phase lists goals, features (with IDs used in the Remote/Local sections), dependencies, deliverables, exit criteria and risks.
 
@@ -66,6 +66,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 **Dependencies:** P1.4 (polygon), P0.3.
 **Deliverables:** `cities/sjc/network/` build script + patches, generated `.net.xml` (artifact, not necessarily committed), validation report.
 **Exit criteria:** a one-command rebuild reproduces the same net from a pinned OSM snapshot; validation report has no blocking issues; key corridors verified against aerial imagery/field notes.
+**Status 2026-10-28: exit criteria met, phase done.** `arteria network rebuild --city sjc` reproduces the pinned net; validation is 0 errors (127 warnings, none blocking); corridors A-D aerial-verified 2026-10-27; geometry/name cross-checked against IBGE/GeoSanja (P2.1); a netconvert name-escaping bug found during that cross-check was fixed and the net rebuilt (CHANGELOG [1.3]). P2.4 (netedit) and P2.6 (GTFS) stay open as deferred, non-blocking items: no complex junction has needed a manual fix yet, and no public SJC GTFS feed exists.
 **Risks:** OSM quality gaps in Brazilian cities (lanes, turn restrictions missing); junction-joining artifacts; GTFS unavailable.
 
 ### Phase 3 - Demand and baseline scenario

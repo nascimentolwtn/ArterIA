@@ -2,6 +2,12 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.4] - 2026-10-28
+
+### Changed
+
+- **Phase 2 (network build) exit criteria met; phase marked done.** `arteria network rebuild --city sjc` reproduces the pinned network from the OSM snapshot; validation is 0 errors (127 non-blocking warnings); the four study-area corridors are aerial-verified (2026-10-27); and the network's geometry and street names are cross-checked against IBGE and GeoSanja ([1.2], [1.3]). `docs/roadmap.md`, `README.md` and `README-eng.md` are updated to match. Manual `netedit` junction fixes (P2.4) and the GTFS public-transport layer (P2.6) stay open as deferred, non-blocking items.
+
 ## [1.3] - 2026-10-28
 
 ### Fixed

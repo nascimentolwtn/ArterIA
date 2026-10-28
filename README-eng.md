@@ -26,7 +26,7 @@ SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl or custom optimi
 
 ## Status
 
-Early stage, version 0.3 (network-build tooling: OSM fetch, `netconvert` build/validate, study-area polygons, the first intervention transforms). Next steps: run the real OSM-to-network pipeline for SJC at the desk and move to baseline calibration. See `CHANGELOG.md` for what's changed.
+Version 0.4: Phase 2 (network build) done for the SJC pilot — real network built, validated (0 errors), a reproducible one-command rebuild from a pinned OSM snapshot, corridors aerial-verified, and geometry/names cross-checked against IBGE and GeoSanja. Next steps: Phase 3, baseline demand calibration. See `CHANGELOG.md` for what's changed.
 
 ## Data and credits
 

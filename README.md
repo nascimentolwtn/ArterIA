@@ -26,7 +26,7 @@ SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl ou otimizadores 
 
 ## Status
 
-Fase inicial, versão 0.3 (ferramental de construção de rede: busca OSM, construção/validação via `netconvert`, polígonos de área de estudo, primeiras transformações de intervenção). Próximos passos: executar o pipeline real OSM-para-rede de SJC na mesa de trabalho e avançar para a calibração da linha de base. Veja o `CHANGELOG.md` para o que mudou.
+Versão 0.4: Fase 2 (construção de rede) concluída para o piloto de SJC — rede real construída, validada (0 erros), reconstrução reprodutível a partir de um snapshot OSM fixado, corredores verificados por imagem aérea e geometria/nomes cruzados com o IBGE e a GeoSanja. Próximos passos: Fase 3, calibração da linha de base de demanda. Veja o `CHANGELOG.md` para o que mudou.
 
 ## Dados e créditos
 
