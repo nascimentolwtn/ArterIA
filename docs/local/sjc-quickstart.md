@@ -116,17 +116,37 @@ per P0.6/ADR 0004).
 
 SUMO ships a quick random-trip generator that needs no OD data — good
 enough to confirm vehicles actually route through the network you just
-built, nothing more:
+built, nothing more.
+
+**On Linux/WSL2**, `scripts/linux/run-sjc-sim.sh` wraps the two commands
+below (regenerate demand, then open `sumo-gui`) behind two optional args:
 
 ```bash
-python "%SUMO_HOME%\tools\randomTrips.py" -n cities/sjc/network/sjc.net.xml -r cities/sjc/network/sjc-random.rou.xml -e 3600 -p 2
+scripts/linux/run-sjc-sim.sh [duration_seconds] [period_seconds]
+# e.g. 30 simulated minutes, ~1 new vehicle/s:
+scripts/linux/run-sjc-sim.sh 1800 1
+```
+
+`duration_seconds` defaults to 3600 (one simulated hour) and `period_seconds`
+defaults to 2 (one new vehicle every ~2s — lower is more traffic). Re-run it
+any time `sjc.net.xml` has been rebuilt: old `.rou.xml`/`.trips.xml` files
+reference edge IDs from the previous network and `sumo-gui` will log
+unroutable-vehicle warnings against a changed one.
+
+**Manually, or on Windows**, the same two commands:
+
+```bash
+python "%SUMO_HOME%\tools\randomTrips.py" -n cities/sjc/network/sjc.net.xml -r cities/sjc/network/sjc-random.rou.xml -o cities/sjc/network/sjc-random.trips.xml -e 3600 -p 2
 sumo-gui -n cities/sjc/network/sjc.net.xml -r cities/sjc/network/sjc-random.rou.xml
 ```
 
 (On Linux/WSL2: `python "$SUMO_HOME/tools/randomTrips.py" ...` — same
-arguments.) `-e 3600` simulates one hour, `-p 2` emits a new vehicle every
-~2 seconds on average. Press play in `sumo-gui` and you should see vehicles
-moving through the real SJC street layout.
+arguments.) Note the explicit `-o`: without it, `randomTrips.py` writes its
+second output (the `.trips.xml` the `-r` route file was sampled from) to the
+default name `trips.trips.xml` in the current directory, ignoring
+`sjc-random.trips.xml` even though one already exists. Press play in
+`sumo-gui` and you should see vehicles moving through the real SJC street
+layout.
 
 ## What this is NOT
 
