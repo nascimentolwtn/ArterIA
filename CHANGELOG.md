@@ -2,7 +2,11 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
-## [Unreleased]
+## [1.2] - 2026-10-28
+
+### Added
+
+- **Public street data downloaded and cross-checked against OpenStreetMap; P2.1 and P2.7 done.** IBGE 2022 street faces (the São Paulo state file, which contains São José dos Campos) and the GeoSanja road layers were downloaded; `cities/sjc/data-manifest.yaml` records the source files and their hashes. New `arteria network crosscheck --city sjc` runs a corridor-level name and geometry cross-check against both sources: 543 street names matched, with a median offset of about 3 m between OpenStreetMap and the reference. New `arteria network render --city sjc` draws the network with the study-area outlines (one overview, one per area). Results are in `data/crosscheck/crosscheck.md` and `data/renders/` (local only, gitignored).
 
 ## [1.1] - 2026-10-27
 

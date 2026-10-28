@@ -17,7 +17,7 @@
 # sources listed first (osm-network-extract, geosanja-plano-diretor-zoneamento,
 # ibge-faces-logradouros) — no contact with anyone required for those.
 #
-# Last reviewed: 2026-10-26 (desk check of the three public network sources).
+# Last reviewed: 2026-10-28 (the three public network sources downloaded and cross-checked).
 
 sources:
   - id: osm-network-extract
@@ -65,20 +65,25 @@ sources:
       request for, now obtainable by self-service download instead.
     roadmap_ref: P1.1, P2.5
     agency: "Prefeitura de São José dos Campos (self-service portal, no contact needed)"
-    license: "unknown — confirm on download"
+    license: "unknown, not shown on site"
     visibility: public
     sha256: null
     status: public_available
     notes: >
-      Desk check 2026-10-26: sjc.sp.gov.br/geosanja redirects (HTTP 200) to
-      geo.sjc.sp.gov.br, a new Angular web-GIS app titled "GeoSanja"
-      (geosanja.sjc.sp.gov.br also answers). The layer catalogue is loaded
-      dynamically from a GeoServer backend (WMS) after the page starts, so it
-      could not be listed with curl, and the old shapefile "geo-metadados"
-      download tab was not visible in the static page. NOT confirmed:
-      whether Master Plan/zoning layers are still offered, whether they can
-      be downloaded, or whether a distinct road-network layer exists. Needs
-      a real browser session (interactive, not scripted) to settle it.
+      Downloaded 2026-10-28 (gitignored; no license terms are shown on the
+      site; sha256 left null here, hashes below are for the local copies).
+      data/geoSJC-arruamentos.zip, sha256
+      cbe177f554f1521150b5f4afb58a798a9e37b81268fd5e9156eb7ed628b31311,
+      7,543,974 bytes: GeoSanja (https://geo.sjc.sp.gov.br/) category
+      "04 Bases de Referência > 02 Infraestruturas > Arruamentos", GeoJSON.
+      data/geoSJC-anexo_09.zip, sha256
+      89593cae0f22f46a4fd284b0e9d19c1aa5f344b117ade1e0d91f06b4d3c163e7,
+      146,747 bytes: "01 PDDI > 09 Hierarquia Viária" (inner zips
+      macroestruturaViariaBasica, macroestruturaViariaPrioritaria,
+      perimetroUrbano; GeoJSON+SLD). Extracted copies are under
+      data/geosanja/. The portal (geo.sjc.sp.gov.br, an Angular web-GIS app
+      backed by GeoServer) offers a download tool for these layers; see
+      data/REPORT.md for the layer catalogue.
 
   - id: ibge-faces-logradouros
     name: "IBGE — Base de Faces de Logradouros do Brasil"
@@ -89,22 +94,20 @@ sources:
       of any OSM editing gaps.
     roadmap_ref: P2.5
     agency: "IBGE (self-service download, no contact needed)"
-    license: "public (IBGE open data)"
+    license: "public download; no license terms shown"
     visibility: public
-    sha256: null
+    sha256: eaacab21ef90e0352a46f43f2d156a81888547850603651492ceb713c09703e6
     status: public_available
     notes: >
-      Desk check 2026-10-26: the product page on www.ibge.gov.br is behind a
-      Cloudflare challenge (HTTP 403 to curl), so its current status text
-      could not be read; "still preliminary or not" is UNKNOWN. The file
-      servers ftp.ibge.gov.br and geoftp.ibge.gov.br are reachable, but the
-      guessed folder for the 2022 faces base returned 404 and no
-      "logradouros"/"faces" folder appears in the Censo_Demografico_2022
-      listing or under geoftp organizacao_do_territorio/malhas_territoriais
-      (only limites_interestaduais, malhas_de_setores_censitarios and
-      malhas_municipais). The real download path is therefore unknown; find
-      it by browsing the product page in a normal browser. Not used as a
-      cross-check yet.
+      Downloaded 2026-10-28 (gitignored). Source page:
+      https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/28971-base-de-faces-de-logradouros-do-brasil.html
+      (edition 2022, Resultados Preliminares). Local file
+      data/SP_faces_de_logradouros_2022_shp.zip, sha256
+      eaacab21ef90e0352a46f43f2d156a81888547850603651492ceb713c09703e6,
+      395,483,363 bytes. It is the state-level SP zip and contains the SJC
+      file SP/3549904_faces_de_logradouros_2022.*; the extracted copy is
+      under data/ibge-faces/. Used for the name cross-check in
+      data/crosscheck/ (key = NM_TIT_LOG + NM_LOG).
 
   - id: planmob-diagnostico-prognostico
     name: "PlanMob SJC — Diagnóstico e Prognóstico"

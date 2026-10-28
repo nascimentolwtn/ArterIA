@@ -49,19 +49,19 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 
 **Features**
 - P2.1 OSM extraction: clip by polygon from Geofabrik/Overpass, pinned snapshot date and checksum. No municipal contact needed; cross-check completeness/road hierarchy against Geosanja's self-service Master Plan/zoning layers and IBGE's Base de Faces de Logradouros (both public, no request required — see `cities/sjc/data-manifest.yaml`), and against satellite imagery, before trusting raw OSM alone for a corridor with no field verification.
-  - **Status 2026-10-27: done.** Pinned in `cities/sjc/network/osm-snapshot.yaml` (source + extract sha256, PBF data timestamp); `arteria osm fetch` fails on a mismatch, `--update-snapshot` re-pins. Geometry cross-check against IBGE/GeoSanja is still open; corridors aerial-checked by the owner 2026-10-27.
+  - **Status 2026-10-28: done.** Pinned in `cities/sjc/network/osm-snapshot.yaml` (source + extract sha256, PBF data timestamp); `arteria osm fetch` fails on a mismatch, `--update-snapshot` re-pins. Geometry cross-check against IBGE/GeoSanja has been run (`arteria network crosscheck --city sjc`, results in `data/crosscheck/crosscheck.md`); corridors aerial-checked by the owner 2026-10-27.
 - P2.2 `netconvert` pipeline with versioned options (typemaps, junction joining, ramp guessing, TLS guessing, sidewalks/bike lanes, public transport stops from OSM).
   - **Status 2026-10-27: done** (SUMO 1.28 flag set in `default_netconvert_options()`; PT stops and sidewalks not yet added).
 - P2.3 Network corrections as patch files (`.nod/.edg/.con/.tll` plain XML or `netconvert` patch inputs) applied on top of the generated net, so rebuilds from new OSM are reproducible.
   - **Status 2026-10-27: mechanism done, no patches yet.** SUMO 1.28 has no `--patch-files`; patches in `cities/sjc/network/patches/manifest.yaml` run as a second `netconvert` pass over the OSM-built net (`--sumo-net-file` + plain-XML files). Tested, including against real `netconvert`.
 - P2.4 Manual inspection and fixes in `netedit` for complex junctions, exported back into patch files.
-  - Not started (no junction fix needed so far).
-- P2.5 Network validation checks: connectivity, dead ends, lane counts vs. field/aerial evidence, one-way status, turn restrictions, speed limits, TLS presence.
+  - Not started (no junction fix needed so far); needs the owner's desk GUI session (`netedit`).
+- P2.5 Network validation checks: connectivity, dead ends, lane counts (the validator does not compare against aerial evidence; the aerial check was a manual Google Earth check, see CHANGELOG [1.1]), one-way status, turn restrictions, speed limits, TLS presence.
   - **Status 2026-10-27: done on the unified net**: 0 errors, 127 warnings (74 dead ends, 52 TLS junctions without `<tlLogic>` that no connection uses, 1 routability summary: 93.1% of junctions in the main component), 1 info. No blocking issues.
 - P2.6 Public transport layer: GTFS import (`gtfs2pt.py`) or manual bus routes/stops/frequencies.
   - **Status 2026-10-27: blocked on data, not implemented.** No public SJC GTFS found (see `cities/sjc/data-manifest.yaml`).
 - P2.7 Network diff/report (edges, lanes, junctions changed between builds) and map renders.
-  - **Status 2026-10-27: diff done** (`arteria network diff --old --new`, JSON + markdown; also run by `network rebuild`). Map renders not done.
+  - **Status 2026-10-28: done.** Diff (`arteria network diff --old --new`, JSON + markdown; also run by `network rebuild`) and map renders (`arteria network render --city sjc`, PNGs in `data/renders/`).
 
 **Dependencies:** P1.4 (polygon), P0.3.
 **Deliverables:** `cities/sjc/network/` build script + patches, generated `.net.xml` (artifact, not necessarily committed), validation report.

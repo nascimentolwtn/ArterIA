@@ -1,6 +1,6 @@
 [project]
 name = "arteria"
-version = "1.1.0"
+version = "1.2.0"
 description = "AI-assisted decision-support tool for street-network planning, evaluated against calibrated SUMO simulations"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -26,6 +26,9 @@ geo = [
     "geopy>=2.4",
     "shapely>=2.1",
     "pyproj>=3.6",
+    "pyshp>=2.3",
+    "matplotlib>=3.8",
+    "sumolib>=1.28",
 ]
 
 [build-system]

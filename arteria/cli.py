@@ -290,6 +290,62 @@ def network_diff(
         typer.echo(markdown)
 
 
+@network_app.command("crosscheck")
+def network_crosscheck(
+    city: str = typer.Option(..., "--city"),
+    out_dir: Path | None = typer.Option(
+        None, "--out-dir", help="Defaults to data/crosscheck/ under the current directory."
+    ),
+) -> None:
+    """Cross-check the corridor net against IBGE faces and GeoSanja arruamentos,
+    writing crosscheck.json and crosscheck.md.
+
+    Reads the downloaded sources under data/ (ibge-faces/, geosanja/); needs the
+    `geo` extra plus pyshp and sumolib.
+    """
+    from arteria.network.crosscheck import CrosscheckError, run_crosscheck, write_outputs
+
+    try:
+        result = run_crosscheck(
+            city_dir=Path.cwd() / "cities" / city,
+            repo_root=Path.cwd(),
+            city=city,
+            log=typer.echo,
+        )
+    except (CrosscheckError, FileNotFoundError, OSError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    json_path, md_path = write_outputs(result, out_dir or Path.cwd() / "data" / "crosscheck")
+    typer.echo(f"Wrote {json_path}")
+    typer.echo(f"Wrote {md_path}")
+
+
+@network_app.command("render")
+def network_render(
+    city: str = typer.Option(..., "--city"),
+    out_dir: Path | None = typer.Option(
+        None, "--out-dir", help="Defaults to data/renders/ under the current directory."
+    ),
+) -> None:
+    """Render the net and the enabled study areas to PNG (overview + one per area).
+
+    Needs the `geo` extra plus sumolib and matplotlib. Output is not committed.
+    """
+    from arteria.network.render import render_maps
+
+    try:
+        render_maps(
+            city_dir=Path.cwd() / "cities" / city,
+            out_dir=out_dir or Path.cwd() / "data" / "renders",
+            city=city,
+            log=typer.echo,
+        )
+    except (FileNotFoundError, OSError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+
 @network_app.command("rebuild")
 def network_rebuild(
     city: str = typer.Option(..., "--city"),
