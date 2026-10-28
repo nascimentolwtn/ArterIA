@@ -108,7 +108,24 @@ Profundidade: completo
 
 **Perguntas abertas/riscos.**
 1. Cross-check não cobre atributos estruturais (faixas, sentido, restrições de giro) — apenas nome e geometria do eixo da via; o risco de qualidade de `lanes`/`maxspeed` registrado em 2026-10-27 permanece integralmente aberto.
-2. Artefato de escape duplo (`&apos;`) em nomes de rua com apóstrofo: se nomes de rua vierem a ser usados como chave de junção com dados de calibração/contagem (ex. por correspondência de nome com fonte municipal), o bug precisa ser corrigido antes; hoje é apenas cosmético para o cross-check de nome.
+2. ~~Artefato de escape duplo (`&apos;`) em nomes de rua com apóstrofo~~ — **resolvido em `1895aeb`, ver addendum abaixo (2026-10-28 (2)).**
 3. Os descasamentos de mediana alta por nomes genéricos reutilizados ("Rua Dois") sugerem que casamento por nome tem limite estrutural nesta malha; qualquer uso futuro desse cross-check como insumo de qualidade de dado (não apenas triagem) precisaria de casamento por nome+geometria conjunto, não nome isolado.
 4. Números não verificados em código nesta sessão (apenas repassados); antes de citar no capítulo como fato, reexecutar `arteria network crosscheck --city sjc` e ler `crosscheck.py`.
 5. Orientador(a) não contatado(a); arquitetura de agentes não validada; escolha acadêmica de corredor segue pendente.
+
+---
+
+## 2026-10-28 (2) — Addendum: artefato de escape duplo diagnosticado e corrigido (risco 2 acima resolvido)
+
+**Commit:** `1895aeb` ("fix: undo netconvert's double-escaping of names"), CHANGELOG [1.3].
+
+**O que foi feito.** Causa raiz confirmada por fixture OSM mínima de duas vias contra o binário real do `netconvert` 1.28.0: o `netconvert` escapa duplamente qualquer caractere especial de XML literal (`'`, `&`, `"`, `<`, `>`) presente numa tag `name` do OSM — primeiro substitui o caractere pela entidade XML nomeada internamente, depois seu próprio escritor de saída escapa o `&` dessa entidade de novo (ex. apóstrofo vira `&amp;apos;`). Bug do próprio `netconvert`/SUMO, não erro de lógica do ArterIA. `arteria.network.build.fix_double_escaped_names()` agora roda automaticamente após toda chamada de `netconvert` em `build_network`, corrigindo os atributos `name`/`origId` no `.net.xml` escrito; testes novos cobrem a função isolada, um caso no-op e um teste de ponta a ponta com fixture reproduzindo o padrão. A rede real de SJC foi reconstruída com a correção e o snapshot OSM fixado (`cities/sjc/network/osm-snapshot.yaml`) foi repontado para o hash de conteúdo da rede corrigida: 58 caracteres corrigidos em exatamente 3 nomes de rua (ex. "Rua Armando D'Oliveira Cobra", antes "Rua Armando D&amp;apos;Oliveira Cobra"); estrutura da rede inalterada (0 arestas/faixas/junções adicionadas, removidas ou alteradas; validação ainda 0 erros, 127 avisos). O cross-check de `1c4a7b4` foi reexecutado contra a rede corrigida: nomes coincidentes com IBGE 543→544 (um dos três nomes corrigidos agora casa corretamente), só-OSM 167→166, só-IBGE 201→200; números de geometria (mediana ~3,0 m, 6,4% acima de 15 m, 81,5%/97,2% de cobertura GeoSanja) essencialmente inalterados.
+
+**Por que importa.** Fecha, com causa raiz identificada e correção automática aplicada (não apenas contorno manual), o risco 2 registrado na entrada anterior (2026-10-28) e já citado em `chapters/03-arquitetura-do-sistema.md` (3.3) como "achado colateral ainda não corrigido". Nomes de rua em `sjc.net.xml` podem agora ser citados diretamente em figuras/tabelas/texto sem o artefato de apóstrofo — relevante porque a nota de 3.3 havia marcado explicitamente esse artefato como impeditivo para qualquer uso futuro de nome de rua como chave de junção com dados de calibração/contagem municipal.
+
+**Impacto na tese.** `chapters/03-arquitetura-do-sistema.md`, 3.3 (nota de `1c4a7b4`, trecho final): acrescentada uma frase registrando a correção e os novos totais (544/166/200), sem reescrever o restante da nota. `outline.md`: nota do Cap. 3 (2026-10-28, `1c4a7b4`) marcada como superada neste ponto específico.
+
+**Perguntas abertas/riscos.**
+1. Os três nomes afetados e o novo total 544/166/200 não foram verificados em código nesta sessão (apenas repassados do CHANGELOG); mesma ressalva já registrada para os números de `1c4a7b4` — reexecutar `crosscheck.py` antes de consolidar na prosa.
+2. `fix_double_escaped_names()` cobre `'`, `&`, `"`, `<`, `>`; não verificado se há outros caracteres de nome de rua (acentos/Unicode fora do conjunto de escape XML) sujeitos a problema semelhante — lacuna de verificação desta trilha, não hipótese levantada pelo commit.
+3. Orientador(a) não contatado(a); arquitetura de agentes não validada; escolha acadêmica de corredor segue pendente.

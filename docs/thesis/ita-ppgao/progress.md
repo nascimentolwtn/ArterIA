@@ -5,6 +5,20 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-28 (b) (commit `1895aeb`: correção do escape duplo de apóstrofo — fecha o risco nº 2 da entrada anterior)
+
+**Origem.** Resumo repassado pelo responsável do ArterIA; `arteria/network/build.py` (função `fix_double_escaped_names()`) não foi lido por esta trilha; números não reproduzidos aqui.
+
+**O que foi feito (no produto).** Causa raiz do artefato já sinalizado na entrada anterior (`&apos;` duplamente escapado em nomes de rua com apóstrofo) foi isolada e confirmada contra o binário real do `netconvert` 1.28.0: é bug do próprio `netconvert` (duplo-escape de qualquer caractere especial de XML em tag `name` do OSM), não erro de lógica do ArterIA. Correção aplicada automaticamente após toda chamada ao `netconvert` (`build_network`, usado por `arteria network build` e `rebuild`); rede real de SJC reconstruída com a correção e o snapshot OSM fixado re-apontado para o novo hash de conteúdo. Informado: 58 caracteres corrigidos em exatamente 3 nomes de rua (ex. "Rua Armando D'Oliveira Cobra"); estrutura da rede inalterada (0 arestas/faixas/junções alteradas; validação ainda 0 erros/127 avisos). O cross-check de `1c4a7b4` contra IBGE/GeoSanja foi reexecutado: nomes coincidentes OSM/IBGE foram de 543 para 544 (uma das três ruas antes malformadas agora compara corretamente); números de geometria (mediana ~3,0 m, 6,4% acima de 15 m, 81,5%/97,2% de cobertura GeoSanja) seguem essencialmente inalterados. Release CHANGELOG [1.3].
+
+**Por que importa.** Fecha, no nível do produto, o risco nº 2 registrado na entrada anterior ("`&apos;` duplamente escapado... aguardar correção ou verificar caso a caso antes de citar"): nomes de rua em `sjc.net.xml` podem agora ser citados literalmente em figura/tabela/texto sem o artefato de apóstrofo. Não altera nenhum número de geometria/cobertura já citado nesta trilha além do ajuste marginal 543->544 nomes coincidentes, nem produz achado operacional novo — é correção de qualidade de dado, não evidência sobre acesso, resiliência ou continuidade.
+
+**Impacto no produto técnico.** `chapters/04-metodologia.md`, seção 4.1.4: a frase "Achado de qualidade de dado ainda não corrigido: artefato de escape duplo..." passa a registrar a correção (nota de atualização acrescentada, prosa assentada preservada). `outline.md`: nota equivalente no bloco de status e no Cap. 3 (onde o mesmo artefato havia sido citado como cautela ao citar nomes de rua). Risco nº 2 da entrada de `1c4a7b4` fechado; demais riscos daquela entrada (itens 1, 3, 4) inalterados.
+
+**RESSALVA.** Nenhum número foi reproduzido por esta trilha; "58 caracteres", "3 nomes", "543->544" vêm do resumo repassado pelo responsável. **Esta entrada não altera, resolve nem toca a exceção já registrada no topo deste arquivo: a condição de aceite do enquadramento operacional/FAB por um orientador do PPGAO continua NÃO cumprida; nenhum orientador foi contatado.**
+
+**Próximos passos.** Inalterados em relação à entrada anterior, exceto pela remoção do item de apóstrofo: caracterizar por corredor (A/B/C/D) os 6,4%/18,5% de descasamento geométrico antes de citar qualidade de rede por área no Cap. 3; buscar orientador do PPGAO.
+
 ## 2026-10-28 (commit `1c4a7b4`: cross-check da rede SJC contra IBGE e GeoSanja — P2.1, P2.7)
 
 **Origem.** Resumo repassado pelo responsável do ArterIA (já no `main`); código de `arteria/network/crosscheck.py` e `arteria/network/render.py` não foi lido por esta trilha; números abaixo não foram reproduzidos aqui.
