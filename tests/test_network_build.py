@@ -7,6 +7,7 @@ from arteria.network.build import (
     NetconvertError,
     build_network,
     default_netconvert_options,
+    fix_double_escaped_names,
 )
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -127,6 +128,49 @@ def test_build_network_raises_netconvert_error_with_stderr_on_nonzero_returncode
         )
 
     assert "netconvert: bad option" in str(excinfo.value)
+
+
+def test_fix_double_escaped_names_undoes_netconvert_bug(tmp_path: Path):
+    net_path = tmp_path / "c.net.xml"
+    net_path.write_text(
+        'name="Rua D&amp;apos;Oliveira" name="Rua A &amp;amp; B" '
+        'name="&amp;quot;x&amp;quot; &amp;lt;y&amp;gt;"',
+        encoding="utf-8",
+    )
+
+    count = fix_double_escaped_names(net_path)
+
+    assert count == 6  # one fix per entity occurrence
+    fixed = net_path.read_text(encoding="utf-8")
+    assert fixed == 'name="Rua D\'Oliveira" name="Rua A &amp; B" name="&quot;x&quot; &lt;y&gt;"'
+
+
+def test_fix_double_escaped_names_is_a_no_op_on_clean_output(tmp_path: Path):
+    net_path = tmp_path / "c.net.xml"
+    net_path.write_text('name="Rua Normal" name="Rua A &amp; B"', encoding="utf-8")
+
+    count = fix_double_escaped_names(net_path)
+
+    assert count == 0
+    assert net_path.read_text(encoding="utf-8") == 'name="Rua Normal" name="Rua A &amp; B"'
+
+
+def test_build_network_fixes_double_escaped_names_in_output(tmp_path: Path):
+    osm_pbf_path = tmp_path / "source.osm.pbf"
+    osm_pbf_path.write_bytes(b"fake-osm-bytes")
+    output_path = tmp_path / "out" / "city.net.xml"
+
+    result = build_network(
+        osm_pbf_path=osm_pbf_path,
+        output_path=output_path,
+        run=_fake_run_writing("toy-net-double-escaped-names.net.xml"),
+    )
+
+    written = output_path.read_text(encoding="utf-8")
+    assert "&amp;apos;" not in written
+    assert "Rua Armando D'Oliveira Cobra" in written
+    assert "Rua Fulano &amp; Filhos" in written
+    assert "fixed" in result.log and "netconvert bug" in result.log
 
 
 def test_build_network_converts_pbf_to_osm_xml_with_osmium_before_netconvert(tmp_path: Path):

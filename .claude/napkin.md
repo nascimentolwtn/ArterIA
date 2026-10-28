@@ -29,8 +29,7 @@ When adding new backlog items:
 
 ## Bug Fixes (Next Priority)
 
-1. **[2026-10-28] Apostrophes double-escaped in street names in `sjc.net.xml`**
-   Seen as `&amp;apos;` (58 occurrences, 3 names, e.g. D'Ávila). Input `raw/sjc-all.osm.xml` has a single-escaped `&apos;` (valid), so the extra escaping happens at or after `netconvert` (not confirmed which; not fixed). Do instead: check whether `netconvert` 1.28 writes names double-escaped, and if so post-process names or strip `&amp;` on read in name-matching code; until then, unescape before comparing names.
+None open.
 
 ## Backlog Features
 

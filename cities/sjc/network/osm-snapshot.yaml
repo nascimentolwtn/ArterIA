@@ -14,6 +14,6 @@ extracts:
     file: sjc-all.osm.pbf
     candidate: all
 network:
-  content_sha256: 826ce1eafd3afffa0d9a89acb1aafe08b3fca9b6b2224a8741aa13614686e932
+  content_sha256: e61645f87435f1a6548809e278d584d7901fdd0315d1035a9184060997729bbd
   netconvert_version: 1.28.0
   patches: []

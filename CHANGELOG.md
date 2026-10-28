@@ -2,6 +2,12 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.3] - 2026-10-28
+
+### Fixed
+
+- **`netconvert` double-escaped apostrophes (and other XML special characters) in street names.** A literal `'`, `&`, `"`, `<` or `>` in an OSM `name` tag came out of `netconvert` 1.28.0 double-escaped (e.g. a plain apostrophe became `&amp;apos;` instead of nothing, since an apostrophe needs no escaping in a double-quoted XML attribute) — confirmed with a minimal two-way OSM fixture against the real binary. `arteria network build`/`rebuild` now corrects this automatically after every `netconvert` run. The real SJC network was rebuilt with the fix (58 double-escaped characters corrected across 3 street names, e.g. "Rua Armando D'Oliveira Cobra"; no edges, lanes or junctions changed) and the pinned snapshot was re-pointed at the corrected network. The cross-check now matches one more street name (544 instead of 543) now that its name compares correctly.
+
 ## [1.2] - 2026-10-28
 
 ### Added

@@ -268,7 +268,7 @@ Mask: union of the 4 study polygons (EPSG:31983) + 50 m. Net coords -> UTM via +
 
 ## Caveats on unmatched names (not forced)
 - OSM-only examples: {osm_examples}.
-  Many are real streets that IBGE spells differently: abbreviations or dropped connectives, spelling variants (Benedicto/Benedito), truncated OSM names ("Antonia M. A. Reichel"), number formats ("Rua 12 C"), plus non-street names (Avenida Aeroporto, Arco da Inovacao, Deck do Banhado, Ciclovia ..., "Acesso para ..."). OSM names in the net also carry a double-escaped "&apos;" (e.g. "D&apos;Oliveira"), which breaks matching for apostrophe names; this looks like an upstream net/build artefact worth checking.
+  Many are real streets that IBGE spells differently: abbreviations or dropped connectives, spelling variants (Benedicto/Benedito), truncated OSM names ("Antonia M. A. Reichel"), number formats ("Rua 12 C"), plus non-street names (Avenida Aeroporto, Arco da Inovacao, Deck do Banhado, Ciclovia ..., "Acesso para ..."). (A netconvert bug that double-escaped apostrophes in street names, e.g. "D&apos;Oliveira", was fixed in `arteria.network.build`; this list reflects the corrected names.)
 - IBGE-only keys (title is already part of the key) are mostly genuine spelling or word-order differences from OSM (e.g. ANTONIODEPAULAFERREIRA vs OSM "Antonio Paula Ferreira", ANTONIAMONTEIROAFONSOREICHEL vs "Antonia M. A. Reichel", connectives such as DE/DA/DOS present on one side only). Normalisation was deliberately not tuned.
 """  # noqa: E501
 

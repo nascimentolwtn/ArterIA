@@ -23,6 +23,42 @@ class NetconvertError(RuntimeError):
     pass
 
 
+# netconvert 1.28.0 double-escapes a handful of XML special characters that
+# were present literally in an OSM tag value: it first replaces the literal
+# character with its named entity (e.g. "'" -> "&apos;"), then its own XML
+# writer escapes the "&" in that entity again when serialising the attribute,
+# so the net.xml ends up with "&amp;apos;" where the OSM source had a plain
+# apostrophe. Reproduced with a two-way fixture against the real binary:
+# literal ' & " < > in an OSM `name` tag all come out the same way. The right
+# fix lives upstream in netconvert; until a fixed release is in use, undo the
+# extra escaping here so `name`/`origId` attributes hold the correct text.
+_DOUBLE_ESCAPED_ENTITIES = {
+    "&amp;apos;": "'",  # apostrophe needs no escaping inside a double-quoted attribute
+    "&amp;quot;": "&quot;",
+    "&amp;lt;": "&lt;",
+    "&amp;gt;": "&gt;",
+    "&amp;amp;": "&amp;",
+}
+
+
+def fix_double_escaped_names(path: Path) -> int:
+    """Undo netconvert's double-escaping (see `_DOUBLE_ESCAPED_ENTITIES`) in
+    a written `.net.xml`. Returns the number of characters fixed (0 if none
+    were found, which is the common case).
+    """
+    text = path.read_text(encoding="utf-8")
+    fixed = text
+    count = 0
+    for broken, correct in _DOUBLE_ESCAPED_ENTITIES.items():
+        n = fixed.count(broken)
+        if n:
+            count += n
+            fixed = fixed.replace(broken, correct)
+    if count:
+        path.write_text(fixed, encoding="utf-8")
+    return count
+
+
 class NetworkBuildResult(BaseModel):
     net_xml_path: str
     log: str
@@ -132,6 +168,13 @@ def build_network(
                 f"netconvert patch pass failed (exit {patched.returncode}): {patched.stderr}"
             )
         log += patched.stdout + patched.stderr
+
+    fixed_chars = fix_double_escaped_names(output_path)
+    if fixed_chars:
+        log += (
+            f"\n[arteria] fixed {fixed_chars} double-escaped character(s) in names "
+            "(netconvert bug, see build.py)\n"
+        )
 
     report = validate_network(output_path)
     return NetworkBuildResult(

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Toy network with names double-escaped the way netconvert 1.28.0 writes
+     them for a literal ' & " < > that came from an OSM `name` tag (see
+     arteria.network.build.fix_double_escaped_names). -->
+<net version="1.16">
+    <edge id="e1" from="j1" to="j2" oneway="true" name="Rua Armando D&amp;apos;Oliveira Cobra">
+        <lane id="e1_0" index="0" speed="13.89" length="100.0"/>
+    </edge>
+    <edge id="e2" from="j2" to="j3" oneway="true" name="Rua Fulano &amp;amp; Filhos">
+        <lane id="e2_0" index="0" speed="11.11" length="80.0"/>
+    </edge>
+    <edge id="e3" from="j3" to="j1" oneway="true" name="Rua Quote &amp;quot;Test&amp;quot;">
+        <lane id="e3_0" index="0" speed="11.11" length="90.0"/>
+    </edge>
+
+    <junction id="j1" type="priority"/>
+    <junction id="j2" type="traffic_light"/>
+    <junction id="j3" type="priority"/>
+
+    <connection from="e1" to="e2" fromLane="0" toLane="0"/>
+    <connection from="e2" to="e3" fromLane="0" toLane="0"/>
+    <connection from="e3" to="e1" fromLane="0" toLane="0"/>
+
+    <tlLogic id="j2" type="static" programID="0" offset="0">
+        <phase duration="30" state="G"/>
+        <phase duration="5" state="y"/>
+    </tlLogic>
+</net>
