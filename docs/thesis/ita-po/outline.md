@@ -9,11 +9,13 @@
 | 1 | `chapters/01-introducao.md` | stub | corredor final confirmado; orientador(a) |
 | 2 | `chapters/02-revisao-literatura.md` | stub | revisão sistemática; fontes sobre incerteza de redes OSM |
 | 3 | `chapters/03-formulacao-metodologia.md` | stub (+ seção 3.x em rascunho: incerteza estrutural da rede) | notação final; decisão sobre tratamento da incerteza estrutural; contagens reais |
-| 4 | `chapters/04-desenvolvimento.md` | rascunho (Seção 4.1: construção e validação da rede) | validador adaptado; revisão em `netedit`; manifesto de proveniência da execução; linha de base calibrada |
+| 4 | `chapters/04-desenvolvimento.md` | rascunho (Seção 4.1: construção e validação da rede) | validador adaptado; revisão em `netedit`; manifesto de proveniência da execução; leitura do código/saídas do cross-check IBGE/GeoSanja; diagnóstico do artefato de apóstrofo; linha de base calibrada |
 | 5 | `chapters/05-estudo-de-caso-corredor-b.md` | stub (esboço, sem resultados) | todos os resultados |
 | 6 | `chapters/06-discussao.md` | stub | resultados |
 | 7 | `chapters/07-conclusao.md` | stub | resultados |
 | 8 | `references.bib` | outline (5 entradas, campos TODO) | expansão pela revisão |
+
+Atualização 2026-10-28 (17): cross-check da rede OSM/SUMO contra duas fontes públicas externas (IBGE Faces de Logradouros, GeoSanja arruamentos/Hierarquia Viária), dentro de um buffer de 50 m nos quatro corredores — casamento por nome normalizado contra IBGE (543 nomes coincidentes, 167 só-OSM, 201 só-IBGE) e por geometria contra ambas (mediana ≈3,0 m; 81,5%/97,2% de cobertura mútua dentro de 15 m), com falsos casamentos de nome documentados em ruas genéricas. Triagem de qualidade de dados, não calibração; números só de relato, não lidos/reproduzidos por esta trilha. Artefato de escape de apóstrofo em nomes de rua (`&apos;`), não diagnosticado. Ver Cap. 4, Seção 4.1.7 (rascunho), e `progress.md` (17). Evidência ainda necessária: leitura do código/saídas do cross-check; diagnóstico do artefato de apóstrofo.
 
 Atualização 2026-10-27 (16): checagem aérea do responsável aprovou corredores A-D, ligação A-B e áreas estendidas de B/C (verificação visual, sem critério arquivado); rede unificada vigente = 14.225 arestas / 6.655 junções (a cifra de 11.035 arestas é histórica, rede pré-extensão). Fase 2: build reprodutível (snapshot OSM fixado, `network rebuild`/`diff`, mecanismo de patches ainda sem uso real, hash de conteúdo reproduzido, 0 erros/127 avisos, ~16 s); sem GTFS público de SJC (P2.6 adiada). Ver Cap. 4, Seção 4.1.6 (rascunho), e `progress.md` (16). Evidência ainda necessária: leitura do código/snapshot; reprodutibilidade em outra máquina; transporte público sem dados.
 

@@ -5,6 +5,36 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-28 (17)
+
+Commit `1c4a7b4` ("feat: cross-check SJC network against IBGE and GeoSanja (P2.1, P2.7)"), já no `main`. Fonte: relato do responsável pelo ArterIA (resumo do commit); código (`arteria/network/crosscheck.py`, `arteria/network/render.py`) e saídas (`data/crosscheck/`, `data/renders/`, gitignoradas, não commitadas) NÃO foram lidos por esta trilha.
+
+**O que foi feito (conforme relato):**
+- Novos comandos `arteria network crosscheck --city sjc` e `arteria network render --city sjc`; completam P2.1 (cross-check de geometria/nome contra dados externos) e P2.7 (relatório de diff de rede + renders de mapa) do roadmap de SJC.
+- Dois conjuntos de dados públicos de referência novos, registrados em `cities/sjc/data-manifest.yaml`: Base de Faces de Logradouros do IBGE (2022, shapefile estadual contendo o município de SJC) e as camadas `arruamentos` e Hierarquia Viária do portal GeoSanja da prefeitura — ambos por download público, sem contato com órgão.
+- Método: dentro de um buffer de 50 m em torno da união dos polígonos dos quatro corredores, (a) casamento por nome de rua normalizado (sem acento/espaço/prefixo de tipo de via) entre arestas OSM e segmentos IBGE; (b) casamento por geometria — centro de linha das arestas OSM amostrado a cada 5 m, distância ao segmento IBGE de mesmo nome e fração de cobertura dentro de um limiar de 15 m contra GeoSanja (sem exigência de nome igual).
+- Resultados reportados (reprodutíveis via o comando, não commitados como dado): 543 nomes de rua coincidentes OSM/IBGE nos corredores (167 só-OSM, 201 só-IBGE); distância mediana amostra-referência ≈3,0 m; 6,4% das amostras acima do limiar de 15 m; 81,5% do comprimento de centro de linha OSM dentro de 15 m do GeoSanja, 97,2% do GeoSanja dentro de 15 m do OSM. Parte dos descasamentos de mediana alta é atribuída a nomes de rua genéricos/reutilizados (ex. "Rua Dois", "Viela Três"), que produzem casamento de nome falso entre ruas distintas — não necessariamente erro de geometria.
+- Renders de mapa (rede colorida por prioridade de aresta do SUMO, com os quatro contornos de área de estudo; visão geral e zoom por área), não commitados.
+- Questão aberta registrada no próprio commit, não corrigida: nomes de rua OSM na rede construída carregam um artefato de escape duplo de `&apos;` (apóstrofo), afetando algumas dezenas de nomes com apóstrofo (ex. "D'Ávila"); origem suspeita no `netconvert` ou depois, não diagnosticada.
+- O próprio relato classifica isto como cross-check de triagem (casamento de nome deliberadamente não ajustado fino), não etapa de calibração.
+
+**Por que importa para a trilha PG/PO:**
+- **Segunda peça de evidência independente sobre a incerteza estrutural de $G$ (Cap. 3, 3.x; Cap. 4, 4.1), de tipo diferente das anteriores.** As entradas (13)/(14) tratam do instrumento de validação interna (erros/avisos do próprio validador); a (15) mede completude de atributos (`lanes`/`maxspeed`) só por amostragem num candidato; a (16) é verificação visual aérea por um avaliador. Esta entrada é a primeira comparação quantitativa da rede OSM-derivada contra duas fontes externas independentes (IBGE, GeoSanja) dentro dos corredores do estudo — mais próxima de um controle de qualidade de dados do que as anteriores, mas ainda não calibração: mede completude/cobertura geométrica, não capacidade, demanda ou desempenho.
+- **Fortalece, sem fechar, a confiança na geometria da rede-base antes de qualquer linha de base calibrada.** As cifras de cobertura (81,5%/97,2% dentro de 15 m) e a mediana de ~3,0 m são, pelo próprio relato, favoráveis, mas (i) o método de casamento de nome é deliberadamente grosseiro (gera falsos casamentos documentados em nomes genéricos) e (ii) os números vêm do relato do responsável, não foram reproduzidos nem lidos em código por esta trilha — mesma cautela já aplicada a (16) item 1 ("ler antes de citar").
+- **Artefato de apóstrofo (`&apos;`) é um risco pequeno, mas relevante para qualquer figura ou tabela que cite nomes de rua** (ex. legendas de corredor, Seção 4.1.5) até ser diagnosticado; não afeta geometria nem topologia, só a cadeia de texto do atributo de nome.
+- **Novo insumo potencial, ainda não usado:** a camada de Hierarquia Viária do GeoSanja é uma fonte externa de classificação viária que poderia, em princípio, informar o TODO(evidência) já registrado em (15) sobre atributos de capacidade/velocidade ausentes em vias residenciais (hoje herdados de padrões do `netconvert`) — especulativo, nenhuma aplicação relatada ainda.
+- **Fronteira do que isto é:** triagem de qualidade de dados geométricos contra fontes públicas, uma vez só, nos quatro corredores; não é validação de demanda, não decide o recorte da dissertação, não altera o tratamento da incerteza estrutural de $G$ no desenho experimental (pergunta 2 da entrada (13), ainda de orientador(a)).
+
+**Impacto na tese:** Cap. 4, nova Seção 4.1.7 (rascunho) registrando este cross-check como evidência adicional de qualidade da rede-base, com a mesma cautela de não-leitura de código/dados já aplicada a outras entradas desta série. `outline.md` atualizado (linha de status do Cap. 4 e nota de atualização). Cap. 3 e `pre-projeto.md` sem alteração — não há decisão nova sobre o tratamento da incerteza estrutural.
+
+**Perguntas abertas/riscos:**
+1. Números do cross-check (543 nomes, medianas, percentuais de cobertura) vêm só do relato recebido; antes de citá-los na dissertação, é preciso ler `arteria/network/crosscheck.py` e reproduzir a saída (mesma cautela de (16) item 1, ainda pendente também para os números de (16)).
+2. Casamento de nome deliberadamente não refinado (nomes genéricos geram falso casamento); qualquer citação futura das cifras de nome coincidente precisa dessa ressalva explícita, sob risco de sugerir precisão maior do que o método sustenta.
+3. Artefato de apóstrofo em nomes de rua não diagnosticado; baixa prioridade, mas a rastrear antes de usar nomes de rua em figuras/tabelas do Cap. 4/5.
+4. Persistem, sem alteração: tratamento da incerteza estrutural de $G$ no desenho experimental (decisão de orientador(a), entrada (13) pergunta 2); recorte final da dissertação; orientador(a) não contatado(a); ausência de GTFS (entrada (16)); $f_7$ sem base OD (Cap. 3).
+
+**Próximos passos:** (i) ler `crosscheck.py`/`render.py` e uma amostra das saídas em `data/crosscheck/` antes de citar números; (ii) ao decidir o recorte final, verificar se a camada de Hierarquia Viária do GeoSanja oferece atributos de capacidade utilizáveis para as vias com baixa completude de tags (entrada (15)); (iii) acompanhar o diagnóstico do artefato de apóstrofo como item de qualidade de dados, não de formulação.
+
 ## 2026-10-27 (16)
 
 Trabalho NÃO commitado no working tree (último commit `0125f01`): `arteria/network/{patches,diff,rebuild,snapshot}.py`, `arteria/cli.py`, `build.py`, `osm_fetch.py`, `provenance.py`, `cities/sjc/network/` (incl. `osm-snapshot.yaml`), testes novos, `CHANGELOG.md`, `docs/roadmap.md`. Fontes lidas por esta trilha: CHANGELOG [Unreleased] e linhas de P2 do roadmap; o código e os arquivos de snapshot NÃO foram lidos. Também cobre o commit `0125f01` (log nas 4 trilhas) e a checagem aérea relatada pelo responsável.
