@@ -2,4 +2,4 @@
 
 Status: stub. Evidência ainda necessária: corredor final confirmado (hoje não); orientador(a); narrativa de abertura.
 
-Conteúdo-fonte: `../pre-projeto.md`, Seções 2 a 5, 7 e 8. Pendências do recorte em `../outline.md` (Cap. 1) e `../progress.md`.
+Conteúdo-fonte: pré-projeto, Seções 2 a 5, 7 e 8. As pendências do recorte estão registradas no esqueleto de capítulos (Cap. 1) e no log de progresso da trilha.

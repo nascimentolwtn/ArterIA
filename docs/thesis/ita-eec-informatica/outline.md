@@ -1,6 +1,6 @@
 # Esqueleto de Capítulos — Dissertação (PG/EEC, ITA, Área Informática)
 
-> Esqueleto de alto nível derivado de `pre-projeto.md`. Não é rascunho de conteúdo — serve apenas para orientar a estrutura da dissertação e mapear o que já está coberto versus o que ainda falta pesquisar/escrever.
+> Esqueleto de alto nível derivado de `pre-projeto.md`. Não constitui rascunho de conteúdo; serve apenas para orientar a estrutura da dissertação e mapear o que já está coberto e o que ainda falta pesquisar/escrever.
 
 > Profundidade `completo` desde 2026-10-26. Cada capítulo tem arquivo em `chapters/` e status (`stub` / `outline` / `rascunho` / `revisado`). Log: `progress-log.md`.
 
@@ -62,8 +62,8 @@
 ## 5. Resultados
 
 - **Status**: stub (`chapters/05-resultados.md`). **Evidência ainda necessária**: tudo.
-- **Já coberto no pré-projeto**: nada ainda — é um pré-projeto, sem resultados experimentais.
-- **Falta pesquisar/escrever**: todo o capítulo depende da execução dos experimentos (Capítulo 4); inclui apresentação de métricas de tráfego e de ML/engenharia (Seção 10), comparação política aprendida vs. baselines vs. simulação completa, e resultados de generalização entre cenários de demanda.
+- **Já coberto no pré-projeto**: nada ainda, por tratar-se de pré-projeto, sem resultados experimentais.
+- **Falta pesquisar/escrever**: todo o capítulo depende da execução dos experimentos (Capítulo 4) e inclui apresentação de métricas de tráfego e de ML/engenharia (Seção 10), comparação política aprendida vs. baselines vs. simulação completa, e resultados de generalização entre cenários de demanda.
 
 ## 6. Discussão
 
