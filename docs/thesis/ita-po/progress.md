@@ -5,6 +5,33 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-29 (20)
+
+Novo commit no `main`: `264e8fc` ("feat: add IBGE census population join for TAZ production weights (P3.2)"). O commit implementa a metade de peso de produção do item P3.2 do roteiro de demanda, complementando o zoneamento geométrico já registrado nesta mesma data na entrada (19). Introduz-se `arteria/demand/population.py` e o comando `arteria demand population --city sjc`, que baixa o GeoPackage de setores censitários do Censo IBGE 2022 e soma a população de cada setor dentro das quatro zonas de análise de tráfego já fixadas em (19) (a/b/c/d), mais a zona residual `external`.
+
+A execução real contra São José dos Campos processou 1.554 setores censitários e atribuiu, por zona, as populações a=13.499, b=36.391, c=24.516, d=22.702 e external=599.946, totalizando 697.054 habitantes — valor compatível com a ordem de grandeza da população do município. A suíte de testes (179 aprovados, 1 ignorado) e as verificações de lint/tipagem permaneceram íntegras, e a nova fonte de dado (`ibge-censo-populacao-setores`) foi registrada no manifesto de dados da cidade.
+
+**Por que importa para a trilha PG/PO:**
+
+Em primeiro lugar, o commit fecha, de forma favorável, o risco 2 já registrado na entrada (19): a disponibilidade do arquivo de população do Censo IBGE 2022 por setor censitário, antes incerta, confirma-se agora por execução real — o arquivo foi obtido e processado sem exigir o substituto mais grosseiro (população municipal distribuída por área de TAZ) que a própria ADR 0017 previa como contingência. Trata-se, contudo, de evidência sobre a disponibilidade do dado, não sobre a aceitação da ADR 0017 (ainda `Proposed`) nem sobre a conclusão do modelo gravitacional, cujo lado de atração permanece bloqueado.
+
+Além disso, os números obtidos **acrescentam um segundo indicador, de natureza distinta, à mesma assimetria já discutida em (19).** Enquanto a distribuição de arestas por zona (a=1.146, b=3.020, c=1.786, d=1.103, residual=7.170) já mostrava a zona residual concentrando pouco mais da metade das arestas da rede, a distribuição de população mostra uma concentração ainda mais acentuada: a zona residual reúne 599.946 dos 697.054 habitantes, cerca de 86% da população do município, contra pouco mais da metade das arestas. Tal resultado reforça, com um dado de natureza diferente (demografia, não topologia), o argumento já consolidado a favor da rede única e contra qualquer agregação de $F(y)$ restrita às quatro áreas nomeadas.
+
+Surge, ademais, uma **complicação nova para o TODO(decisão) já aberto sobre a base de dados de $f_7$ (Cap. 3, Seção 3.x).** A proposta da ADR 0017 de usar agregados censitários por setor para alimentar esse indicador pressupunha, implicitamente, alguma granularidade fina de zona; a execução real revela, contudo, que o particionamento hoje disponível para o modelo gravitacional agrega toda a população fora das quatro áreas de avaliação numa única zona residual, sem distinção de bairro. Ainda que a ADR venha a ser aceita e o arquivo de setores censitários continue disponível por setor (granularidade fina, já obtida), a partição de zonas usada para o modelo gravitacional não serve diretamente, sem reagregação, ao indicador de equidade concebido na Seção 6 do pré-projeto como dispersão entre bairros/zonas censitárias — o dado de origem (por setor) é fino, mas o recorte de zona (TAZ) atual é grosseiro. Tal distinção entre granularidade do dado-fonte e granularidade do recorte de agregação é nova nesta trilha e deve ser levada ao mesmo TODO(decisão) de orientador(a).
+
+Por fim, cabe demarcar a **fronteira do que isto é**: peso de produção de viagens por zona, não o modelo gravitacional completo (que depende, ainda, do lado de atração), não uma matriz OD e não uma decisão fechada sobre $f_7$. O lado de atração (empregos/uso do solo via GeoSanja) permanece bloqueado/ausente, item separado e aberto, como já registrado em (19).
+
+**Impacto na tese:** o Cap. 3 (Seção 3.x) recebeu uma frase adicional registrando a nova complicação de granularidade entre dado-fonte e recorte de zona para $f_7$. O Cap. 4 (Seção 4.2) foi atualizado com os números reais de população por zona, a tabela comparativa com a distribuição de arestas e a mesma ressalva de granularidade. O `outline.md` foi atualizado (nova linha de atualização). O `pre-projeto.md` não foi tocado, por não haver decisão fechada de formulação.
+
+**Perguntas abertas/riscos:**
+1. ADR 0017 permanece `Proposed`; a decisão de usar agregados censitários por setor para $f_7$ (ou rebaixar/remover o indicador) continua de orientador(a).
+2. Risco já sinalizado em (19), agora resolvido de forma favorável: o arquivo de população do Censo IBGE 2022 por setor censitário foi obtido e processado com sucesso (1.554 setores), sem exigir o substituto mais grosseiro previsto como contingência.
+3. Nova complicação, não presente em (19): a partição de zonas hoje disponível (quatro áreas de avaliação + residual) é grosseira demais para servir, sem reagregação, a um indicador de equidade por bairro/zona censitária, ainda que o dado-fonte (setor censitário) seja fino. Cabe a orientador(a) decidir se vale a pena uma reagregação mais fina especificamente para $f_7$, independente do particionamento usado pelo modelo gravitacional.
+4. O lado de atração de viagens (empregos/uso do solo via GeoSanja) permanece bloqueado/ausente; o modelo gravitacional completo ainda não existe.
+5. Persistem, sem alteração: tratamento da incerteza estrutural de $G$ (decisão de orientador(a)); recorte final da dissertação; orientador(a) não contatado(a); artefato já fechado (17) e verificação do código do cross-check IBGE/GeoSanja ainda pendente (17).
+
+**Próximos passos:** (i) acompanhar a obtenção do lado de atração de viagens e a conclusão do modelo gravitacional (P3.2); (ii) quando a matriz OD estiver completa, verificar se os pesos de produção/atração alteram a leitura da zona residual como maioria da população e das arestas; (iii) levar ao(à) orientador(a), junto com a decisão sobre a base de dados de $f_7$, a nova questão de granularidade entre dado-fonte censitário e recorte de zona.
+
 ## 2026-10-29 (19)
 
 Dois commits novos no `main`. O primeiro, `e4daf87` ("feat: add run-sjc-sim.sh desk helper for quick SUMO visual runs"), introduz um script de bancada que empacota a regeneração de viagens aleatórias e a abertura da interface gráfica do SUMO por trás de argumentos de duração/período; trata-se de ferramentação pura de desk/dev, sem conteúdo de formulação ou de dados, de modo que não gera nenhuma edição nesta trilha.
