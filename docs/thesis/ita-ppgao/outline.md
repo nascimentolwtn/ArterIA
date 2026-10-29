@@ -107,7 +107,7 @@ Atualização (commit `2624762`): correção de dispatcher — `signal_retiming`
 
 Já coberto: tipologia qualitativa de cenários de interdição (obra, acidente, alagamento, evento de grande porte, emergência simplificada) e lista de estratégias logísticas a comparar (Seções 6 e 9).
 
-Falta: todo o trabalho empírico — construção da malha SUMO, calibração, parametrização quantitativa dos cenários, execução dos experimentos e cálculo das métricas da Seção 10; nenhum resultado existe ainda, pois o ArterIA está em estágio pré-código.
+Falta: todo o trabalho empírico que depende de demanda calibrada — calibração contra contagens reais (hoje ausentes), parametrização quantitativa dos cenários, execução dos experimentos e cálculo das métricas da Seção 10; nenhum resultado desse tipo existe ainda. A construção e a verificação da malha viária em si já avançaram (rede real dos quatro corredores candidatos construída e validada, Fase 2 concluída; ver Cap. 3/4), mas isso ainda não é resultado operacional, apenas pré-condição técnica para ele.
 
 Atualização (commit `563d679`): o ArterIA passou a ter uma primeira implementação de intervenção de catálogo (restrição de conversão, `arteria/interventions/turn_restriction.py`), com checagem de conectividade por BFS após remover a conexão — útil, no futuro, para a mecânica de aplicar intervenções, mas **não** é modelagem de cenário de interdição nem resultado de resiliência: a checagem serve para validar se a própria intervenção proposta deixa a malha conectada, não para medir degradação de acesso sob um evento de interdição (obra, acidente, alagamento etc., Seção 6 do pré-projeto). Nenhum cenário de interdição real foi parametrizado ou executado por este commit.
 

@@ -136,3 +136,25 @@ Assim, `arteria.network.build.fix_double_escaped_names()` agora roda automaticam
 2. `fix_double_escaped_names()` cobre `'`, `&`, `"`, `<`, `>`; não se verificou se há outros caracteres de nome de rua (acentos/Unicode fora do conjunto de escape XML) sujeitos a problema semelhante — lacuna de verificação desta trilha, não hipótese levantada pelo commit.
 3. Orientador(a) não contatado(a); arquitetura de agentes não validada; escolha acadêmica de corredor segue pendente.
 
+---
+
+## 2026-10-28 (3) — Reenquadramento de registro de voz/estrutura em `pre-projeto.md` e `chapters/*.md` conforme o guia de estilo (entrada retroativa à edição)
+
+**Commit:** `377056b` ("docs(thesis): adopt author's academic writing register across thesis tracks").
+
+**O que foi feito.** O commit reescreveu `pre-projeto.md` e os capítulos existentes em `chapters/` nesta trilha para seguir o registro acadêmico descrito em `docs/thesis/real-previous-tccs/writting-style.md`, conforme a regra "Registro de escrita por tipo de arquivo" deste agente. Tratou-se de mudança de voz e de estrutura de prosa — impessoalização, tese-argumento-conclusão, remoção de marcadores do corpo argumentativo, citação integrada —, não de inclusão de fato novo, número novo, citação nova ou decisão nova. Esta entrada registra o commit a posteriori, porque a rodada que o produziu não deixou o registro de progresso correspondente, lacuna já apontada pelo responsável do projeto.
+
+**Por que importa.** O registro de rastreabilidade desta trilha prevê explicitamente que toda reescrita de capítulo/pré-projeto deixe rastro no log, mesmo quando puramente de forma, para que trechos promovidos de registro técnico a prosa de capítulo continuem auditáveis. Sem esta entrada, o commit `377056b` ficaria sem nenhuma âncora de progresso, quebrando essa convenção.
+
+**Impacto na tese.** Não houve mudança de conteúdo de pesquisa, de arquitetura ou de literatura; a reescrita é de registro (voz impessoal, estrutura argumentativa), não de tese. Três pontos, contudo, merecem checagem do responsável antes de se consolidarem como fato assentado, e não foram corrigidos nesta entrada (apenas sinalizados, por instrução explícita de não reescrever agora):
+
+1. Em `pre-projeto.md` §9, a reescrita mudou "quatro componentes" para "cinco componentes" de metodologia, para casar com a lista de componentes de fato enumerada no parágrafo. Vale ao responsável confirmar que cinco é, de fato, a contagem correta pretendida (e não um ajuste mecânico de concordância que mascare um componente faltante ou duplicado na lista).
+2. Em `pre-projeto.md`, o trecho sobre a ADR 0013 foi parafraseado como tratando de privacidade/reidentificação de microdados de Pesquisa OD. Essa paráfrase é consistente com o que o `progress.md` já registrava sobre a ADR (entrada de `975fec7`, 2026-10-25), mas vale ao responsável confirmar que a formulação em prosa do pré-projeto não introduziu nuance ausente do texto original da ADR.
+3. Foram adicionados parágrafos de fechamento (síntese do agente, não do autor) em `pre-projeto.md` §3 e §11, e em `chapters/03-arquitetura-do-sistema.md` §3.7 e `chapters/04-experimentos.md` §4.4. Tratando-se de síntese redigida pelo agente a partir do material existente, e não de transcrição literal de nenhuma fonte, cabe a Luiz Wagner revisar pessoalmente esses quatro fechamentos antes de tratá-los como texto definitivo do autor.
+
+**Perguntas abertas/riscos.**
+1. Confirmar a contagem de "cinco componentes" em `pre-projeto.md` §9 contra a lista real de componentes pretendida.
+2. Confirmar que a paráfrase da ADR 0013 (privacidade/reidentificação) em `pre-projeto.md` reflete com exatidão o texto da ADR.
+3. Revisar pessoalmente os quatro parágrafos de fechamento agente-autorados (`pre-projeto.md` §3 e §11; `chapters/03-arquitetura-do-sistema.md` §3.7; `chapters/04-experimentos.md` §4.4) antes de considerá-los prosa definitiva.
+4. Orientador(a) não contatado(a); arquitetura de agentes não validada; escolha acadêmica de corredor segue pendente.
+

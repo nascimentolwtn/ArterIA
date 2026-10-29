@@ -34,12 +34,12 @@ Fonte: elaborado pelo autor.
 
 TODO(evidência), em ordem lógica proposta:
 
-1. adaptar o validador a redes reais (pares de arestas opostas; componentes fortemente conexos; separar becos de borda);
-2. investigar as 415 viagens inviáveis e os dois nós semafóricos sem `<tlLogic>`;
-3. revisão manual no `netedit` com registro de patches (Cap. 4, 4.1.4);
+1. adaptar o procedimento de verificação da rede à realidade de uma malha real (pares de arestas opostas; componentes fortemente conexos; separar becos de borda);
+2. investigar as 415 viagens inviáveis e os dois cruzamentos semaforizados que ainda não têm plano de fases definido, hoje tratados como não semaforizados;
+3. revisão manual da topologia da rede, comparada a imagem aérea, com registro de cada ajuste aplicado (Cap. 4, 4.1.4);
 4. decidir sobre rede unificada versus por corredor e regra de portais de borda (Cap. 4, 4.1.3);
-5. obter contagens (hoje `deferred`) ou definir proxy declarado para calibrar demanda sintética (ADR 0013);
-6. só então parametrizar cenários de interdição de corredor, sem alegação de evacuação em escala de rede (limite da ADR 0013).
+5. obter contagens de tráfego reais (hoje ausentes, sem previsão de levantamento) ou definir proxy declarado para calibrar demanda sintética, dentro do limite de escopo já fixado como escolha metodológica para a geração de demanda;
+6. só então parametrizar cenários de interdição de corredor, sem alegação de evacuação em escala de rede (mesmo limite de escopo do item anterior).
 
 ## 5.5 Cenários de interdição e resultados
 
