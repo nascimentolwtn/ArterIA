@@ -2,6 +2,12 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.7] - 2026-10-29
+
+### Added
+
+- **P3.6 scenario config schema.** `ScenarioConfig`/`load_scenario_config` (`arteria/config.py`) validate a baseline scenario's net/TAZ/route/additional files, time window and seed/replication policy (rejecting a seed count that doesn't match `replications`) — schema only, same minimal pattern as the P5.1 intervention-catalog schema, with no CLI command. A real `cities/sjc/scenarios/baseline/` instance still needs real route files, which don't exist until P3.2's gravity model and P3.3's real run are unblocked (see below).
+
 ## [1.6] - 2026-10-29
 
 ### Added
