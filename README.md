@@ -26,7 +26,7 @@ SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl ou otimizadores 
 
 ## Status
 
-Versão 0.4: Fase 2 (construção de rede) concluída para o piloto de SJC — rede real construída, validada (0 erros), reconstrução reprodutível a partir de um snapshot OSM fixado, corredores verificados por imagem aérea e geometria/nomes cruzados com o IBGE e a GeoSanja. Próximos passos: Fase 3, calibração da linha de base de demanda. Veja o `CHANGELOG.md` para o que mudou.
+Versão 1.5: Fase 2 (construção de rede) concluída para o piloto de SJC — rede real construída, validada (0 erros), reconstrução reprodutível a partir de um snapshot OSM fixado, corredores verificados por imagem aérea e geometria/nomes cruzados com o IBGE e a GeoSanja. Fase 3 (demanda e cenário de linha de base) iniciada: zoneamento (TAZ) concluído; a matriz OD por modelo gravitacional é o próximo passo, pendente da aceitação do ADR da fonte de dados. Veja o `CHANGELOG.md` para o que mudou.
 
 ## Dados e créditos
 

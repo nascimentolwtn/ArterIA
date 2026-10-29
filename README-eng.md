@@ -26,7 +26,7 @@ SUMO (netedit, sumo-gui, TraCI), Python, OpenStreetMap, sumo-rl or custom optimi
 
 ## Status
 
-Version 0.4: Phase 2 (network build) done for the SJC pilot — real network built, validated (0 errors), a reproducible one-command rebuild from a pinned OSM snapshot, corridors aerial-verified, and geometry/names cross-checked against IBGE and GeoSanja. Next steps: Phase 3, baseline demand calibration. See `CHANGELOG.md` for what's changed.
+Version 1.5: Phase 2 (network build) done for the SJC pilot — real network built, validated (0 errors), a reproducible one-command rebuild from a pinned OSM snapshot, corridors aerial-verified, and geometry/names cross-checked against IBGE and GeoSanja. Phase 3 (demand and baseline scenario) started: TAZ zoning done; the gravity-model OD matrix is next, pending acceptance of the data-source ADR. See `CHANGELOG.md` for what's changed.
 
 ## Data and credits
 

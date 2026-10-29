@@ -33,7 +33,12 @@ None open.
 
 ## Backlog Features
 
-None open.
+1. **[2026-10-29] P3.2 gravity-model OD matrix needs real data, pending ADR 0017 acceptance**
+   Do instead: once the owner accepts `docs/adr/0017-zoning-and-trip-generation-data.md`,
+   fetch IBGE Censo 2022 population by census tract for SJC (self-service download, same
+   precedent as `ibge-faces-logradouros`), add it to `cities/sjc/data-manifest.yaml`, join it
+   to the TAZs in `cities/sjc/demand/sjc.taz.xml`, and build the gravity model + `od2trips`/
+   `duarouter` wiring (P3.2/P3.3). Don't build the gravity model against placeholder weights.
 
 ## User Directives
 

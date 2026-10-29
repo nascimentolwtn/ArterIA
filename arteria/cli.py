@@ -23,6 +23,8 @@ osm_app = typer.Typer(help="OSM source download and extraction (roadmap P2.1).")
 app.add_typer(osm_app, name="osm")
 network_app = typer.Typer(help="netconvert build and validation (roadmap P2.2/P2.3/P2.5).")
 app.add_typer(network_app, name="network")
+demand_app = typer.Typer(help="Zoning, OD matrices and trip generation (roadmap Phase 3).")
+app.add_typer(demand_app, name="demand")
 
 
 @app.callback()
@@ -410,6 +412,37 @@ def network_rebuild(
         raise typer.Exit(code=1)
     if result.reproduced:
         typer.echo("Reproduced: content hash equals the pinned reference.")
+
+
+@demand_app.command("taz")
+def demand_taz(
+    city: str = typer.Option(..., "--city"),
+    out_path: Path | None = typer.Option(
+        None, "--out-path", help="Defaults to cities/<city>/demand/<city>.taz.xml."
+    ),
+) -> None:
+    """Assign every network edge to a study-area TAZ (or `external`) and write
+    a SUMO `.taz.xml` (roadmap P3.1, ADR 0017). Needs the `geo` extra.
+    """
+    from arteria.demand.zoning import build_taz_file
+
+    city_dir = Path.cwd() / "cities" / city
+    net_path = city_dir / "network" / f"{city}.net.xml"
+    study_areas_path = city_dir / "study-areas.geojson"
+    output_path = out_path or city_dir / "demand" / f"{city}.taz.xml"
+
+    try:
+        result = build_taz_file(net_path, study_areas_path, output_path)
+    except (FileNotFoundError, OSError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"Wrote {result.output_path}")
+    typer.echo(f"Zone edge counts: {json.dumps(result.zone_edge_counts)}")
+    typer.echo(f"Total edges: {result.total_edges}")
+    if result.empty_zones:
+        typer.echo(f"Empty zone(s): {', '.join(result.empty_zones)}", err=True)
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":

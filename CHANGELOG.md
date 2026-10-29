@@ -2,6 +2,13 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.5] - 2026-10-29
+
+### Added
+
+- **Phase 3 (demand and baseline scenario) started: TAZ zoning (P3.1) done.** `arteria demand taz --city sjc` (`arteria/demand/zoning.py`) assigns every network edge to one of the four aerial-verified study-area polygons (`cities/sjc/study-areas.geojson`) or to a catch-all `external` zone, by point-in-polygon test of the edge's midpoint, and writes a SUMO `.taz.xml`. Run for real on the unified net (14,225 edges): a=1,146, b=3,020, c=1,786, d=1,103, external=7,170 — no zone empty. Output is gitignored (reproducible from committed inputs); see `cities/sjc/demand/README.md`.
+- **ADR 0017 (Proposed): zoning and trip-generation data sources.** Fills the gap ADR 0013 left open — *which* data backs the gravity-model demand fallback. Proposes IBGE Censo 2022 population by census tract for production (self-service, same no-contact precedent as the existing `ibge-faces-logradouros` source) and the already-downloaded Geosanja zoning/land-use layer as an attraction proxy, since no public jobs/employment dataset is reachable without contacting an agency. The real census download, the zone-weight join and the gravity model itself (P3.2) are not implemented yet.
+
 ## [1.4] - 2026-10-28
 
 ### Changed

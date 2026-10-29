@@ -1,6 +1,6 @@
 # ArterIA Roadmap
 
-Status: Draft (phased plan; implementation is ahead of it in places — see `CHANGELOG.md`). Date: 2026-10-24 (revised 2026-10-24: Remote features reframed as Claude app sessions, no GitHub Actions; revised 2026-10-25: version bumped to 0.3; revised 2026-10-28: Phase 2 exit criteria met, version bumped to 0.4). Current version: 0.4 (Phase 2, network build, done).
+Status: Draft (phased plan; implementation is ahead of it in places — see `CHANGELOG.md`). Date: 2026-10-24 (revised 2026-10-24: Remote features reframed as Claude app sessions, no GitHub Actions; revised 2026-10-25: version bumped to 0.3; revised 2026-10-28: Phase 2 exit criteria met; revised 2026-10-29: Phase 3 started (P3.1 zoning done), version bumped to 1.5 — this line had fallen out of sync with `CHANGELOG.md`'s actual versioning, which moved to 1.x at the first real end-to-end run [1.0] rather than following the 0.x-per-phase scheme below literally; treat `CHANGELOG.md` as authoritative for the real version). Current version: 1.5 (Phase 3, demand and baseline scenario, started).
 
 This roadmap turns the method in `docs/research-brief-sjc.md` (Phases 1-6) into a phased plan for a **reusable, multi-city** tool, with São José dos Campos (SJC) as the first pilot. It follows ADR 0001 (SUMO as the lower-level simulator, Python as the implementation language). Each phase lists goals, features (with IDs used in the Remote/Local sections), dependencies, deliverables, exit criteria and risks.
 
@@ -75,7 +75,9 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 
 **Features**
 - P3.1 Zoning: map OD survey zones to the study area and buffer; TAZ file (`.taz.xml`).
+  - **Status 2026-10-29: done.** `arteria demand taz --city sjc` (`arteria/demand/zoning.py`) assigns every network edge to one of the four aerial-verified study-area polygons or to a catch-all `external` zone, by point-in-polygon test of the edge's midpoint, and writes a SUMO `.taz.xml`. Run for real on the unified net: 14,225 edges split a=1,146, b=3,020, c=1,786, d=1,103, external=7,170; no zone empty. See `cities/sjc/demand/README.md`. No OD-survey zones exist to map (ADR 0013), so the TAZ layer reuses the existing study-area geometry instead (ADR 0017).
 - P3.2 OD matrix preparation: from OD survey (expanded), or fallback trip generation (population/jobs) with gravity model; time-of-day profile.
+  - **Status 2026-10-29: data source proposed, not implemented.** `docs/adr/0017-zoning-and-trip-generation-data.md` (Proposed) names IBGE Censo 2022 population by census tract for production and the Geosanja zoning/land-use layer as an attraction proxy (no public jobs dataset is reachable without contacting an agency). The real census download, the zone-weight join, and the gravity model itself are not built yet.
 - P3.3 Route/trip generation: `od2trips`, `duarouter`, or `routeSampler` (counts-driven) and `flowrouter`.
 - P3.4 Transit demand and vehicles (buses from P2.6), optional pedestrians/bikes.
 - P3.5 Traffic signal programs: field timings where available, else SUMO guessed programs flagged as uncalibrated.
@@ -228,6 +230,7 @@ Feature IDs: `P<phase>.<n>`. Planned ADRs are marked **[ADR]**.
 | 0011 | Cities: Skylines edition, mod set, and "illustrative" labelling | P8.3 |
 | 0012 | Repository visibility and licensing (public repo; Apache 2.0 code, CC BY 4.0 docs) — written and accepted 2026-10-25, resolving open questions 5 and 7 | P0.8 |
 | 0013 | No real OD microdata; synthetic, count-calibrated demand only — written and accepted 2026-10-25, partially resolving open question 1 (OD microdata specifically) | P1.1, P3.1-P3.3, P4.3 |
+| 0017 | Zoning and trip-generation data: TAZ delineation from the existing study-area polygons; IBGE Censo population for production, Geosanja zoning as an attraction proxy — proposed 2026-10-29 | P3.1, P3.2 |
 
 ## Remote features
 

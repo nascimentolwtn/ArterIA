@@ -29,3 +29,4 @@ cities/*/network/*.osm.xml
 cities/*/network/*.rou.xml
 cities/*/network/*.trips.xml
 cities/*/network/builds/
+cities/*/demand/*.taz.xml
