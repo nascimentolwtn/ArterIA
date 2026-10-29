@@ -82,7 +82,7 @@ A quinta, por fim, refere-se aos *semáforos inferidos*. As opções de inferên
 
 ## 3.4 A qualidade da rede condiciona observação, ação e GNN (RASCUNHO — hipóteses de projeto)
 
-O primeiro objetivo específico do pré-projeto exige uma representação formal da rede como grafo heterogêneo e dinâmico. A rede do simulador contém arestas, faixas, junções, conexões e programas semafóricos, e a passagem para o grafo de RL/GNN exige decisões que a qualidade da rede condiciona. Cinco delas merecem registro.
+O primeiro objetivo específico do pré-projeto exige uma representação formal da rede como grafo heterogêneo e dinâmico. A rede do simulador contém arestas, faixas, junções, conexões e programas semafóricos, e a passagem para o grafo de RL/GNN exige decisões que a qualidade da rede condiciona. Seis delas merecem registro.
 
 A primeira concerne às **arestas internas às junções**, que representam trajetórias dentro das interseções (5.448 das 7.522 ocorrências de aviso de sentido único na rede do corredor B). Permanece em aberto se devem ser excluídas do grafo da GNN, tratando-se a junção como nó, ou mantidas como arestas; tal escolha altera o tamanho do grafo e o alcance da passagem de mensagens (*message passing*). TODO(evidência): comparação empírica das duas opções, se viável.
 
@@ -92,9 +92,11 @@ A terceira concerne aos **nós e arestas de borda do recorte**, que, conforme a 
 
 A quarta concerne aos **semáforos inferidos**. O tipo e o programa semafórico são características candidatas de nó, e sua incerteza (Seção 3.3) sugere marcar a origem da informação (inferida vs. observada). O controle de sinalização permanece, contudo, fora do escopo central (Seção 6 do pré-projeto).
 
-A quinta, por fim, concerne à **fidelidade do grafo frente às conclusões do surrogate**. Erros estruturais do grafo (arestas ausentes por OSM incompleto, restrições de giro erradas) propagam-se para o surrogate, que aprende a dinâmica da rede *simulada*, e não a de SJC. A dissertação deve, assim, distinguir a validade interna (surrogate vs. simulador) da validade externa (simulador vs. cidade).
+A quinta concerne à **fidelidade do grafo frente às conclusões do surrogate**. Erros estruturais do grafo (arestas ausentes por OSM incompleto, restrições de giro erradas) propagam-se para o surrogate, que aprende a dinâmica da rede *simulada*, e não a de SJC. A dissertação deve, assim, distinguir a validade interna (surrogate vs. simulador) da validade externa (simulador vs. cidade).
 
-Nenhuma dessas escolhas foi implementada, e não há, até esta data, código de extração de grafo para a GNN no repositório. TODO(evidência): protótipo de conversão `.net.xml` → grafo (por exemplo, com `sumolib`; TODO(citação): confirmar API) e estatísticas do grafo resultante.
+A sexta, por fim, concerne à **unidade espacial de agregação**. A rede unificada foi, por razões de estimativa de demanda sintética, particionada em zonas de análise de tráfego: uma por área de avaliação, mais uma zona residual que recolhe o tráfego fora de todas elas, e nesta última concentra-se pouco mais da metade das arestas da rede unificada. Tal partição não foi concebida para a arquitetura de aprendizado, mas constitui a primeira candidata concreta, mais grosseira do que a sequência de arestas por corredor (Seção 3.2) e menos granular do que a aresta individual, para a definição de agente e de recompensa sobre o grafo único — questão que permanece em aberto, agravada pelo fato de que a maior parte da rede, assim particionada, corresponderia a tráfego de passagem externo às áreas de interesse acadêmico, e não a um comportamento interior de alguma delas.
+
+Das seis considerações, apenas a partição em zonas de análise de tráfego existe hoje como artefato implementado, e isso para fins de estimativa de demanda, não de arquitetura de aprendizado; as demais permanecem hipóteses de projeto, e não há, até esta data, código de extração de grafo para a GNN no repositório. TODO(evidência): protótipo de conversão `.net.xml` → grafo (por exemplo, com `sumolib`; TODO(citação): confirmar API) e estatísticas do grafo resultante.
 
 ## 3.5 A reprodutibilidade da construção da rede como pré-condição do aprendizado (RASCUNHO)
 

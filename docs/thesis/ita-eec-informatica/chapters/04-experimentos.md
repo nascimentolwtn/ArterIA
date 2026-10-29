@@ -7,7 +7,7 @@ Este capítulo sustenta, no estado atual, uma tese deliberadamente modesta: o qu
 
 ## 4.1 Desenho experimental (stub)
 
-TODO(evidência): protocolo de treino/validação/teste, número de sementes (ferramenta candidata: `arteria/calibration/replication.py`, aproximação normal informal — declarar a limitação ou usar t de Student), critérios de parada, baselines (Seção 10 do `pre-projeto.md`). Cenário de demanda: sempre "cenário sintético calibrado a fluxos observados" (ADR 0013; microdados de OD `declined`).
+TODO(evidência): protocolo de treino/validação/teste, número de sementes (ferramenta candidata: `arteria/calibration/replication.py`, aproximação normal informal — declarar a limitação ou usar t de Student), critérios de parada, baselines (Seção 10 do `pre-projeto.md`). Cenário de demanda: sempre "cenário sintético calibrado a fluxos observados" (ADR 0013; microdados de OD `declined`). A fonte de dado concreta para o modelo gravitacional que alimentaria esse cenário (população por setor censitário do Censo demográfico; proxy de uso do solo para atração de empregos, à falta de contagem real de emprego alcançável sem contato com órgão) foi proposta pela ADR 0017, ainda não aceita; até a aceitação e a obtenção do dado real, o cenário de demanda permanece apenas desenhado, não calculado.
 
 ## 4.2 O corredor B como teste de roteabilidade, não como experimento (RASCUNHO)
 

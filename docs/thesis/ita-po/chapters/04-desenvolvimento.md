@@ -1,6 +1,6 @@
 # Capítulo 4 — Desenvolvimento
 
-Status: rascunho (apenas a Seção 4.1). Evidência ainda necessária: linha de base calibrada; validador adaptado a redes reais; manifesto de proveniência da execução real; geração do dataset de simulações; surrogate e otimizadores.
+Status: rascunho (Seções 4.1 e 4.2). Evidência ainda necessária: linha de base calibrada; validador adaptado a redes reais; manifesto de proveniência da execução real; dados de população e de atração de viagens que alimentam o modelo gravitacional (hoje apenas propostos); geração do dataset de simulações; surrogate e otimizadores.
 
 A infraestrutura de transformações de rede e do catálogo de intervenções está descrita no esqueleto de capítulos (Cap. 4) e no log de progresso da trilha; não é repetida aqui.
 
@@ -100,3 +100,26 @@ O primeiro argumento desta seção mostrou que a execução contra dados reais r
 A limitação central da seção é que boa parte dos números citados provém de relato, ainda não reproduzido nem lido em código nesta trilha, e que nenhuma das verificações alcança capacidade, demanda ou desempenho de tráfego. As pendências de evidência estão registradas nos marcadores de cada subseção e constituem o trabalho imediato desta etapa.
 
 Dessa forma, a rede-base deixa de ser uma caixa-preta e passa a ser um objeto com proveniência, verificações e limites declarados — condição necessária para que as recomendações futuras do sistema de apoio à decisão possam ser auditadas pelo planejamento municipal.
+
+## 4.2 A delimitação por zonas de análise de tráfego inicia a geração de demanda (RASCUNHO, 2026-10-29)
+
+Esta seção sustenta que a geração da demanda sintética, primeiro passo de implementação do caminho metodológico já decidido na Seção 3.x, começou por reaproveitar a geometria das áreas de estudo já verificada para os corredores, em vez de desenhar uma nova delimitação, e que tal reaproveitamento transporta para o lado da demanda as mesmas cautelas já registradas para essa geometria no Capítulo 4.1.
+
+O modelo gravitacional que gera a demanda sintética inicial exige que a rede seja particionada em zonas de análise de tráfego, unidade padrão de agregação de origens e destinos em simulação de tráfego. Cada uma das quatro áreas de avaliação (B, D, C e A) passou a corresponder a uma zona, e toda aresta fora das quatro áreas foi agrupada numa zona residual, que representa o tráfego de passagem e o restante do envelope da rede única. A atribuição de cada aresta à sua zona segue um teste de pertencimento geométrico do ponto médio da aresta a cada polígono, exportado no formato padrão de zonas de análise de tráfego do simulador.
+
+Uma execução real contra a rede vigente de São José dos Campos confirma a cobertura da partição, sintetizada na tabela a seguir.
+
+| Zona | Arestas |
+|---|---|
+| B (Av. Andrômeda <-> DCTA / Jardim Satélite) | 3.020 |
+| C (Centro / São Dimas / Vila Adyana) | 1.786 |
+| A (Anel Viário) | 1.146 |
+| D (Jardim Colinas / Ponte Estaiada) | 1.103 |
+| Residual (tráfego de passagem) | 7.170 |
+| **Total** | 14.225 |
+
+O total coincide com o número conhecido de arestas da rede única (Seção 4.1.5), e nenhuma zona permanece vazia — ao contrário das evidências citadas nas Seções 4.1.5 a 4.1.7, este resultado foi conferido diretamente nesta rodada, e não apenas relatado.
+
+Permanecem, contudo, três ressalvas. A primeira é que esta etapa só fixa geometria, sem ainda atribuir peso de produção ou de atração de viagens a cada zona — o modelo gravitacional propriamente dito depende de uma decisão de dados ainda não aceita, discutida na Seção 3.x. A segunda é que os quatro polígonos reaproveitados herdam as cautelas já registradas na Seção 4.1.5: a verificação aérea foi feita por um único avaliador, sem critério arquivado; a área C é um labirinto de mão única, não uma linha; e a área D é uma junção, não um corredor — de modo que a zona correspondente a cada uma delas é uma leitura defensável da geometria de avaliação, não uma delimitação administrativa de zoneamento. A terceira é que a zona residual concentra a maior parte das arestas da rede (7.170 de 14.225, pouco mais da metade), o que antecipa que qualquer agregação de resultados restrita às quatro áreas nomeadas deixará de fora a maior parte da rede em número de arestas — ainda que não necessariamente em volume de viagens, hoje desconhecido.
+
+Conclui-se, portanto, que a camada de zonas fixa apenas a geometria da futura demanda, não a incerteza associada a ela: enquanto os pesos de produção e atração não forem obtidos e aceitos, a geração de demanda permanece uma etapa de infraestrutura, não um cenário calibrado. Tal distinção, lida em conjunto com a Seção 3.x, reforça que cada camada do modelo — rede, zoneamento, peso de viagem, simulação — precisa ter seus próprios limites declarados antes que qualquer resultado seja apresentado ao planejamento municipal como evidência.
