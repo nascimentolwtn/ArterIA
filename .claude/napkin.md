@@ -33,18 +33,26 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-29] P3.2/P3.3 real run blocked on two inputs: Geosanja attraction layer and traffic counts**
-   Do instead: production weights are done (`arteria demand population --city sjc`,
-   real IBGE Censo 2022 data) and P3.3's `od2trips`/`duarouter`/`routeSampler` mechanics
-   are done and tested against the real SUMO binaries (`arteria/demand/trips.py`, toy
-   fixtures only). Two things still block running any of this for real against SJC:
-   (1) the attraction side (Geosanja "03 Macrozoneamento Urbano" zoning layer, ADR 0017 —
-   still `Proposed`) was never downloaded (only road-hierarchy layers were); its portal
-   isn't scriptable from this session (guessed GeoServer WFS endpoints need auth, further
-   probing got flagged by the sandbox as access circumvention) — needs a desk browser
-   session or the owner fetching it by hand. (2) real traffic counts (`traffic-counts` in
-   the data manifest) are still `deferred`, no agency contact authorized — needed for
-   `routeSampler`'s counts-driven calibration. Don't build either against placeholder data.
+1. **[2026-10-29] P3.2/P3.3/P3.6 real run blocked on two inputs: Geosanja attraction layer and traffic counts**
+   Do instead: production weights (`arteria demand population --city sjc`, real IBGE
+   Censo 2022 data), P3.3's `od2trips`/`duarouter`/`routeSampler` mechanics
+   (`arteria/demand/trips.py`) and P3.6's scenario schema (`ScenarioConfig`,
+   `arteria/config.py`) are all done, all tested only against toy fixtures and the real
+   SUMO binaries — not against real SJC data. Two things still block running any of this
+   for real: (1) the attraction side (Geosanja "03 Macrozoneamento Urbano" zoning layer,
+   ADR 0017 — still `Proposed`) was never downloaded (only road-hierarchy layers were);
+   its portal isn't scriptable from this session (guessed GeoServer WFS endpoints need
+   auth, further probing got flagged by the sandbox as access circumvention) — needs a
+   desk browser session or the owner fetching it by hand. (2) real traffic counts
+   (`traffic-counts` in the data manifest) are still `deferred`, no agency contact
+   authorized — needed for `routeSampler`'s counts-driven calibration. Don't build any of
+   P3.2/P3.3/P3.6 against placeholder data; don't scaffold a fake `scenario.yaml` either.
+2. **[2026-10-29] P3.4 (transit demand) has nothing to build: no public SJC GTFS feed**
+   Do instead: P3.4 depends on P2.6 (public-transport layer), already recorded as
+   "blocked on data, not implemented" — no public SJC GTFS feed was found. Nothing in
+   P3.4 is buildable without it (not even mechanics-only, since P2.6's own GTFS-import
+   wrapper, roadmap L12, is itself unbuilt and belongs to the already-closed Phase 2, not
+   Phase 3). Wait for a feed or owner direction before touching this.
 
 ## User Directives
 
