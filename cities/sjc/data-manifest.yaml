@@ -17,7 +17,7 @@
 # sources listed first (osm-network-extract, geosanja-plano-diretor-zoneamento,
 # ibge-faces-logradouros) — no contact with anyone required for those.
 #
-# Last reviewed: 2026-10-28 (the three public network sources downloaded and cross-checked).
+# Last reviewed: 2026-10-29 (added ibge-censo-populacao-setores, downloaded and joined to TAZs).
 
 sources:
   - id: osm-network-extract
@@ -108,6 +108,39 @@ sources:
       file SP/3549904_faces_de_logradouros_2022.*; the extracted copy is
       under data/ibge-faces/. Used for the name cross-check in
       data/crosscheck/ (key = NM_TIT_LOG + NM_LOG).
+
+  - id: ibge-censo-populacao-setores
+    name: "IBGE — Censo 2022, população e geometria por setor censitário"
+    description: >
+      Census-tract ("setor censitário") geometry with joined Censo 2022
+      attributes, including total population (V0001). The production-weight
+      source for the gravity-model demand fallback (roadmap P3.2, ADR 0017).
+    roadmap_ref: P3.2
+    agency: "IBGE (self-service download, no contact needed)"
+    license: "public download; no license terms shown"
+    visibility: public
+    sha256: 07affc966f82292d6f9a359adccc49e69ed55d2075936ef6d1e9c346b29a04bc
+    status: public_available
+    notes: >
+      Downloaded 2026-10-29 (gitignored). www.ibge.gov.br blocks scripted
+      access (403, as already seen for ibge-faces-logradouros), but
+      ftp.ibge.gov.br/geoftp.ibge.gov.br are a separate, unprotected host
+      serving the same self-service files. Source URL:
+      https://ftp.ibge.gov.br/Censos/Censo_Demografico_2022/Agregados_por_Setores_Censitarios/malha_com_atributos/setores/gpkg/UF/SP/SP_setores_CD2022.gpkg
+      Local file data/SP_setores_CD2022.gpkg, 182,128,640 bytes, table
+      `SP_setores_CD2022` (CD_SETOR, CD_MUN, geom, V0001..V0007). Filtering
+      CD_MUN='3549904' gives 1,554 SJC census tracts; summed by TAZ
+      (`arteria demand population --city sjc`) that is a:13,499 b:36,391
+      c:24,516 d:22,702 external:599,946, total 697,054. Read directly via
+      stdlib `sqlite3` + manual GeoPackage WKB-header parsing (see
+      `arteria/demand/population.py`) — no GDAL/fiona/geopandas dependency
+      added. The attraction-side proxy (Geosanja zoning/land-use layer,
+      also named in ADR 0017) has NOT been obtained yet: the
+      `geosanja-plano-diretor-zoneamento` entry above only covers the
+      road-hierarchy layers actually downloaded, not the "03 Macrozoneamento
+      Urbano" layer; the portal's download tool isn't scriptable from this
+      session (guessed GeoServer WFS endpoints require auth) and getting it
+      needs either a desk browser session or the owner fetching it by hand.
 
   - id: planmob-diagnostico-prognostico
     name: "PlanMob SJC — Diagnóstico e Prognóstico"

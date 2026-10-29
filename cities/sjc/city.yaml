@@ -13,3 +13,5 @@ time_windows:
     end: "09:00"   # experience of corridors A/D's peak-hour congestion, not field counts;
     # refine against real PlanMob/count data once available (roadmap P1.1, P4 calibration).
 data_manifest: data-manifest.yaml
+ibge_municipality_code: "3549904" # São José dos Campos, per IBGE (roadmap P3.2, ADR 0017)
+uf: "SP"

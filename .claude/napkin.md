@@ -33,12 +33,16 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-29] P3.2 gravity-model OD matrix needs real data, pending ADR 0017 acceptance**
-   Do instead: once the owner accepts `docs/adr/0017-zoning-and-trip-generation-data.md`,
-   fetch IBGE Censo 2022 population by census tract for SJC (self-service download, same
-   precedent as `ibge-faces-logradouros`), add it to `cities/sjc/data-manifest.yaml`, join it
-   to the TAZs in `cities/sjc/demand/sjc.taz.xml`, and build the gravity model + `od2trips`/
-   `duarouter` wiring (P3.2/P3.3). Don't build the gravity model against placeholder weights.
+1. **[2026-10-29] P3.2 gravity model blocked on the Geosanja attraction-proxy layer**
+   Do instead: production weights are done (`arteria demand population --city sjc`,
+   `arteria/demand/population.py`, real IBGE Censo 2022 data, `ibge-censo-populacao-setores`
+   in the manifest). The attraction side (Geosanja "03 Macrozoneamento Urbano" zoning layer,
+   per ADR 0017 — still `Proposed`) was never actually downloaded (only road-hierarchy layers
+   were); its portal isn't scriptable from this session (guessed GeoServer WFS endpoints need
+   auth, and probing further got flagged by the sandbox as access circumvention). Needs either
+   a desk browser session or the owner fetching the layer by hand before the gravity model
+   (`od2trips`/`duarouter` wiring, P3.2/P3.3) can be built. Don't build it against placeholder
+   attraction weights.
 
 ## User Directives
 

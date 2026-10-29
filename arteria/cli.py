@@ -445,5 +445,57 @@ def demand_taz(
         raise typer.Exit(code=1)
 
 
+@demand_app.command("population")
+def demand_population(
+    city: str = typer.Option(..., "--city"),
+    gpkg_path: Path | None = typer.Option(
+        None,
+        "--gpkg-path",
+        help="Local IBGE setor GeoPackage. Downloaded via --download-uf if not given.",
+    ),
+    download_uf: str | None = typer.Option(
+        None,
+        "--download-uf",
+        help="State abbreviation (e.g. SP) to download the setor GeoPackage for, "
+        "if --gpkg-path isn't given. ~180 MB for São Paulo state.",
+    ),
+    table: str = typer.Option(
+        "SP_setores_CD2022", "--table", help="GeoPackage feature table name."
+    ),
+) -> None:
+    """Sum IBGE Censo 2022 population by TAZ (roadmap P3.2, ADR 0017: the
+    production side of the gravity-model fallback). Needs the `geo` extra
+    and real network access to download the GeoPackage.
+    """
+    from arteria.config import load_city_config
+    from arteria.demand.population import build_population_summary, download_setores_gpkg
+
+    city_dir = Path.cwd() / "cities" / city
+    config = load_city_config(city_dir / "city.yaml")
+    if config.ibge_municipality_code is None:
+        typer.echo(f"cities/{city}/city.yaml has no ibge_municipality_code set", err=True)
+        raise typer.Exit(code=1)
+
+    if gpkg_path is None:
+        if download_uf is None:
+            typer.echo("Pass --gpkg-path or --download-uf", err=True)
+            raise typer.Exit(code=1)
+        gpkg_path = Path.cwd() / "data" / f"{download_uf}_setores_CD2022.gpkg"
+        if not gpkg_path.exists():
+            typer.echo(f"Downloading {download_uf} setor GeoPackage to {gpkg_path}...")
+            download_setores_gpkg(download_uf, gpkg_path)
+
+    try:
+        summary = build_population_summary(
+            city_dir, config.ibge_municipality_code, table, gpkg_path
+        )
+    except (FileNotFoundError, OSError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"Setores: {summary.setor_count}, total population: {summary.total_population}")
+    typer.echo(f"Population by zone: {json.dumps(summary.population_by_zone)}")
+
+
 if __name__ == "__main__":
     app()

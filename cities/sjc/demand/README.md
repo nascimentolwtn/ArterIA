@@ -31,9 +31,37 @@ arteria demand taz --city sjc
 Matches the unified network's known edge count (14,225, ADR 0016); no zone
 is empty.
 
+## Population by zone (P3.2 production weights, 2026-10-29)
+
+IBGE Censo 2022 population by census tract (`ibge-censo-populacao-setores`
+in `cities/sjc/data-manifest.yaml`), joined to these same TAZs by
+`arteria/demand/population.py` (`load_setores`/`population_by_zone`), each
+setor's centroid assigned to whichever zone polygon contains it.
+
+```
+arteria demand population --city sjc --gpkg-path data/SP_setores_CD2022.gpkg --table SP_setores_CD2022
+```
+
+| Zone | Population |
+|---|---|
+| a | 13,499 |
+| b | 36,391 |
+| c | 24,516 |
+| d | 22,702 |
+| external | 599,946 |
+| **Total** | 697,054 |
+
+1,554 census tracts. The `external` zone dominates because the four study
+areas are small, aerial-verified pilot-corridor buffers, not the whole
+municipality (SJC's full 2022 population is ~730k).
+
 ## Next step (not done yet)
 
-This is zoning only (P3.1); the TAZ file carries no production/attraction
-weights. P3.2 (OD matrix via a gravity model) needs real population data
-(IBGE Censo 2022, per ADR 0017, `Proposed`) joined to these zones before an
-OD matrix can be built — tracked in `.claude/napkin.md`.
+The attraction side of the gravity model (jobs/land-use proxy, per ADR 0017)
+is still missing: the Geosanja "03 Macrozoneamento Urbano" zoning layer
+named in that ADR was never actually downloaded (only road-hierarchy layers
+were — see the `geosanja-plano-diretor-zoneamento` manifest entry), and its
+portal isn't scriptable from this session (a guessed GeoServer WFS endpoint
+required auth). Getting it needs a desk browser session or the owner
+fetching it by hand. The gravity-model OD matrix itself cannot be built
+until that's resolved — tracked in `.claude/napkin.md`.

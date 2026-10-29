@@ -34,6 +34,11 @@ class CityConfig(BaseModel):
     bounding_polygon: dict | None = None
     time_windows: dict[str, TimeWindow] = Field(default_factory=dict)
     data_manifest: str = "data-manifest.yaml"
+    # IBGE municipality code (7 digits) and state abbreviation, for joining
+    # Censo data (roadmap P3.2, ADR 0017) — optional since not every city a
+    # future onboarding adds is necessarily Brazilian.
+    ibge_municipality_code: str | None = None
+    uf: str | None = None
 
 
 class DataManifestEntry(BaseModel):
