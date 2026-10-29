@@ -5,6 +5,31 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-10-29 (21)
+
+Commit `f78b73f` ("feat: wire od2trips/duarouter/routeSampler mechanics (P3.3)"), já no `main`. O commit implementa a mecânica de P3.3 (geração/seleção de rotas) do roteiro de demanda, encadeando as três ferramentas de linha de comando do SUMO que a metodologia de demanda já decidida (entrada (10); ver Seção 3.x) precisa entre uma matriz OD e uma baseline calibrada por contagens: conversão de matriz OD em viagens, roteamento de viagens em veículos pela rede e seleção, entre as rotas geradas, do subconjunto compatível com contagens medidas. Introduz-se `arteria/demand/trips.py` e os comandos `arteria demand od2trips`, `duarouter` e `routesampler`, cada ferramenta chamada por meio de um `run` callable injetado — a mesma costura de adaptador já usada para `netconvert` em `arteria/network/build.py` (ADR 0009), tornando o código testável sem o binário SUMO instalado, o que importa para sessões remotas/cloud sem SUMO. Um teste separado, só de bancada local, exercita um round-trip real contra os binários SUMO 1.28.0 (rede de brinquedo de 4 nós -> matriz OD de brinquedo -> as três ferramentas em sequência -> seleção de rotas contra contagens sintéticas) e passa. Suíte de testes completa verde (192 aprovados), lint e checagem de tipos limpos. A versão foi elevada a 1.6.0 no mesmo commit, cobrindo tanto esta mecânica quanto os pesos de produção de P3.2 já registrados na entrada (20), que não havia feito o incremento de versão.
+
+Nota importante de escopo, destacada pelo próprio commit: trata-se só de mecânica/encanamento — NÃO é executado de fato contra dados de São José dos Campos, porque dois insumos upstream ainda faltam: (1) a matriz OD do modelo gravitacional de P3.2 permanece bloqueada pelos dados de proxy do lado de atração (risco já aberto em (19)/(20)); (2) contagens de tráfego reais para a calibração desta seleção de rotas permanecem `deferred` no manifesto de dados (sem contato autorizado com a agência).
+
+**Por que importa para a trilha PG/PO:**
+
+Em primeiro lugar, o commit **completa, no nível de implementação, um elo que até aqui só existia como decisão metodológica.** A entrada (10) já havia fixado, pela aceitação da ADR 0013, o caminho de demanda sintética calibrada por contagem como padrão metodológico, nomeando esse mesmo encadeamento de ferramentas em prosa conceitual; o presente commit é a primeira vez que esse encadeamento existe como código executável, e não apenas como escolha registrada. Trata-se, contudo, de um avanço do instrumento, não do dado: nenhuma execução real contra SJC ocorreu, pela mesma razão dupla (atração ausente, contagens ausentes) já sinalizada nas duas entradas anteriores.
+
+Além disso, o teste de bancada contra o binário real do SUMO, ainda que restrito a uma rede e uma matriz OD de brinquedo, fornece a **mesma classe de evidência que a entrada (13) já distinguiu para o validador de rede**: demonstra que o mecanismo roda corretamente ponta a ponta, não que produza um cenário de demanda válido para São José dos Campos. Tal distinção — instrumento testado versus dado real obtido — deve acompanhar qualquer citação futura desta mecânica no Capítulo 4, do mesmo modo que já acompanha o validador e o procedimento de reconstrução da rede (entradas (13) e (16)).
+
+Quanto à testabilidade sem o binário do simulador instalado, cabe registrar que se trata de uma decisão de engenharia já precedente (a mesma costura de adaptador usada para o conversor de redes), relevante para a reprodutibilidade do protocolo experimental que o Capítulo 3 ainda precisa formalizar, mas que não altera, por si só, nenhuma escolha de formulação.
+
+Por fim, cabe demarcar a **fronteira do que isto é**: mecânica de pipeline testada, não execução real, não matriz OD completa e não demanda calibrada. Os dois bloqueios upstream já identificados nas entradas (19) e (20) — atração de viagens e contagens reais — permanecem exatamente como estavam; este commit não os resolve, apenas prepara o código para quando forem resolvidos.
+
+**Impacto na tese:** o Cap. 4 recebeu a nova Seção 4.3 (rascunho), que registra esta mecânica como preparação de infraestrutura, com a mesma ressalva de instrumento-versus-dado já aplicada a outras seções. O `outline.md` foi atualizado (nota de evidência do Cap. 4; nova linha de atualização). O Cap. 3 e o `pre-projeto.md` não foram tocados, por não haver decisão nova de formulação — o caminho metodológico já estava fixado desde a entrada (10).
+
+**Perguntas abertas/riscos:**
+1. Persistem, sem alteração: aceite da ADR 0017; obtenção do lado de atração de viagens; decisão de granularidade de zona para $f_7$ (entradas (19)/(20)); contagens reais de tráfego ainda `deferred`.
+2. Novo, mas de baixo risco: a mecânica de seleção de rotas por contagens foi validada apenas em bancada local, numa única rede de brinquedo; o comportamento sobre a rede real de SJC (14.225 arestas) ainda não foi exercido, nem mesmo com contagens sintéticas.
+3. Seguem, sem alteração, os riscos já consolidados: tratamento da incerteza estrutural de $G$ (decisão de orientador(a)); recorte final da dissertação; orientador(a) não contatado(a).
+
+**Próximos passos:** (i) acompanhar o aceite da ADR 0017 e a obtenção do lado de atração de viagens, pré-requisitos para uma matriz OD completa; (ii) quando contagens reais (ainda que sintéticas, geradas por outro meio) estiverem disponíveis, exercitar esta cadeia sobre a rede real de SJC e registrar o resultado como primeira demanda sintética candidata; (iii) ao formalizar o protocolo de reprodutibilidade do Capítulo 3, citar esta cadeia como exemplo de etapa testável sem o simulador instalado.
+
 ## 2026-10-29 (20)
 
 Novo commit no `main`: `264e8fc` ("feat: add IBGE census population join for TAZ production weights (P3.2)"). O commit implementa a metade de peso de produção do item P3.2 do roteiro de demanda, complementando o zoneamento geométrico já registrado nesta mesma data na entrada (19). Introduz-se `arteria/demand/population.py` e o comando `arteria demand population --city sjc`, que baixa o GeoPackage de setores censitários do Censo IBGE 2022 e soma a população de cada setor dentro das quatro zonas de análise de tráfego já fixadas em (19) (a/b/c/d), mais a zona residual `external`.

@@ -29,6 +29,8 @@ Atualização (2026-10-29, commit `7633693`): cada aresta da rede unificada foi 
 
 Atualização (2026-10-29, commit `264e8fc`): o lado de produção do modelo gravitacional proposto pela ADR 0017 foi de fato implementado e rodado contra dado real do Censo IBGE 2022, com população somada por zona (corredor `b`, que contém o acesso ao DCTA, com 36.391 habitantes; demais zonas e total em `progress.md`). O lado de atração (empregos/*proxy* de zoneamento) permanece bloqueado, e o modelo gravitacional em si ainda não existe. TODO(evidência): tratar essa população como insumo de demanda de tráfego, não como caracterização de caso nem como medida de vulnerabilidade de acesso; a ADR 0017 segue `Proposed` apesar de o dado que ela nomeia já ter sido coletado.
 
+Atualização (2026-10-29, commit `f78b73f`): a etapa seguinte da cadeia de demanda fixada pela ADR 0013 (`od2trips`/`duarouter`/`routeSampler`) foi implementada só como mecânica/encanamento, testável sem binário SUMO real e verificada em bancada local contra binário real numa rede de brinquedo, sem nenhuma execução contra dado de SJC. TODO(evidência): a calibração real por contagem de tráfego, insumo necessário desta etapa, segue bloqueada por ausência de contato institucional autorizado com a agência de tráfego — mesmo risco de acesso institucional já descrito na seção 12 do pré-projeto, agora também do lado de engenharia; a matriz OD em si segue bloqueada pelo lado de atração da ADR 0017.
+
 ## 4. Metodologia Mista
 
 **Coberto no pré-projeto:** desenho de método misto (seção 9) — revisão documental/teórica, estudo de caso único incorporado, modelagem quantitativa de resiliência via SUMO/ArterIA, e coleta qualitativa complementar condicional (entrevistas sujeitas a aprovação ética).
