@@ -1,0 +1,13 @@
+name: baseline
+city: toy
+description: Toy baseline scenario for schema tests, not a real run.
+net_file: ../../network/toy.net.xml
+taz_file: ../../demand/toy.taz.xml
+route_files:
+  - toy.rou.xml
+additional_files: []
+time_window:
+  start: "07:00"
+  end: "09:00"
+seeds: [1, 2, 3]
+replications: 3
