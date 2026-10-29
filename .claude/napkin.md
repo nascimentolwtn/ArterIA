@@ -33,16 +33,18 @@ None open.
 
 ## Backlog Features
 
-1. **[2026-10-29] P3.2 gravity model blocked on the Geosanja attraction-proxy layer**
+1. **[2026-10-29] P3.2/P3.3 real run blocked on two inputs: Geosanja attraction layer and traffic counts**
    Do instead: production weights are done (`arteria demand population --city sjc`,
-   `arteria/demand/population.py`, real IBGE Censo 2022 data, `ibge-censo-populacao-setores`
-   in the manifest). The attraction side (Geosanja "03 Macrozoneamento Urbano" zoning layer,
-   per ADR 0017 — still `Proposed`) was never actually downloaded (only road-hierarchy layers
-   were); its portal isn't scriptable from this session (guessed GeoServer WFS endpoints need
-   auth, and probing further got flagged by the sandbox as access circumvention). Needs either
-   a desk browser session or the owner fetching the layer by hand before the gravity model
-   (`od2trips`/`duarouter` wiring, P3.2/P3.3) can be built. Don't build it against placeholder
-   attraction weights.
+   real IBGE Censo 2022 data) and P3.3's `od2trips`/`duarouter`/`routeSampler` mechanics
+   are done and tested against the real SUMO binaries (`arteria/demand/trips.py`, toy
+   fixtures only). Two things still block running any of this for real against SJC:
+   (1) the attraction side (Geosanja "03 Macrozoneamento Urbano" zoning layer, ADR 0017 —
+   still `Proposed`) was never downloaded (only road-hierarchy layers were); its portal
+   isn't scriptable from this session (guessed GeoServer WFS endpoints need auth, further
+   probing got flagged by the sandbox as access circumvention) — needs a desk browser
+   session or the owner fetching it by hand. (2) real traffic counts (`traffic-counts` in
+   the data manifest) are still `deferred`, no agency contact authorized — needed for
+   `routeSampler`'s counts-driven calibration. Don't build either against placeholder data.
 
 ## User Directives
 
