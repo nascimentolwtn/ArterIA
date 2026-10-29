@@ -55,7 +55,17 @@ arteria demand population --city sjc --gpkg-path data/SP_setores_CD2022.gpkg --t
 areas are small, aerial-verified pilot-corridor buffers, not the whole
 municipality (SJC's full 2022 population is ~730k).
 
-## Next step (not done yet)
+## Route/trip generation mechanics (P3.3, 2026-10-29)
+
+`arteria/demand/trips.py` wraps the real `od2trips`, `duarouter` and
+`routeSampler.py` SUMO tools (`arteria demand od2trips`/`duarouter`/
+`routesampler`), behind the same injected-binary seam as
+`arteria/network/build.py` (ADR 0009). A desk-only round trip (toy OD
+matrix -> `od2trips` -> `duarouter` -> `routeSampler.py` against synthetic
+counts) runs against the real SUMO 1.28.0 install (`tests/test_trips.py`).
+Not run for real against SJC yet — see "Next steps" below.
+
+## Next steps (not done yet)
 
 The attraction side of the gravity model (jobs/land-use proxy, per ADR 0017)
 is still missing: the Geosanja "03 Macrozoneamento Urbano" zoning layer
@@ -65,3 +75,8 @@ portal isn't scriptable from this session (a guessed GeoServer WFS endpoint
 required auth). Getting it needs a desk browser session or the owner
 fetching it by hand. The gravity-model OD matrix itself cannot be built
 until that's resolved — tracked in `.claude/napkin.md`.
+
+Real traffic counts (`traffic-counts` in `cities/sjc/data-manifest.yaml`)
+are also still `deferred` (no agency contact authorized yet), so even once
+a real OD matrix exists, `routeSampler`'s counts-driven calibration (P3.3,
+ADR 0013) has nothing real to calibrate against.

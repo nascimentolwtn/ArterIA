@@ -2,6 +2,12 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.6] - 2026-10-29
+
+### Added
+
+- **P3.2 production weights done; P3.3 trip-generation mechanics done.** `arteria demand population --city sjc` (`arteria/demand/population.py`) downloads the real IBGE Censo 2022 setor (census-tract) GeoPackage and sums population into the P3.1 TAZs: a=13,499, b=36,391, c=24,516, d=22,702, external=599,946 (1,554 SJC census tracts, total 697,054). New `ibge-censo-populacao-setores` entry in `cities/sjc/data-manifest.yaml`. `arteria/demand/trips.py` wraps the real `od2trips`, `duarouter` and `routeSampler.py` SUMO tools (new `arteria demand od2trips`/`duarouter`/`routesampler` CLI commands) behind the same injected-binary seam as the network build code (ADR 0009); a desk-only round trip (toy OD matrix -> trips -> routes -> counts-sampled routes) runs against the real SUMO 1.28.0 install. Both items' real run against SJC stays blocked: P3.2's attraction-side weight (Geosanja zoning proxy) still hasn't been downloaded, and P3.3 additionally needs real traffic counts (`traffic-counts`, still `deferred`) — see `docs/roadmap.md`'s P3.2/P3.3 status notes and `.claude/napkin.md`.
+
 ## [1.5] - 2026-10-29
 
 ### Added

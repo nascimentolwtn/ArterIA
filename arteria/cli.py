@@ -497,5 +497,119 @@ def demand_population(
     typer.echo(f"Population by zone: {json.dumps(summary.population_by_zone)}")
 
 
+@demand_app.command("od2trips")
+def demand_od2trips(
+    city: str = typer.Option(..., "--city"),
+    od_matrix_file: list[Path] = typer.Option(
+        ..., "--od-matrix-file", help="OD matrix file (SUMO '$O;D2' text format); repeatable."
+    ),
+    taz_file: Path | None = typer.Option(
+        None, "--taz-file", help="Defaults to cities/<city>/demand/<city>.taz.xml."
+    ),
+    out_path: Path | None = typer.Option(
+        None, "--out-path", help="Defaults to cities/<city>/demand/<city>.trips.xml."
+    ),
+) -> None:
+    """Turn an O/D matrix into trips with the real `od2trips` binary (roadmap P3.3).
+
+    Needs a real OD matrix: this project's own gravity-model matrix (P3.2)
+    is not built yet (ADR 0017's attraction-side data is still missing), so
+    until then this only has real use against a hand-written or externally
+    supplied matrix. Desk-only: needs the real `od2trips` binary.
+    """
+    from arteria.demand.trips import TripGenerationError, run_od2trips
+
+    city_dir = Path.cwd() / "cities" / city
+    taz_path = taz_file or city_dir / "demand" / f"{city}.taz.xml"
+    output_path = out_path or city_dir / "demand" / f"{city}.trips.xml"
+
+    try:
+        result = run_od2trips(
+            taz_file=taz_path, od_matrix_files=od_matrix_file, output_path=output_path
+        )
+    except (TripGenerationError, FileNotFoundError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"Wrote {result.output_path}")
+
+
+@demand_app.command("duarouter")
+def demand_duarouter(
+    city: str = typer.Option(..., "--city"),
+    trips_file: list[Path] = typer.Option(
+        ..., "--trips-file", help="Trips/routes/flows file to route; repeatable."
+    ),
+    net: Path | None = typer.Option(
+        None, "--net", help="Defaults to cities/<city>/network/<city>.net.xml."
+    ),
+    additional_file: list[Path] = typer.Option(
+        [], "--additional-file", help="Extra duarouter --additional-files entry; repeatable."
+    ),
+    out_path: Path | None = typer.Option(
+        None, "--out-path", help="Defaults to cities/<city>/demand/<city>.rou.xml."
+    ),
+) -> None:
+    """Route trips over the city network with the real `duarouter` binary
+    (roadmap P3.3). Desk-only: needs the real `duarouter` binary.
+    """
+    from arteria.demand.trips import TripGenerationError, run_duarouter
+
+    city_dir = Path.cwd() / "cities" / city
+    net_path = net or city_dir / "network" / f"{city}.net.xml"
+    output_path = out_path or city_dir / "demand" / f"{city}.rou.xml"
+
+    try:
+        result = run_duarouter(
+            net_file=net_path,
+            trips_files=trips_file,
+            output_path=output_path,
+            additional_files=additional_file,
+        )
+    except (TripGenerationError, FileNotFoundError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"Wrote {result.output_path}")
+
+
+@demand_app.command("routesampler")
+def demand_routesampler(
+    route_file: list[Path] = typer.Option(
+        ..., "--route-file", help="Candidate route file (e.g. duarouter output); repeatable."
+    ),
+    edgedata_file: list[Path] = typer.Option(
+        ..., "--edgedata-file", help="Measured-counts edgeData file; repeatable."
+    ),
+    out_path: Path = typer.Option(..., "--out-path"),
+    turn_file: list[Path] = typer.Option(
+        [], "--turn-file", help="Measured turn-count file; repeatable."
+    ),
+) -> None:
+    """Resample routes to match measured counts with SUMO's `routeSampler.py`
+    tool (roadmap P3.3's counts-driven half, ADR 0013).
+
+    Needs real traffic counts: `traffic-counts` in
+    `cities/<city>/data-manifest.yaml` is still `deferred`, so until then
+    this only has real use against externally supplied or synthetic counts.
+    Desk-only: needs `SUMO_HOME` pointing at a real SUMO install with
+    `tools/routeSampler.py`.
+    """
+    from arteria.demand.trips import TripGenerationError, run_route_sampler
+
+    try:
+        result = run_route_sampler(
+            route_files=route_file,
+            edgedata_files=edgedata_file,
+            output_path=out_path,
+            turn_files=turn_file,
+        )
+    except (TripGenerationError, FileNotFoundError) as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(f"Wrote {result.output_path}")
+
+
 if __name__ == "__main__":
     app()
