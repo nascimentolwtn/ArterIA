@@ -9,33 +9,40 @@ Claude session: every step below is a Windows GUI action.
 Run, from the repo, with `ARTERIA_DATA` set:
 
 ```
-arteria cs prepare-map --city sjc --corridor A   # or B / C / D
+arteria cs prepare-map --city sjc --corridor A       # or B / C / D
+arteria cs fetch-heightmap --city sjc --corridor A \
+  --out "/mnt/c/Users/<you>/AppData/Local/Colossal Order/Cities_Skylines/Addons/MapEditor/Heightmaps/sjc-<corridor>/heightmap.png"
 ```
 
-This writes `$ARTERIA_DATA/cs/sjc/<corridor>/map-prep.md` with the tile's
-center, bbox, and an Overpass-ready bbox string (usable by the Cimtographer
-fork or an OSM Import mod). Open that file and keep it next to the game.
+The first writes `$ARTERIA_DATA/cs/sjc/<corridor>/map-prep.md` with the
+tile's center, bbox, and an Overpass-ready bbox string (usable by the
+Cimtographer fork or an OSM Import mod). The second builds the actual
+heightmap PNG from real SRTM elevation data (`api.opentopodata.org`) and
+can write straight into the Windows `Heightmaps` folder via WSL2's `/mnt/c`
+— no terrain.party/Heightmapper browser step needed. It also pre-applies
+the 180° rotation (see step 1 below), so the file it writes is ready to
+import as-is. Takes about a minute (60x60 real samples, throttled).
 
 ## 1. Terrain — heightmap
 
-This is the only step with an actual **file** to download and place; the
-road step below (Cimtographer) fetches live and needs no local file.
+If step 0's `fetch-heightmap` ran, the file is already in place, already
+rotated — skip straight to step 2 below after importing it (Content Manager
+-> Editors -> Map Editor -> New -> **Import terrain**, pick the image).
+Spot-check the imported relief against what you'd expect for the area
+(the scaling convention it uses is commonly documented, not independently
+verified by that tool) before building on it.
 
-1. Go to terrain.party. If it errors or won't load (reported broken by one
-   source behind ADR 0011, unconfirmed from the desk machine), use
-   **CS Heightmap** instead (external web tool, exports a scaled 16-bit
-   greyscale PNG). Either way, navigate/search to the note's center
-   coordinate (`center_lon, center_lat` in `map-prep.md`), pick the ~18 km
-   tile size, download the PNG (terrain.party ships it in a zip; CS
-   Heightmap gives the PNG directly).
-2. Put that PNG into `%localappdata%\Colossal Order\Cities_Skylines\Addons\MapEditor\Heightmaps`
-   (create `MapEditor\Heightmaps` if missing).
-3. Content Manager -> Editors -> Map Editor -> New -> **Import terrain**,
-   pick the image.
-4. **Rotate the imported heightmap 180°** before building on it — the
-   importer defaults to sun-north-at-noon.
-5. If Import does nothing: disable mods and retry (known conflict), then
-   re-enable.
+**Manual fallback**, if `fetch-heightmap` isn't usable or its terrain looks
+wrong: go to terrain.party. If it errors or won't load (reported broken by
+one source behind ADR 0011, unconfirmed from the desk machine), use
+**CS Heightmap** instead (external web tool, exports a scaled 16-bit
+greyscale PNG). Either way, navigate/search to the note's center coordinate
+(`center_lon, center_lat` in `map-prep.md`), pick the ~18 km tile size,
+download the PNG (terrain.party ships it in a zip; CS Heightmap gives the
+PNG directly), put it in the `Heightmaps` folder, import it, and
+**rotate it 180°** by hand before building on it (the importer defaults to
+sun-north-at-noon). If Import does nothing: disable mods and retry (known
+conflict), then re-enable.
 
 ## 2. Roads — Cimtographer (primary; no file needed, fetches live)
 

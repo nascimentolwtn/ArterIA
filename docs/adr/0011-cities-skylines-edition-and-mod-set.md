@@ -58,13 +58,18 @@ Gemini's claims.
 
 1. **Edition: CS1** (already owned; CS2 has materially less mod support for
    this workflow).
-2. **Terrain:** try terrain.party first (import via the built-in Map
-   Editor); if it is unreachable or lacks SJC coverage, use **CS Heightmap**
-   (external web tool, exports a scaled 16-bit greyscale PNG for the same
-   `Heightmaps` folder) instead — both untried by the owner as of this
-   revision, Skydark/a raw SRTM tile stay as a further fallback. Rotate
-   whichever heightmap is imported 180° before use: the importer defaults to
-   sun-north-at-noon, which is wrong for most reference footage/expectations.
+2. **Terrain: `arteria cs fetch-heightmap`** (added 2026-11-03, same day as
+   this revision) builds the heightmap PNG directly from real SRTM GL1
+   elevation data (`api.opentopodata.org`, a public API meant for scripted
+   access — unlike terrain.party/Heightmapper, which need a browser this
+   session can't drive), bypassing the terrain.party/CS Heightmap/Skydark
+   question entirely for a Claude-session workflow. It pre-applies the
+   180° rotation the importer otherwise needs by hand (sun-north-at-noon by
+   default). Scaling (0-1024 m across the 16-bit range) is the commonly
+   documented C:S 1 convention, not independently re-verified — check the
+   imported terrain's rough shape/relief in-game before trusting it, and
+   fall back to a manual terrain.party/CS Heightmap/Skydark download only
+   if the result looks wrong.
 3. **Roads: the maintained Cimtographer fork, Workshop ID 1485051886**
    (not the original, now-unmaintained listing), pasting the bbox this
    ADR's tooling produces (`arteria cs prepare-map`, roadmap L21) — the

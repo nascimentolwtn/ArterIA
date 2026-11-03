@@ -2,6 +2,12 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.9] - 2026-11-03
+
+### Added
+
+- **`arteria cs fetch-heightmap` builds the C:S 1 terrain file directly.** Since terrain.party/Heightmapper need a browser this session can't drive, and terrain.party was separately reported broken, `arteria/cs/heightmap.py` fetches a real SRTM elevation grid from the public Open Topo Data API (a scripted-access-friendly service, not a bot-gated site), upsamples it, scales it to C:S 1's documented 16-bit/0-1024 m heightmap convention, and pre-applies the 180° rotation the Map Editor otherwise needs by hand. Run for real for corridor B: a 1081x1081 16-bit PNG, elevation ~545-807 m (plausible for the Paraíba Valley floor and surrounding hills), written straight into the Windows `Heightmaps` folder via WSL2's `/mnt/c` — no manual download step. `docs/local/cities-skylines.md`, `docs/visualization-plan.md` and ADR 0011 updated to make this the primary terrain path, manual terrain.party/CS Heightmap download kept as a fallback if the scripted terrain looks wrong in-game.
+
 ## [1.8.1] - 2026-11-03
 
 ### Changed

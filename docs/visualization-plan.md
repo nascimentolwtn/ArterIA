@@ -68,14 +68,15 @@ unconfirmed on the current patch) if Cimtographer's fetch or segment cap
 can't be worked around, or to hand-tracing roads over the **Image Overlay**
 mod if auto-import stays too messy regardless of tool (reported by some
 creators as the real preferred workflow, precisely because auto-generated
-OSM roads tend to produce bug-prone junctions). Terrain via the map
-editor's heightmap import — try terrain.party first, **CS Heightmap** as
-the fallback web tool if it's unreachable (one unconfirmed second-hand
-report called terrain.party broken outright; this session's own
-unauthenticated request got a 503, inconclusive on its own); the importer
-defaults to sun-north-at-noon, so rotate the heightmap 180° first. Overlay/
-Overlay 2 can drape satellite imagery over the editor as a hand-correction
-reference. **Hard scale limit, not just a
+OSM roads tend to produce bug-prone junctions). Terrain via `arteria cs
+fetch-heightmap` (added 2026-11-03): builds the heightmap PNG directly from
+real SRTM data through a public, scripted-access API, pre-rotated, since
+terrain.party/Heightmapper need a browser a Claude session can't drive
+(terrain.party has also been separately reported broken; this session's
+own unauthenticated request got a 503, inconclusive on its own). Falls back
+to a manual terrain.party or **CS Heightmap** download, with a by-hand 180°
+rotation, if that scripted terrain looks wrong in-game. Overlay/Overlay 2
+can drape satellite imagery over the editor as a hand-correction reference. **Hard scale limit, not just a
 zoning blocker:** CS1's importable terrain tile tops out at about 18 km
 square ("roughly 1:1 scale with the game" at that size); the whole SJC net
 is about 38 x 28 km, so only one corridor-sized crop fits per map,

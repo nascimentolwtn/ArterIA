@@ -671,5 +671,76 @@ def cs_prepare_map(
         typer.echo(f"Warning: {result.warning}", err=True)
 
 
+@cs_app.command("fetch-heightmap")
+def cs_fetch_heightmap(
+    city: str = typer.Option(..., "--city"),
+    corridor: str = typer.Option("all", "--corridor", help="Same meaning as `cs prepare-map`."),
+    size_km: float = typer.Option(18.0, "--size-km"),
+    grid_size: int = typer.Option(
+        60, "--grid-size", help="Real elevation samples per side; upsampled afterward."
+    ),
+    user_agent: str = typer.Option(
+        "ArterIA-cs-heightmap/0.1 (research tool; no personal contact attached)",
+        "--user-agent",
+        help="Sent to api.opentopodata.org; identify the tool, not a person (ADR 0004-style care).",
+    ),
+    out: Path | None = typer.Option(
+        None, "--out", help="Defaults to $ARTERIA_DATA/cs/<city>/<corridor>/heightmap.png."
+    ),
+) -> None:
+    """Build a C:S 1 heightmap PNG for a corridor from real SRTM elevation
+    data (Open Topo Data), since terrain.party/Heightmapper need a browser
+    this session can't drive (roadmap L21, ADR 0011's 2026-11-03 revision).
+
+    Pre-rotates 180° so the file can be imported as-is. Scaling (0-1024 m
+    across the 16-bit range) is the commonly-documented C:S 1 convention,
+    not independently re-verified here — check the terrain in-game.
+    """
+    from arteria.cs.heightmap import HeightmapError, build_heightmap, write_heightmap
+    from arteria.cs.prepare_map import PrepareMapError, compute_map_prep
+
+    city_dir = Path.cwd() / "cities" / city
+    geojson_path = city_dir / "corridors" / "corridors.geojson"
+    try:
+        corridors_geojson = json.loads(geojson_path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    try:
+        prep = compute_map_prep(corridors_geojson, city=city, corridor_id=corridor, size_km=size_km)
+    except PrepareMapError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    out_path = out
+    if out_path is None:
+        arteria_data = os.environ.get("ARTERIA_DATA")
+        if not arteria_data:
+            typer.echo("ARTERIA_DATA is not set and --out wasn't given.", err=True)
+            raise typer.Exit(code=1)
+        out_path = Path(arteria_data) / "cs" / city / corridor.lower() / "heightmap.png"
+
+    typer.echo(
+        f"Fetching {grid_size}x{grid_size} SRTM points over "
+        f"({prep.west}, {prep.south}, {prep.east}, {prep.north})..."
+    )
+    try:
+        image = build_heightmap(
+            west=prep.west,
+            south=prep.south,
+            east=prep.east,
+            north=prep.north,
+            user_agent=user_agent,
+            grid_size=grid_size,
+        )
+    except HeightmapError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    write_heightmap(image, out_path)
+    typer.echo(f"Wrote {out_path}")
+
+
 if __name__ == "__main__":
     app()
