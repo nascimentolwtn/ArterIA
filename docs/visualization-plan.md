@@ -56,14 +56,27 @@ photoreal, but no API key, works offline, no recording limits, publishable under
 ODbL. Overture serves buildings as PMTiles; height completeness for Brazil
 **[unverified]** (expect default heights). Shares ~80% of A's code.
 
-**C. Cities: Skylines 1.** Roads via the "OpenStreetMap Import" workshop mod
-(ID 1957515502; 2024 comments report glitchy nodes and null-reference errors,
-unconfirmed on the current patch). Terrain via the map editor's heightmap import
-(terrain.party has been down at times; Skydark is an alternative). Blocker:
-buildings and traffic only appear in zoned areas, so the import yields plain
-roads until zoned by hand. No known mod feeds SUMO vehicles into the game; the
-traffic shown would be the game's own, uncalibrated. Before/after = one save per
-package, edited by hand (TM:PE, Move It).
+**C. Cities: Skylines 1.** Roads via **Cimtographer** (formerly
+Cities-Skylines-Mapper, the mature community default: paste terrain.party
+coordinates, fetch from `overpass-api.de`, "Make Roads"; hard 32,767-segment
+limit plus tolerance/curve settings), falling back to the "OpenStreetMap
+Import" workshop mod (ID 1957515502; 2024 comments report glitchy nodes and
+null-reference errors, unconfirmed on the current patch) if Cimtographer's
+fetch or segment cap can't be worked around. Terrain via the map editor's
+heightmap import (terrain.party has been down at times; Skydark is an
+alternative); the importer defaults to sun-north-at-noon, so rotate the
+heightmap 180° first. Overlay/Overlay 2 can drape satellite imagery over the
+editor as a hand-correction reference. **Hard scale limit, not just a
+zoning blocker:** CS1's importable terrain tile tops out at about 18 km
+square ("roughly 1:1 scale with the game" at that size); the whole SJC net
+is about 38 x 28 km, so only one corridor-sized crop fits per map,
+regardless of mods — "81 tiles" unlocks more of the existing terrain
+square's outer tiles, it does not enlarge the terrain. Buildings and traffic
+only appear in zoned areas, so the import yields plain roads until zoned by
+hand. No known mod feeds SUMO vehicles into the game; the traffic shown
+would be the game's own, uncalibrated. Before/after = one save per package,
+edited by hand (TM:PE, Move It). Full decision and manual procedure: ADR
+0011, `docs/local/cities-skylines.md`.
 
 **D. `sumo-gui` 3D (OSG).** The pip wheel has no OSG. The Windows "all extras"
 installer includes it, or build from source in WSL. Crude 3D network, no

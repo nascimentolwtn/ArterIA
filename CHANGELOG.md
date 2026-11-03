@@ -2,6 +2,12 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.8] - 2026-11-03
+
+### Added
+
+- **Cities: Skylines hobby-track groundwork started (roadmap P8.3).** ADR 0011 decides the C:S 1 edition and mod set (Cimtographer primary road importer with the OSM Import workshop mod as fallback, Overlay/Overlay 2 for satellite reference, TM:PE/Move It for package edits), and that only one corridor-sized crop fits a C:S 1 map at a time (its terrain tile tops out around 18 km square, well under the whole SJC net's ~38x28 km). `arteria cs prepare-map --city sjc --corridor <A|B|C|D>` (`arteria/cs/prepare_map.py`) is the one scripted step: it writes a map-prep note (center, bbox, an Overpass/Cimtographer-ready paste string, and a warning if the requested tile size doesn't fit) from `corridors.geojson` — no DEM conversion or local OSM export needed, since terrain.party already packages the heightmap and Cimtographer fetches roads live from Overpass. Everything past that note is a manual Windows GUI procedure, written up in `docs/local/cities-skylines.md`. `docs/visualization-plan.md`'s Strategy C section is updated to match.
+
 ## [1.7] - 2026-10-29
 
 ### Added

@@ -25,6 +25,8 @@ network_app = typer.Typer(help="netconvert build and validation (roadmap P2.2/P2
 app.add_typer(network_app, name="network")
 demand_app = typer.Typer(help="Zoning, OD matrices and trip generation (roadmap Phase 3).")
 app.add_typer(demand_app, name="demand")
+cs_app = typer.Typer(help="Cities: Skylines hobby track (roadmap P8.3, ADR 0011/0015).")
+app.add_typer(cs_app, name="cs")
 
 
 @app.callback()
@@ -609,6 +611,63 @@ def demand_routesampler(
         raise typer.Exit(code=1) from exc
 
     typer.echo(f"Wrote {result.output_path}")
+
+
+@cs_app.command("prepare-map")
+def cs_prepare_map(
+    city: str = typer.Option(..., "--city"),
+    corridor: str = typer.Option(
+        "all",
+        "--corridor",
+        help="Corridor id from corridors.geojson ('A'/'B'/'C'/'D'/'LINK'), "
+        "or 'all' for the whole collection's bbox (almost certainly too big "
+        "for one C:S 1 map — expect a warning).",
+    ),
+    size_km: float = typer.Option(
+        18.0,
+        "--size-km",
+        help="Square tile side length to centre on the corridor's centroid; "
+        "C:S 1's own terrain tile tops out at about this size.",
+    ),
+) -> None:
+    """Write a map-prep note (centre, bbox, Overpass/Cimtographer paste
+    string) for the C:S 1 hobby track (roadmap L21, ADR 0011/0015).
+
+    Reads `cities/<city>/corridors/corridors.geojson`; everything past this
+    note (terrain.party, Cimtographer/OSM Import, Overlay, TM:PE, Move It)
+    is a manual GUI procedure on the owner's Windows desk machine — see
+    `docs/local/cities-skylines.md`. Needs `ARTERIA_DATA` set, since C:S
+    assets are never committed (ADR 0004).
+    """
+    from arteria.cs.prepare_map import PrepareMapError, compute_map_prep, write_map_prep
+
+    arteria_data = os.environ.get("ARTERIA_DATA")
+    if not arteria_data:
+        typer.echo(
+            "ARTERIA_DATA is not set; see docs/roadmap.md's local directory layout.", err=True
+        )
+        raise typer.Exit(code=1)
+
+    city_dir = Path.cwd() / "cities" / city
+    geojson_path = city_dir / "corridors" / "corridors.geojson"
+    try:
+        corridors_geojson = json.loads(geojson_path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    try:
+        result = compute_map_prep(
+            corridors_geojson, city=city, corridor_id=corridor, size_km=size_km
+        )
+    except PrepareMapError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=1) from exc
+
+    out_path = write_map_prep(result, Path(arteria_data) / "cs")
+    typer.echo(f"Wrote {out_path}")
+    if result.warning:
+        typer.echo(f"Warning: {result.warning}", err=True)
 
 
 if __name__ == "__main__":
