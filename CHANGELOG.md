@@ -2,6 +2,12 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.8.1] - 2026-11-03
+
+### Changed
+
+- **C:S 1 mod picks corrected in ADR 0011.** The original Cimtographer Workshop listing is unmaintained; the owner verified it points to a working fork (Workshop ID 1485051886) and subscribed to that instead. A second AI's report additionally flagged terrain.party and the original Cimtographer as broken and suggested the "OpenStreetMap Import Mod" by grilly86, the external CS Heightmap web tool, and hand-tracing over the Image Overlay mod as the current community alternatives — unverified by this session beyond one corroborating signal (a plain, non-spoofed request to terrain.party returned 503). `docs/local/cities-skylines.md`, `docs/visualization-plan.md` and `arteria/cs/prepare_map.py`'s note text are updated to name the verified fork as primary and the unverified alternatives as fallbacks to try, rather than naming one mod as settled.
+
 ## [1.8] - 2026-11-03
 
 ### Added

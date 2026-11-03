@@ -69,4 +69,4 @@ def test_write_map_prep_writes_under_corridor_subdir(tmp_path: Path):
     assert out_path == tmp_path / "sjc" / "a" / "map-prep.md"
     text = out_path.read_text(encoding="utf-8")
     assert "C:S 1 map prep" in text
-    assert "Overpass/Cimtographer" in text
+    assert "Overpass bbox paste" in text

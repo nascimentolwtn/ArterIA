@@ -33,20 +33,52 @@ Road-import options compared:
   image as a translucent in-editor reference layer, swappable while the
   editor runs. Useful alongside either importer for hand corrections.
 
+**Revised 2026-11-03 (same day):** a second AI's report (Gemini, unverified
+by this session beyond one corroborating signal) claimed the original
+Cimtographer listing and terrain.party are both broken/abandoned, and named
+a different current stack: the "OpenStreetMap Import Mod" by grilly86 (said
+to be a revamped, scaling-fixed, auto-naming successor to the original
+concept) for roads, the external **CS Heightmap** web tool for terrain
+instead of terrain.party, and — as the actual modern creator preference —
+tracing roads by hand over the **Image Overlay** mod rather than trusting
+any auto-import, since auto-generated OSM roads are reported to create messy
+junctions and traffic bugs. This session's own plain (non-spoofed) request
+to terrain.party got a 503; a follow-up with a spoofed browser user-agent to
+check further was refused by this harness as bot-check circumvention, so
+terrain.party's status stays genuinely unverified, not confirmed broken.
+Separately, **the owner checked the original Cimtographer Workshop page
+directly and found it says "no longer being maintained," pointing to a
+working fork at Workshop ID 1485051886** — which the owner already
+subscribed to. That is a verified, first-party fact (unlike Gemini's
+report) and changes the Cimtographer recommendation below from "the
+original listing" to "that fork," without needing to accept the rest of
+Gemini's claims.
+
 ## Decision
 
 1. **Edition: CS1** (already owned; CS2 has materially less mod support for
    this workflow).
-2. **Terrain:** heightmap import via the built-in Map Editor, sourced from
-   terrain.party (fallback: Skydark or a raw SRTM/DEM tile if terrain.party
-   lacks SJC coverage or is down — both unverified, check at use time).
-   Rotate the imported heightmap 180° before use: the importer defaults to
+2. **Terrain:** try terrain.party first (import via the built-in Map
+   Editor); if it is unreachable or lacks SJC coverage, use **CS Heightmap**
+   (external web tool, exports a scaled 16-bit greyscale PNG for the same
+   `Heightmaps` folder) instead — both untried by the owner as of this
+   revision, Skydark/a raw SRTM tile stay as a further fallback. Rotate
+   whichever heightmap is imported 180° before use: the importer defaults to
    sun-north-at-noon, which is wrong for most reference footage/expectations.
-3. **Roads: Cimtographer primary**, pasting the bbox this ADR's tooling
-   produces (`arteria cs prepare-map`, roadmap L21). Fall back to OSM Import
-   (1957515502) only if Cimtographer's segment cap or Overpass fetch fails
-   for the chosen area; either way, expect manual node/junction cleanup in
-   `netedit`'s C:S counterpart or in-game tools.
+3. **Roads: the maintained Cimtographer fork, Workshop ID 1485051886**
+   (not the original, now-unmaintained listing), pasting the bbox this
+   ADR's tooling produces (`arteria cs prepare-map`, roadmap L21) — the
+   owner already subscribed to this fork. If it still hits the 32,767-segment
+   cap or an Overpass fetch failure for the chosen area, fall back to the
+   "OpenStreetMap Import Mod" by grilly86 (exact current Workshop id
+   unconfirmed — find it on the Workshop when needed) or the original OSM
+   Import (1957515502); either way, expect manual node/junction cleanup in
+   `netedit`'s C:S counterpart or in-game tools. Regardless of which importer
+   is used, if the auto-imported roads come out messy (reported to be
+   common, and the reason some creators skip auto-import entirely): keep the
+   **Image Overlay** mod's satellite reference on and hand-trace/fix the
+   problem junctions with the game's own smooth road tools rather than
+   fighting the importer's settings indefinitely.
 4. **Reference imagery: Overlay/Overlay 2** for satellite context while
    hand-placing zoning, buildings, or fixing roads.
 5. **Area per map: one corridor + buffer, never the whole city** — pick the
@@ -72,12 +104,18 @@ Road-import options compared:
 - Corridor-scoped maps mean a separate CS1 save per corridor if more than
   one is ever built, not a single whole-city save — more files to track in
   `mods.lock.txt`/`cs/<city>/`, but each stays small enough to actually play.
-- Cimtographer's 32,767-segment cap means a dense corridor (centre, many
-  minor streets) may need the importer's simplification settings turned up,
-  trading street-grid fidelity for import success; OSM Import's manual
-  cleanup is the fallback cost if that trade is unacceptable.
+- Cimtographer's (the fork's) 32,767-segment cap means a dense corridor
+  (centre, many minor streets) may need the importer's simplification
+  settings turned up, trading street-grid fidelity for import success; the
+  OSM Import mods' manual cleanup, or hand-tracing over Image Overlay, is
+  the fallback cost if that trade is unacceptable.
 - `arteria cs prepare-map` is the only scripted step in this whole track —
-  everything downstream (Map Editor, Cimtographer, Overlay, TM:PE, Move It)
-  is a manual GUI procedure on the owner's Windows desk machine, documented
-  in `docs/local/cities-skylines.md`, not something a Claude session can run
-  or verify directly.
+  everything downstream (Map Editor, the Cimtographer fork or an OSM Import
+  mod, Overlay, TM:PE, Move It) is a manual GUI procedure on the owner's
+  Windows desk machine, documented in `docs/local/cities-skylines.md`, not
+  something a Claude session can run or verify directly.
+- This mod ecosystem moves fast and this session cannot browse the Workshop
+  to confirm current mod health directly (bot-check/network limits) — the
+  owner's own live check is what resolved the Cimtographer question this
+  time, and should be trusted over any AI's unverified report when the two
+  disagree.

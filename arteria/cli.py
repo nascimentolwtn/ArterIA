@@ -630,14 +630,15 @@ def cs_prepare_map(
         "C:S 1's own terrain tile tops out at about this size.",
     ),
 ) -> None:
-    """Write a map-prep note (centre, bbox, Overpass/Cimtographer paste
-    string) for the C:S 1 hobby track (roadmap L21, ADR 0011/0015).
+    """Write a map-prep note (centre, bbox, Overpass bbox paste string) for
+    the C:S 1 hobby track (roadmap L21, ADR 0011/0015).
 
     Reads `cities/<city>/corridors/corridors.geojson`; everything past this
-    note (terrain.party, Cimtographer/OSM Import, Overlay, TM:PE, Move It)
-    is a manual GUI procedure on the owner's Windows desk machine — see
-    `docs/local/cities-skylines.md`. Needs `ARTERIA_DATA` set, since C:S
-    assets are never committed (ADR 0004).
+    note (heightmap tool, road-import mod or hand-tracing over Overlay,
+    TM:PE, Move It) is a manual GUI procedure on the owner's Windows desk
+    machine — see `docs/local/cities-skylines.md` (which mod is current and
+    working changes fast; ADR 0011 has the live pick). Needs `ARTERIA_DATA`
+    set, since C:S assets are never committed (ADR 0004).
     """
     from arteria.cs.prepare_map import PrepareMapError, compute_map_prep, write_map_prep
 

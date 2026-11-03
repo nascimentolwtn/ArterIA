@@ -7,9 +7,11 @@ was written from); the whole SJC net is about 38 x 28 km (`origBoundary` in
 `cities/sjc/network/sjc.net.xml`), so only one corridor-sized crop fits per
 map, not the whole city. This module computes that crop's centre and bbox
 from `cities/<city>/corridors/corridors.geojson` and writes a note with the
-coordinates to paste into terrain.party (heightmap) and Cimtographer/the OSM
-Import mod (roads) — everything past that is a manual GUI procedure, see
-`docs/local/cities-skylines.md`.
+coordinates to paste into a heightmap tool (terrain.party or CS Heightmap)
+and an Overpass-fetching road-import mod (the Cimtographer fork, or an OSM
+Import mod) — everything past that is a manual GUI procedure, see
+`docs/local/cities-skylines.md`. Which specific mod is current/working
+changes faster than this code should: see ADR 0011 for the live pick.
 
 No network/file access beyond the one `corridors.geojson` read: this module
 has no ADR-0009 seam to begin with.
@@ -147,7 +149,7 @@ def render_map_prep_note(result: MapPrepResult) -> str:
         f"- Tile size: {result.size_km:g} km square",
         f"- Bbox (WGS84, west/south/east/north): "
         f"`{result.west}, {result.south}, {result.east}, {result.north}`",
-        f"- Overpass/Cimtographer bbox paste (south,west,north,east): `{overpass_bbox}`",
+        f"- Overpass bbox paste, for a road-import mod (south,west,north,east): `{overpass_bbox}`",
     ]
     if result.warning:
         lines += ["", f"**Warning:** {result.warning}"]
@@ -156,8 +158,8 @@ def render_map_prep_note(result: MapPrepResult) -> str:
         "## Manual next steps",
         "",
         "See `docs/local/cities-skylines.md` for the full procedure "
-        "(terrain.party heightmap import, Cimtographer road import, "
-        "Overlay satellite reference, TM:PE/Move It package edits, "
+        "(heightmap import, road-import mod or hand-tracing over Overlay, "
+        "TM:PE/Move It package edits, "
         "'illustrative, uncalibrated' labelling on every screenshot/video).",
         "",
     ]
