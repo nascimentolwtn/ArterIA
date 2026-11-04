@@ -47,7 +47,21 @@ None open.
    (`traffic-counts` in the data manifest) are still `deferred`, no agency contact
    authorized — needed for `routeSampler`'s counts-driven calibration. Don't build any of
    P3.2/P3.3/P3.6 against placeholder data; don't scaffold a fake `scenario.yaml` either.
-2. **[2026-10-29] P3.4 (transit demand) has nothing to build: no public SJC GTFS feed**
+2. **[2026-11-04] Next C:S 1 hobby-track reproduction target: Orlando, FL theme-park/resort corridors**
+   Do instead: apply `docs/local/cities-skylines.md`'s reproducible procedure to the owner's named
+   areas — Parks (Disney, Universal, SeaWorld), Park hotels (Disney's Pop Century, Celebration
+   Suites, Universal's Hard Rock Hotel), Outlets (Premium, Vineland). **C:S 1 hobby-track
+   reproduction only** (ADR 0011/0015, illustrative, never SUMO evidence) — not a decision to
+   onboard Orlando as a second real ArterIA city/pipeline (the "scope stays SJC-only" directive
+   below still governs the actual evidence pipeline). Size deliberately before building: these
+   named areas are spread far wider than one compact corridor and are landmark footprints, not
+   a priori street corridors, so expect (a) geocoding each landmark first to even pick bboxes,
+   and (b) several separate crops/saves (one per park/hotel/outlet cluster, or a few combined
+   like SJC's B+D) rather than one map — same ~7,000-8,000-way practical import ceiling and
+   ~32,768 segment/node hardcoded cap apply (docs/local/cities-skylines.md, ADR 0011 third
+   revision), and Orlando's resort-and-parking-lot road density won't obviously scale the same
+   way SJC's did.
+3. **[2026-10-29] P3.4 (transit demand) has nothing to build: no public SJC GTFS feed**
    Do instead: P3.4 depends on P2.6 (public-transport layer), already recorded as
    "blocked on data, not implemented" — no public SJC GTFS feed was found. Nothing in
    P3.4 is buildable without it (not even mechanics-only, since P2.6's own GTFS-import
