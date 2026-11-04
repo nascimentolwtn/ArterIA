@@ -2,6 +2,30 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.10] - 2026-11-03
+
+### Added
+
+- **First playable C:S 1 city built for SJC: corridors B + D.** Reproducible
+  step-by-step procedure, with SJC's own bbox numbers as a worked example,
+  now in `docs/local/cities-skylines.md`. Along the way, found and
+  documented (ADR 0011, third revision) two previously-unknown constraints
+  of the Cimtographer fork/game combo: a real-data `NullReferenceException`
+  threshold somewhere between 7,378 and 12,173 imported ways, and the
+  actual root cause behind it — Cities: Skylines 1's own hardcoded cap of
+  roughly 32,768 network segments/nodes per city, shared by every
+  draggable network type, which no mod lifts. The fix was scoping the
+  Overpass fetch to a tight corridor bbox and dropping non-vehicle highway
+  classes before import, rather than tuning the importer after the fact —
+  doable directly in a Claude session (Overpass is a public,
+  scripted-access-friendly API) and written straight into the Windows game
+  folder via WSL2's `/mnt/c`, correcting this ADR's earlier assumption that
+  every step past `prepare-map` needs a desk GUI action. Also documented:
+  a Water Source only counts toward the "water" requirement if it sits in
+  actually-carved terrain, and an outside connection needs a road touching
+  the literal outer tile edge, not the inner playable-area boundary shown
+  in-game.
+
 ## [1.9] - 2026-11-03
 
 ### Added

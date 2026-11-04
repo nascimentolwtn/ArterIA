@@ -1,8 +1,20 @@
 # Cities: Skylines 1 — manual build procedure (roadmap L21-L23, ADR 0011)
 
-Desk-only, Windows, GUI. Illustrative hobby track — never SUMO evidence
-(research brief Phase 6, ADR 0015, ADR 0011). Do this at the desk, not in a
-Claude session: every step below is a Windows GUI action.
+Illustrative hobby track — never SUMO evidence (research brief Phase 6, ADR
+0015, ADR 0011). Most steps are a Windows GUI action at the desk, but **not
+all of them**: step 2's OSM road-data prep can be run from a Claude session
+too (Overpass is a public, scripted-access-friendly API — no browser, no
+bot-check circumvention), writing straight into the Windows game folder via
+WSL2's `/mnt/c` bridge. Steps are written city-agnostic; SJC's own numbers
+(corridors B and D, the first corridor actually taken end-to-end to a
+playable city) are given as a worked example after step 6.
+
+**File naming:** version road-data files sequentially (`SJC_01.osm`,
+`SJC_02.osm`, ...) instead of overwriting the one you're actively testing —
+each import attempt is cheap to redo but expensive to re-diagnose blind.
+Keep one "current" file (e.g. `map.osm`/`map`, matching whatever default the
+importer's Path field shows) for the import you're about to try next, and
+rename anything you want to keep as a numbered version before overwriting it.
 
 ## 0. Prep (scripted)
 
@@ -15,70 +27,200 @@ arteria cs fetch-heightmap --city sjc --corridor A \
 ```
 
 The first writes `$ARTERIA_DATA/cs/sjc/<corridor>/map-prep.md` with the
-tile's center, bbox, and an Overpass-ready bbox string (usable by the
-Cimtographer fork or an OSM Import mod). The second builds the actual
-heightmap PNG from real SRTM elevation data (`api.opentopodata.org`) and
-can write straight into the Windows `Heightmaps` folder via WSL2's `/mnt/c`
-— no terrain.party/Heightmapper browser step needed. It also pre-applies
-the 180° rotation (see step 1 below), so the file it writes is ready to
-import as-is. Takes about a minute (60x60 real samples, throttled).
+tile's center, bbox, and an Overpass-ready bbox string. The second builds
+the actual heightmap PNG from real SRTM elevation data
+(`api.opentopodata.org`) and can write straight into the Windows `Heightmaps`
+folder via WSL2's `/mnt/c` — no terrain.party/Heightmapper browser step
+needed. It also pre-applies the 180° rotation (see step 1), so the file it
+writes is ready to import as-is. Takes about a minute (60x60 real samples,
+throttled).
 
 ## 1. Terrain — heightmap
 
 If step 0's `fetch-heightmap` ran, the file is already in place, already
-rotated — skip straight to step 2 below after importing it (Content Manager
--> Editors -> Map Editor -> New -> **Import terrain**, pick the image).
-Spot-check the imported relief against what you'd expect for the area
-(the scaling convention it uses is commonly documented, not independently
+rotated — skip straight to step 2 after importing it (Content Manager ->
+Editors -> Map Editor -> New -> **Import terrain**, pick the image). Spot-
+check the imported relief against what you'd expect for the area (the
+scaling convention it uses is commonly documented, not independently
 verified by that tool) before building on it.
 
-**Manual fallback**, if `fetch-heightmap` isn't usable or its terrain looks
-wrong: go to terrain.party. If it errors or won't load (reported broken by
-one source behind ADR 0011, unconfirmed from the desk machine), use
-**CS Heightmap** instead (external web tool, exports a scaled 16-bit
-greyscale PNG). Either way, navigate/search to the note's center coordinate
-(`center_lon, center_lat` in `map-prep.md`), pick the ~18 km tile size,
-download the PNG (terrain.party ships it in a zip; CS Heightmap gives the
-PNG directly), put it in the `Heightmaps` folder, import it, and
-**rotate it 180°** by hand before building on it (the importer defaults to
-sun-north-at-noon). If Import does nothing: disable mods and retry (known
-conflict), then re-enable.
+**Known gotcha — Import does nothing:** a conflicting mod can silently
+block the Map Editor's terrain-import click handler (not root-caused to a
+specific mod; disabling *all* mods and restarting the game fixed it once).
+Disable mods, restart, import, then re-enable mods you still want.
 
-## 2. Roads — Cimtographer (primary; no file needed, fetches live)
+**Manual fallback**, if `fetch-heightmap` isn't usable or its terrain looks
+wrong: go to terrain.party, or **CS Heightmap** if that errors (reported
+broken by one source behind ADR 0011, unconfirmed from the desk machine).
+Navigate to the note's center coordinate, pick the ~18 km tile size,
+download the PNG, import it, and **rotate it 180°** by hand (the importer
+defaults to sun-north-at-noon).
+
+## 2. Roads
 
 The original Cimtographer Workshop listing is unmaintained; **subscribe to
 the maintained fork, Workshop ID 1485051886** ("Cimtographer - rebuild for
-1.10.x") instead — the original page links to it.
+1.10.x") instead.
 
-1. In the Map Editor, open Cimtographer (the fork), paste the Overpass bbox
-   string from `map-prep.md` (`south,west,north,east`) into its coordinate
-   field, "Load From overpass-api.de."
-2. Adjust tolerance/curve-simplification settings if the segment count is
-   near the 32,767 hard limit, then "Make Roads."
-3. Fix broken/spiky nodes by hand (`netedit`'s in-game counterpart / default
-   road tools). If the result is too messy to fix node-by-node, switch to
-   the Image Overlay approach below instead of fighting the importer.
+### 2a. Why the live fetch and raw OSM data are both likely to fail on a real corridor
 
-**Fallback — an OSM Import mod:** if the Cimtographer fork fails to fetch or
-the segment cap can't be worked around, try the "OpenStreetMap Import Mod"
-by grilly86 (reported to be a revamped, scaling-fixed successor with
-auto-naming — confirm its current Workshop id when you search for it) or
-the older OSM Import (Workshop ID 1957515502, imports from a local `.osm`
-file). Expect more manual cleanup afterward either way.
+Cimtographer's (the fork's) **"Load from overpass-api.de"** button and
+**"Load OSM From File"** both threw a `System.NullReferenceException` at
+`Mapper.OSM.OSMInterface.init` on real, dense SJC road data this session —
+reproducibly, from both the live fetch and a static file with the same
+data. This is **not** the importer being fundamentally broken: a trivial
+hand-built 1-way test file loaded fine, proving the crash is data-dependent.
+Bisecting by way count (same filtering, shrinking bbox) found:
 
-**Alternative — Image Overlay + manual trace:** several map-making creators
-reportedly prefer this over any auto-import, since auto-generated OSM roads
-commonly come out messy with traffic-bug-prone junctions: skip straight to
-section 3 below, drop the satellite/map overlay, and hand-draw the road
-network with the game's own tools using the overlay as a guide. Slower, but
-avoids importer-specific bugs entirely.
+- **Works:** 500 ways, 2,000 ways, 7,378 ways (a real, geographically
+  contiguous 9x9 km crop of SJC corridor B).
+- **Crashes:** 12,173 ways (the same corridor, "real roads only" filtered —
+  footway/path/cycleway/etc. already dropped) and 19,295 ways (unfiltered).
+- Exact breakpoint between 7,378 and 12,173 not found — treat **~7,000-8,000
+  ways as a practical safe ceiling** for this fork/game patch until proven
+  otherwise elsewhere.
 
-## 3. Reference imagery — Overlay / Overlay 2
+**Even an import that succeeds can still leave you stuck.** Cities:
+Skylines 1 has a hardcoded cap of roughly **32,768 total network segments
+and 32,768 total nodes per city** (the game's `NetManager`), shared by
+*every* draggable network type — roads, pedestrian paths, water pipes,
+power lines, quays, canals. No mod lifts this; multiple independent player
+reports confirm it's treated as impassable. The 7,378-way import above
+reported roughly 17,000 objects on load — close enough to the cap that,
+once editing began, the game refused to let the user add *any* new network
+object: not an outside-connection road, not a plain street, not an
+airstrip, not a water pipe (the error reads **"Cannot create any more
+objects of this type!"**). Deleting existing roads did not reliably free
+slots back up in the same session (matches community reports that the
+counter can stay "locked" until a save → quit to desktop → reload cycle);
+redoing the import at a smaller scope was more reliable in practice than
+chasing that cycle.
+
+### 2b. Road-data prep that avoids both problems (can run in a Claude session)
+
+Fetch only the bbox you actually need (never the full ~18 km importable
+tile) and drop non-vehicle highway classes before import, instead of
+importing everything and fighting the cap afterward:
+
+```bash
+# 1. Fetch once per city/area from the public Overpass API (south,west,north,east)
+curl -s "https://overpass-api.de/api/interpreter" --data-urlencode \
+  "data=[out:xml][timeout:90][bbox:$SOUTH,$WEST,$NORTH,$EAST]; way[highway]; (._;>;); out body;" \
+  -o raw.osm
+
+# 2. Filter by road class + a tighter sub-bbox, write a fresh .osm
+python3 - "$WEST" "$SOUTH" "$EAST" "$NORTH" out.osm <<'PY'
+import xml.etree.ElementTree as ET, sys
+KEEP_HIGHWAY = {"residential", "service", "tertiary", "secondary", "primary",
+                 "unclassified", "primary_link", "secondary_link", "tertiary_link",
+                 "motorway", "motorway_link", "trunk", "trunk_link", "living_street"}
+WEST, SOUTH, EAST, NORTH = map(float, sys.argv[1:5])
+tree = ET.parse("raw.osm"); root = tree.getroot()
+nodes, in_bbox, ways = {}, {}, []
+for el in root:
+    if el.tag == "node":
+        nodes[el.get("id")] = el
+        lat, lon = float(el.get("lat")), float(el.get("lon"))
+        in_bbox[el.get("id")] = SOUTH <= lat <= NORTH and WEST <= lon <= EAST
+    elif el.tag == "way":
+        ways.append(el)
+kept, needed = [], set()
+for w in ways:
+    hw = next((t.get("v") for t in w.findall("tag") if t.get("k") == "highway"), None)
+    if hw not in KEEP_HIGHWAY:
+        continue
+    refs = [nd.get("ref") for nd in w.findall("nd")]
+    if any(in_bbox.get(r, False) for r in refs):
+        kept.append(w); needed.update(refs)
+new_root = ET.Element("osm", version="0.6", generator="arteria-filter")
+ET.SubElement(new_root, "bounds", minlat=str(SOUTH), minlon=str(WEST), maxlat=str(NORTH), maxlon=str(EAST))
+for nid in needed:
+    if nid in nodes:
+        new_root.append(ET.Element("node", id=nid, lat=nodes[nid].get("lat"), lon=nodes[nid].get("lon")))
+for w in kept:
+    new_root.append(w)
+ET.ElementTree(new_root).write(sys.argv[5], encoding="UTF-8", xml_declaration=True)
+print(f"kept ways: {len(kept)}  kept nodes: {len(needed)}")
+PY
+```
+
+Aim for a result comfortably under the ~7,000-8,000-way practical ceiling —
+and well under it if you also want headroom afterward for junction fixes,
+an outside connection, and water pipes (see 3b/3c below). Write the output
+straight to the Windows path the importer's Path field shows (e.g.
+`/mnt/c/Users/<you>/OneDrive/Documents/map.osm`), versioned per the naming
+rule above.
+
+### 2c. Load into Cimtographer
+
+1. **"Load OSM From File"**, pointing at the filtered file from 2b (safer
+   than the live Overpass fetch, since it lets you control the bbox/filter
+   before the importer ever sees the data).
+2. Leave **Curve Tolerance** at its default first try. Raising it
+   simplifies OSM points into fewer, straighter segments (more headroom
+   under the segment cap) but risks flattening complex geometry — a
+   roundabout or crossing viaducts, for instance — into an unrecognizable
+   blob. Prefer shrinking the bbox or dropping more road classes (2b) over
+   raising this, and only raise it as a last resort, checking the result
+   visually.
+3. **Bounding Box field** (only used by the live-fetch buttons, not needed
+   if loading from file): inferred format `south,west,north,east`, matching
+   Overpass QL's own `[bbox:...]` convention — inferred from behavior, not
+   confirmed from the mod's source.
+
+**Fallback — an OSM Import mod:** if the Cimtographer fork still fails, try
+the "OpenStreetMap Import Mod" by grilly86 (confirm its current Workshop id
+when you search) or the older OSM Import (Workshop ID 1957515502). Expect
+more manual cleanup afterward either way.
+
+**Alternative — Image Overlay + manual trace:** if auto-import keeps
+producing messy junctions no matter the settings, skip straight to section 3
+and hand-draw the network using the overlay as a guide. Slower, but avoids
+importer-specific bugs entirely.
+
+## 3. Reference imagery, junctions, water, outside connections
+
+### 3a. Overlay / Overlay 2
 
 Subscribe to Overlay (or Overlay 2). Drop a satellite/map image of the same
 bbox as `overlay.png` in the mod's folder; it renders translucently over the
-Map Editor so roads/zoning can be hand-corrected against real imagery. Swap
-the file and toggle the overlay to reload without restarting the editor.
+Map Editor so roads/zoning can be hand-corrected against real imagery.
+
+### 3b. Junction cleanup — expected, not a sign of a bad import
+
+OSM ways commonly don't share the exact same node at a real intersection
+(a real-world data-entry quirk, not an import or filtering bug), so some
+disconnected road ends after import are normal, independent of how the
+bbox/filtering was done. Fix by either: dragging a loose end onto the
+nearby node it should join with **Move It** (shows a snap indicator), or
+drawing a short bridging segment with the base road tool between the two
+ends. Don't chase every gap across the whole map — prioritize the corridor
+you actually care about.
+
+### 3c. Water
+
+Map Editor's Water tool: lower the terrain into a channel/basin at the
+area's lowest point (check the heightmap's own elevation range), then place
+a **Water Source** inside that carved, actual water — not on dry land. A
+Water Source placed on unmodified terrain does not count toward the "water"
+requirement checklist even though it looks placed; this is the most common
+reason that checklist item stays unmet. The water doesn't need to trace a
+real river's exact path (illustrative only, ADR 0015) — any plausible
+basin/stream works.
+
+### 3d. Outside connections
+
+At least one road must reach the actual outer edge of the full (25-tile)
+terrain square to register as an outside connection — the dashed line
+shown in-game marks the inner 9-tile *playable* boundary, not the tile
+edge a connection needs to touch (commonly documented, not independently
+re-verified by this session).
+
+If **"Cannot create any more objects of this type!"** appears when placing
+*any* new network object — not just an outside connection — this is almost
+certainly the segment/node cap from 2a, not a bug specific to whatever you
+were placing. Deleting roads and retrying in the same session is not
+reliable; starting a fresh map with a smaller/filtered import (2b) was.
 
 ## 4. Save, zone, package edits
 
@@ -107,14 +249,34 @@ in a simple table (`arteria cs compare`, not yet implemented). This is a
 qualitative side-by-side for research question 7, never a validation of
 either tool against the other.
 
+## Worked example — SJC corridors B and D (first playable city, 2026-11-03)
+
+All bboxes `west, south, east, north` (decimal degrees):
+
+| Area | Bbox | Result |
+|---|---|---|
+| Corridor B, full importable tile (18x18 km) | `-45.975781, -23.300537, -45.799834, -23.137751` | 19,295 ways unfiltered — crashes the importer outright. |
+| Corridor B, 9x9 km crop (ceiling test) | `-45.931810, -23.259841, -45.843806, -23.178447` | 7,378 ways / 30,129 nodes after highway-class filtering — imports fine, but reported ~17k objects: close enough to the segment cap that editing later hit "Cannot create any more objects of this type!" on *everything*. |
+| Corridors B + D combined, final (playable) | `-45.925442, -23.244254, -45.866762, -23.189994` | 4,537 ways / 17,130 nodes — imported cleanly, left real headroom for junction fixes, the outside connection, and water. This is the one actually played. |
+| Corridor D alone (Jardim Colinas roundabout / Ponte Estaiada), for reference | `-45.912024, -23.225655, -45.900346, -23.200066` | Not imported standalone; folded into the combined crop above since the owner wanted to play with fixing this specific interchange. |
+
+Same heightmap (built once for corridor B's full 18x18 km tile) covered the
+smaller combined B+D crop too, since both are centered on nearly the same
+point — no need to re-fetch terrain when narrowing the road-data bbox
+afterward, as long as the new area stays inside the original tile.
+
 ## Open / unverified
 
-- terrain.party's current coverage and reliability for SJC; CS Heightmap's
+- Exact way-count breakpoint between 7,378 (works) and 12,173 (crashes) for
+  the Cimtographer fork — not found, only bounded.
+- Whether the ~32,768 NetManager segment/node cap figure is exact for the
+  current game patch, or just the commonly-cited order of magnitude.
+- The outside-connection "must touch the literal tile edge, not the 9-tile
+  playable boundary" claim — commonly documented, not independently
+  re-verified in this session beyond it being consistent with what was
+  observed.
+- terrain.party's current coverage/reliability for SJC; CS Heightmap's
   coverage/reliability as the alternative.
-- Whether the Cimtographer fork's (1485051886) Overpass fetch works cleanly
-  on the current game patch and gives usable road geometry for a dense SJC
-  corridor, or whether hand-tracing over Image Overlay ends up being the
-  real path.
 - OSM Import (1957515502) and the grilly86 "OpenStreetMap Import Mod"'s
   current glitch/null-reference reports and exact Workshop id — check the
   Workshop page's recent comments before relying on either fallback.

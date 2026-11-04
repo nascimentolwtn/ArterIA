@@ -54,6 +54,54 @@ report) and changes the Cimtographer recommendation below from "the
 original listing" to "that fork," without needing to accept the rest of
 Gemini's claims.
 
+**Revised 2026-11-03 (third revision, same day): the fork's own crash
+threshold and the real cap behind it.** Running the fork against real SJC
+corridor B data surfaced two distinct, previously-unknown constraints,
+full detail and a reproducible worked example in `docs/local/cities-skylines.md`:
+
+1. **The fork throws `NullReferenceException` on dense real data**, from
+   both its live Overpass fetch and a static `.osm` file — not a broken
+   importer (a trivial file loads fine), but data-volume/density dependent.
+   Bisection on SJC corridor B found it works at 7,378 ways, fails at
+   12,173 ways; exact breakpoint unknown, ~7,000-8,000 ways taken as a
+   practical safe ceiling for this fork/game patch until shown otherwise.
+2. **A successful import can still exhaust the game's own hardcoded
+   cap.** Cities: Skylines 1's `NetManager` allows roughly 32,768 total
+   network segments and 32,768 total nodes per city, shared by every
+   draggable network type (roads, pedestrian paths, water pipes, power
+   lines, quays, canals) — confirmed via multiple independent player
+   reports to be impassable; no mod lifts it. A 7,378-way import (reporting
+   ~17k objects) left so little headroom that no further network object of
+   any kind — plain street, outside connection, water pipe — could be
+   added afterward.
+
+The fix that actually worked was scoping the Overpass fetch to a much
+smaller bbox (one corridor + buffer, not the full ~18 km tile) and
+dropping non-vehicle highway classes before import, rather than tuning the
+importer's own settings after the fact. This also corrects this ADR's own
+"Area per map" framing below (point 5): the bound that matters in practice
+is the segment/node cap, not just the terrain-tile size, and a corridor's
+own tight bbox is usually well under both. It also corrects this ADR's
+"Consequences" claim that every step past `prepare-map` needs a desk GUI
+action: the Overpass fetch + road-class/bbox filtering is a public,
+scripted-access-friendly API call, so a Claude session can run it and write
+the result straight into the Windows game folder via WSL2's `/mnt/c`
+bridge — only the Map Editor/mod GUI steps themselves stay desk-only.
+
+Two further gotchas confirmed first-hand, not previously documented
+anywhere in this project: a Water Source only counts toward the "water"
+requirement checklist if it sits in terrain actually carved below the
+surrounding level (not placed on dry land), and an outside connection
+needs a road touching the literal outer tile edge, not the inner 9-tile
+playable-area boundary shown in-game. Both are now in
+`docs/local/cities-skylines.md`.
+
+**Outcome:** using a combined corridor B + D crop (4,537 ways, well under
+both the crash threshold and the segment cap) produced the first actually
+playable SJC city on this track — terrain, roads, fixed junctions, a water
+body, and an outside connection all in place, zoning/traffic-fixing
+underway.
+
 ## Decision
 
 1. **Edition: CS1** (already owned; CS2 has materially less mod support for
@@ -114,11 +162,13 @@ Gemini's claims.
   settings turned up, trading street-grid fidelity for import success; the
   OSM Import mods' manual cleanup, or hand-tracing over Image Overlay, is
   the fallback cost if that trade is unacceptable.
-- `arteria cs prepare-map` is the only scripted step in this whole track —
-  everything downstream (Map Editor, the Cimtographer fork or an OSM Import
-  mod, Overlay, TM:PE, Move It) is a manual GUI procedure on the owner's
-  Windows desk machine, documented in `docs/local/cities-skylines.md`, not
-  something a Claude session can run or verify directly.
+- `arteria cs prepare-map`/`fetch-heightmap` aren't the only steps a Claude
+  session can run: the Overpass fetch + road-class/bbox filtering ahead of
+  the road importer (revised 2026-11-03, third revision) is also scriptable
+  and can write straight into the Windows game folder via WSL2's `/mnt/c`.
+  Only the Map Editor/mod GUI steps themselves (Cimtographer or an OSM
+  Import mod, Overlay, TM:PE, Move It) stay a manual procedure on the
+  owner's Windows desk machine, documented in `docs/local/cities-skylines.md`.
 - This mod ecosystem moves fast and this session cannot browse the Workshop
   to confirm current mod health directly (bot-check/network limits) — the
   owner's own live check is what resolved the Cimtographer question this
