@@ -258,3 +258,21 @@ A decisão deliberada de não criar um `scenario.yaml` placeholder com caminhos 
 3. A contagem de 195 testes e a fixture `tests/fixtures/toy-scenario.yaml` não foram reexecutadas nem lidas nesta sessão, apenas repassadas; o próprio esquema (`arteria/config.py`) foi, contudo, lido diretamente.
 4. Orientador(a) não contatado(a); arquitetura de agentes não validada; escolha acadêmica de corredor segue pendente.
 
+---
+
+## 2026-11-03 — Sem conteúdo para esta trilha: ferramenta de preparo de mapa para Cities: Skylines (trilha hobby decoupled)
+
+**Commit:** `8bb6175` ("feat: add Cities: Skylines map-prep tool and mod-set decision"). Resumo repassado pelo orquestrador, não verificado nesta sessão.
+
+**Avaliação.** O commit decide edição e conjunto de mods do Cities: Skylines (ADR 0011), adiciona um comando de CLI que calcula centróide/bbox de um corredor para colagem manual em Overpass/Cimtographer, e documenta um procedimento manual de desktop (Windows, GUI) para importação de terreno/ruas/imagem de referência. Trata-se de trabalho de roteiro de Fase 8 (P8.3), trilha ilustrativa/de comunicação com stakeholders explicitamente desacoplada (ADR 0015) do pipeline de demanda/RL em andamento na Fase 3, sem conteúdo de arquitetura de RL/GNN, de dados de rede/demanda ou de literatura. Não altera, tampouco, a ressalva já fixada nesta trilha (`chapters/04-experimentos.md`, L24; pré-projeto, Seção 13) de que Cities: Skylines é camada de comunicação, nunca evidência quantitativa — pelo contrário, a reforça (rotulagem obrigatória "ilustrativo, não calibrado" em toda captura/vídeo). Nenhum capítulo, `outline.md` ou `pre-projeto.md` foi editado nesta entrada.
+
+---
+
+## 2026-11-04 — Sem conteúdo para esta trilha: manutenção de mods, aquisição de heightmap e primeira cidade jogável do Cities: Skylines 1 (trilha hobby desacoplada, três commits)
+
+**Commits:** `4be1977` ("fix: correct C:S 1 mod picks in ADR 0011 after Cimtographer went unmaintained"), `4b0833c` ("feat: build C:S 1 heightmaps from real SRTM data instead of terrain.party"), `2ee4eab` ("docs: build first playable C:S 1 city and document the import pitfalls"). Resumo repassado pelo orquestrador, não verificado nesta sessão.
+
+**Avaliação.** Os três commits continuam o mesmo roteiro de Fase 8 (P8.3/P8.5) já avaliado na entrada anterior (2026-11-03, `8bb6175`): preparo de mapa e construção de uma cidade de Cities: Skylines 1 para comunicação visual com stakeholders, trilha explicitamente desacoplada do pipeline de demanda/RL/GNN em andamento na Fase 3 (ADR 0015). O primeiro commit corrige a escolha de mod de importação na ADR 0011 depois de o mod original ficar sem manutenção, substituindo-o por um fork verificado; o segundo troca uma ferramenta de heightmap dependente de navegador por um comando de CLI que busca elevação real (SRTM) de uma API pública roteirizável; o terceiro documenta a construção, de ponta a ponta, da primeira cidade jogável para os corredores B+D de SJC, incluindo dois achados técnicos sobre a combinação do jogo com o mod de importação (um limite de ~7.378-12.173 vias para uma excepção de importação, cuja causa raiz é um limite de ~32.768 segmentos/nós de rede por cidade do próprio motor do jogo) e a descoberta de que a etapa de busca+filtro de dados do OpenStreetMap (OSM) é roteirizável via Overpass, ao contrário das ferramentas de terreno travadas por navegador.
+
+Nenhum dos três commits introduz arquitetura de aprendizado por reforço multiagente ou de redes neurais em grafos, dado de rede/demanda da rede SUMO/OSM da trilha principal (Fase 3) ou literatura relevante à dissertação. Os achados sobre limite de segmentos do motor do jogo e sobre a diferença entre ferramentas roteirizáveis (Overpass) e travadas por navegador (terrain.party/Heightmapper) são específicos à cadeia de importação de um motor de jogo e não se transferem ao pipeline de construção de rede SUMO já documentado nas entradas de 2026-10-26 a 2026-10-29 deste log — trata-se de ferramentas, formatos e limites de engine inteiramente distintos. A ressalva já fixada nesta trilha (`chapters/04-experimentos.md`; pré-projeto, Seção 13) de que Cities: Skylines nunca é evidência quantitativa permanece intacta e não é afetada por este trabalho. Nenhum capítulo, `outline.md` ou `pre-projeto.md` foi editado nesta entrada.
+
