@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Hand-written toy SUMO net.xml for new_connector transform tests
+(roadmap R18/P5.2, arteria/interventions/new_connector.py). Same 4-edge
+directed cycle as toy-net-apply-intervention.net.xml (j0-(edgeA)->j1-
+(edgeB)->j2-(edgeC)->junctionY-(edgeD)->j0), plus a fifth junction "j4"
+that has no edges touching it at all, so it starts out unreachable from
+the rest of the network. Adding a connector edge between j4 and any ring
+junction should make j4 (and only j4) newly reachable.
+-->
+<net version="1.20" junctionCornerDetail="5">
+    <location netOffset="0,0" convBoundary="0,0,200,200" origBoundary="-1,-1,-1,-1" projParameter="!"/>
+
+    <edge id="edgeA" from="j0" to="j1" priority="1" numLanes="1" speed="13.89">
+        <lane id="edgeA_0" index="0" speed="13.89" length="100.00" shape="0,0 100,0"/>
+    </edge>
+    <edge id="edgeB" from="j1" to="j2" priority="1" numLanes="1" speed="13.89">
+        <lane id="edgeB_0" index="0" speed="13.89" length="100.00" shape="100,0 100,100"/>
+    </edge>
+    <edge id="edgeC" from="j2" to="junctionY" priority="1" numLanes="1" speed="13.89">
+        <lane id="edgeC_0" index="0" speed="13.89" length="100.00" shape="100,100 0,100"/>
+    </edge>
+    <edge id="edgeD" from="junctionY" to="j0" priority="1" numLanes="1" speed="13.89">
+        <lane id="edgeD_0" index="0" speed="13.89" length="100.00" shape="0,100 0,0"/>
+    </edge>
+
+    <junction id="j0" type="priority" x="0" y="0" incLanes="edgeD_0" intLanes=""/>
+    <junction id="j1" type="priority" x="100" y="0" incLanes="edgeA_0" intLanes=""/>
+    <junction id="j2" type="priority" x="100" y="100" incLanes="edgeB_0" intLanes=""/>
+    <junction id="junctionY" type="priority" x="0" y="100" incLanes="edgeC_0" intLanes=""/>
+    <junction id="j4" type="dead_end" x="200" y="200" incLanes="" intLanes=""/>
+
+    <connection from="edgeA" to="edgeB" fromLane="0" toLane="0"/>
+    <connection from="edgeB" to="edgeC" fromLane="0" toLane="0"/>
+    <connection from="edgeC" to="edgeD" fromLane="0" toLane="0"/>
+    <connection from="edgeD" to="edgeA" fromLane="0" toLane="0"/>
+</net>
