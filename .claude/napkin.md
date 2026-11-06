@@ -11,6 +11,8 @@
 
 1. **[2026-10-25] Parallel worktree agents: `pip install -e .` is not worktree-safe here**
    Do instead: there's no per-worktree venv in this container — `pip install -e .` writes a single shared, system-wide editable link, so concurrent `pip install -e .` calls from sibling worktrees race and can point the installed `arteria` at the wrong path. Also, `pytest` installed as a `uv tool` can't see that editable install at all. Run `python3 -m pytest` (or set `PYTHONPATH` to the worktree root) instead of reinstalling per worktree; only reinstall editable once, from the final merged repo path, after parallel work lands.
+2. **[2026-11-06] Sync the local branch to `origin/main` before fanning out parallel worktree agents**
+   Do instead: a session's local feature branch can sit many commits behind `origin/main` (merged there a while ago, with unrelated sessions pushing straight to `main` since) without the session noticing — `git status` against its own `origin/<branch>` looks clean either way. Spawning worktree agents off that stale base risks assigning work already done on `main` (one of six parallel agents here correctly caught this itself for a demand-module task and stood down rather than duplicate/overwrite real code) and, separately, leaves the branch needing a `git checkout -B <branch> origin/main` + cherry-pick of every worktree commit before it can push as a clean fast-forward. `git merge-base --is-ancestor <branch-tip> origin/main` is the one-line check; run it (and `git fetch origin main`) before spawning, not after.
 
 ## Roadmap & Status
 
@@ -67,6 +69,19 @@ None open.
    P3.4 is buildable without it (not even mechanics-only, since P2.6's own GTFS-import
    wrapper, roadmap L12, is itself unbuilt and belongs to the already-closed Phase 2, not
    Phase 3). Wait for a feed or owner direction before touching this.
+4. **[2026-11-06] Wire P5.4's `validity.py` into `apply.py`'s catalog-entry dispatcher** (small)
+   Do instead: `arteria/interventions/validity.py`'s `check_validity()` exists and is tested,
+   but nothing calls it — `apply_intervention()` returns a transform's result without checking
+   it. Needs a design call this session didn't make: which named emergency/transit/pedestrian
+   routes to check against for a given city (probably a `cities/<city>/` config addition, not a
+   hardcoded list), and whether a broken-validity result should raise or just annotate the
+   `ApplyResult`.
+5. **[2026-11-06] Phase 7 optimizer: ADR 0008 unwritten; optuna/baselines, parallel evaluation, MLflow tracking all still open** (medium)
+   Do instead: `arteria/optimize/{problem,nsga2,cache}.py` (R9) cover P7.1-P7.3/P7.6/P7.7 only
+   as far as "NSGA-II + a stub evaluator + a package cache" — see `docs/roadmap.md`'s P7.x
+   status notes for the exact gaps. Worth drafting ADR 0008 (optimization architecture) now that
+   there's a real implementation to document, before adding optuna/BoTorch, random/greedy
+   baselines, a process-pool backend, or MLflow-style tracking on top.
 
 ## User Directives
 
