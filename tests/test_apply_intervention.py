@@ -4,6 +4,7 @@ import pytest
 
 from arteria.interventions.apply import (
     LaneRestrictionApplyResult,
+    NewConnectorApplyResult,
     OneWayApplyResult,
     SignalRetimingApplyResult,
     TurnRestrictionApplyResult,
@@ -129,7 +130,7 @@ def test_signal_retiming_requires_exactly_one_target_junction() -> None:
 
 @pytest.mark.parametrize(
     "unsupported_type",
-    ["reversible_lane", "new_connector", "transit_signal_priority"],
+    ["reversible_lane", "transit_signal_priority"],
 )
 def test_unsupported_type_raises(unsupported_type: str) -> None:
     entry = CatalogEntry.model_validate(
@@ -142,6 +143,58 @@ def test_unsupported_type_raises(unsupported_type: str) -> None:
     )
 
     with pytest.raises(UnsupportedInterventionTypeError):
+        apply_intervention(_toy_net(), entry)
+
+
+def test_new_connector_entry_dispatches_to_add_connector() -> None:
+    entry = CatalogEntry.model_validate(
+        {
+            "id": "ring-chord-connector",
+            "type": "new_connector",
+            "description": "desc",
+            "complexity": "medium",
+            "target_junctions": ["j0", "j2"],
+            "parameters": {"edge_id": "connectorZ", "num_lanes": 1},
+        }
+    )
+
+    result = apply_intervention(_toy_net(), entry)
+
+    assert isinstance(result, NewConnectorApplyResult)
+    assert '<edge id="connectorZ" from="j0" to="j2"' in result.net_xml
+    assert result.connectable_from == ["edgeD"]
+    assert result.connectable_to == ["edgeC"]
+    assert result.newly_reachable_junctions == []
+
+
+def test_new_connector_requires_exactly_two_target_junctions() -> None:
+    entry = CatalogEntry.model_validate(
+        {
+            "id": "bad-connector",
+            "type": "new_connector",
+            "description": "desc",
+            "complexity": "medium",
+            "target_junctions": ["j0"],
+            "parameters": {"edge_id": "connectorZ"},
+        }
+    )
+
+    with pytest.raises(ValueError, match="exactly two"):
+        apply_intervention(_toy_net(), entry)
+
+
+def test_new_connector_requires_edge_id_parameter() -> None:
+    entry = CatalogEntry.model_validate(
+        {
+            "id": "bad-connector-no-id",
+            "type": "new_connector",
+            "description": "desc",
+            "complexity": "medium",
+            "target_junctions": ["j0", "j2"],
+        }
+    )
+
+    with pytest.raises(ValueError, match="edge_id"):
         apply_intervention(_toy_net(), entry)
 
 

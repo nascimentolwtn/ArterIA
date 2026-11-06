@@ -10,10 +10,10 @@ needs out of `entry.target_edges`/`entry.target_junctions`/
 `entry.parameters`, exactly as a real catalog entry (see
 `tests/fixtures/toy-catalog.yaml`) carries them.
 
-Three catalog types have no transform yet (`reversible_lane`, `new_connector`,
+Two catalog types have no transform yet (`reversible_lane`,
 `transit_signal_priority`): each needs a network edit beyond plain-XML
-attribute/element removal (time-dependent lane permissions, a brand-new
-edge, or detector/TraCI wiring), so `apply_intervention()` raises
+attribute/element removal (time-dependent lane permissions, or detector/
+TraCI wiring), so `apply_intervention()` raises
 `UnsupportedInterventionTypeError` for them rather than guessing.
 """
 
@@ -23,6 +23,7 @@ from dataclasses import dataclass
 
 from arteria.interventions.catalog import CatalogEntry, InterventionType
 from arteria.interventions.lane_restriction import restrict_lane
+from arteria.interventions.new_connector import add_connector
 from arteria.interventions.one_way import convert_to_one_way
 from arteria.interventions.signal_retiming import retime_signal
 from arteria.interventions.turn_restriction import remove_connection
@@ -38,7 +39,7 @@ _DEFAULT_ALLOW: dict[str, list[str]] = {
 }
 
 _UNSUPPORTED_TYPES: frozenset[InterventionType] = frozenset(
-    {"reversible_lane", "new_connector", "transit_signal_priority"}
+    {"reversible_lane", "transit_signal_priority"}
 )
 
 
@@ -82,11 +83,22 @@ class SignalRetimingApplyResult:
     new_cycle_length_s: float
 
 
+@dataclass(frozen=True)
+class NewConnectorApplyResult:
+    """Outcome of applying a `new_connector` catalog entry."""
+
+    net_xml: str
+    connectable_from: list[str]
+    connectable_to: list[str]
+    newly_reachable_junctions: list[str]
+
+
 ApplyResult = (
     OneWayApplyResult
     | TurnRestrictionApplyResult
     | LaneRestrictionApplyResult
     | SignalRetimingApplyResult
+    | NewConnectorApplyResult
 )
 
 
@@ -165,6 +177,28 @@ def apply_intervention(net_xml: str, entry: CatalogEntry) -> ApplyResult:
             new_cycle_length_s=signal_result.new_cycle_length_s,
         )
 
+    if entry.type == "new_connector":
+        from_junction, to_junction = _require_two_junctions(entry)
+        edge_id = entry.parameters.get("edge_id")
+        if not edge_id:
+            raise ValueError(f"entry {entry.id!r}: new_connector needs parameters.edge_id")
+        length_m = entry.parameters.get("length_m")
+        connector_result = add_connector(
+            net_xml,
+            edge_id=str(edge_id),
+            from_junction=from_junction,
+            to_junction=to_junction,
+            num_lanes=int(entry.parameters.get("num_lanes", 1)),
+            speed_m_s=float(entry.parameters.get("speed_m_s", 13.89)),
+            length_m=None if length_m is None else float(length_m),
+        )
+        return NewConnectorApplyResult(
+            net_xml=connector_result.net_xml,
+            connectable_from=connector_result.connectable_from,
+            connectable_to=connector_result.connectable_to,
+            newly_reachable_junctions=connector_result.newly_reachable_junctions,
+        )
+
     if entry.type in _UNSUPPORTED_TYPES:
         raise UnsupportedInterventionTypeError(
             f"entry {entry.id!r}: no transform implemented yet for type {entry.type!r} "
@@ -191,6 +225,15 @@ def _require_single_junction(entry: CatalogEntry) -> str:
             f"got {len(entry.target_junctions)}"
         )
     return entry.target_junctions[0]
+
+
+def _require_two_junctions(entry: CatalogEntry) -> tuple[str, str]:
+    if len(entry.target_junctions) != 2:
+        raise ValueError(
+            f"entry {entry.id!r}: {entry.type!r} needs exactly two target_junctions entries "
+            f"(from, to), got {len(entry.target_junctions)}"
+        )
+    return entry.target_junctions[0], entry.target_junctions[1]
 
 
 def _require_edges(entry: CatalogEntry) -> list[str]:
