@@ -15,10 +15,27 @@ Two catalog types have no transform yet (`reversible_lane`,
 attribute/element removal (time-dependent lane permissions, or detector/
 TraCI wiring), so `apply_intervention()` raises
 `UnsupportedInterventionTypeError` for them rather than guessing.
+
+Every successful transform also runs P5.4's `validity.py` checks
+(`check_validity()`) against the edited network and attaches the result
+as `ApplyResult.validity`. A broken result (a disconnected junction, a
+named route no longer continuous) is *annotated, not rejected*:
+`apply_intervention()` never raises for it, because deciding whether a
+given break is acceptable is a planner/optimizer judgment call (e.g. P7
+may want to explore a package that cuts through traffic at the cost of
+one minor street's connectivity), not something this dispatcher should
+veto on its own. `emergency_routes`/`transit_routes`/`pedestrian_routes`
+name which routes to check; this module has no per-city default for them
+(there is no hardcoded SJC route list) -- a caller that cares about named
+routes passes them in, typically read from a `cities/<city>/` config.
+With no routes given, `validity` still reports whole-network
+connectivity (`check_validity()`'s one check that never needs named
+routes).
 """
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 from arteria.interventions.catalog import CatalogEntry, InterventionType
@@ -27,6 +44,7 @@ from arteria.interventions.new_connector import add_connector
 from arteria.interventions.one_way import convert_to_one_way
 from arteria.interventions.signal_retiming import retime_signal
 from arteria.interventions.turn_restriction import remove_connection
+from arteria.interventions.validity import ValidityReport, check_validity
 
 _LANE_RESTRICTION_TYPES: frozenset[InterventionType] = frozenset(
     {"bus_lane", "protected_bike_corridor", "pedestrian_street", "lane_reallocation"}
@@ -53,6 +71,7 @@ class OneWayApplyResult:
 
     net_xml: str
     orphaned_junctions: list[str]
+    validity: ValidityReport
 
 
 @dataclass(frozen=True)
@@ -61,6 +80,7 @@ class TurnRestrictionApplyResult:
 
     net_xml: str
     still_connected: bool
+    validity: ValidityReport
 
 
 @dataclass(frozen=True)
@@ -71,6 +91,7 @@ class LaneRestrictionApplyResult:
     restricted_edges: list[str]
     previous_allow: dict[str, str | None]
     previous_disallow: dict[str, str | None]
+    validity: ValidityReport
 
 
 @dataclass(frozen=True)
@@ -81,6 +102,7 @@ class SignalRetimingApplyResult:
     previous_durations: list[float]
     previous_cycle_length_s: float
     new_cycle_length_s: float
+    validity: ValidityReport
 
 
 @dataclass(frozen=True)
@@ -91,6 +113,7 @@ class NewConnectorApplyResult:
     connectable_from: list[str]
     connectable_to: list[str]
     newly_reachable_junctions: list[str]
+    validity: ValidityReport
 
 
 ApplyResult = (
@@ -102,19 +125,41 @@ ApplyResult = (
 )
 
 
-def apply_intervention(net_xml: str, entry: CatalogEntry) -> ApplyResult:
+def apply_intervention(
+    net_xml: str,
+    entry: CatalogEntry,
+    *,
+    emergency_routes: dict[str, Sequence[str]] | None = None,
+    transit_routes: dict[str, Sequence[str]] | None = None,
+    pedestrian_routes: dict[str, Sequence[str]] | None = None,
+) -> ApplyResult:
     """Apply `entry`'s transform to `net_xml`, dispatching on `entry.type`.
 
     `net_xml` is not mutated. Raises `ValueError` if `entry` is missing a
     `target_edges`/`target_junctions`/`parameters` value its type needs, and
     `UnsupportedInterventionTypeError` for a type with no transform yet.
+
+    `emergency_routes`/`transit_routes`/`pedestrian_routes` are forwarded to
+    `validity.check_validity()` against the transformed network and attached
+    as the result's `validity` field; see the module docstring for why a
+    broken result is annotated rather than rejected.
     """
+
+    def _validity(transformed_net_xml: str) -> ValidityReport:
+        return check_validity(
+            transformed_net_xml,
+            emergency_routes=emergency_routes,
+            transit_routes=transit_routes,
+            pedestrian_routes=pedestrian_routes,
+        )
+
     if entry.type == "one_way_conversion":
         edge_id = _require_single_edge(entry)
         one_way_result = convert_to_one_way(net_xml, edge_id=edge_id)
         return OneWayApplyResult(
             net_xml=one_way_result.net_xml,
             orphaned_junctions=one_way_result.orphaned_junctions,
+            validity=_validity(one_way_result.net_xml),
         )
 
     if entry.type == "turn_restriction":
@@ -127,7 +172,9 @@ def apply_intervention(net_xml: str, entry: CatalogEntry) -> ApplyResult:
             to_lane=_optional_str(entry.parameters.get("to_lane")),
         )
         return TurnRestrictionApplyResult(
-            net_xml=turn_result.net_xml, still_connected=turn_result.still_connected
+            net_xml=turn_result.net_xml,
+            still_connected=turn_result.still_connected,
+            validity=_validity(turn_result.net_xml),
         )
 
     if entry.type in _LANE_RESTRICTION_TYPES:
@@ -158,6 +205,7 @@ def apply_intervention(net_xml: str, entry: CatalogEntry) -> ApplyResult:
             restricted_edges=edges,
             previous_allow=previous_allow,
             previous_disallow=previous_disallow,
+            validity=_validity(current),
         )
 
     if entry.type == "signal_retiming":
@@ -175,6 +223,7 @@ def apply_intervention(net_xml: str, entry: CatalogEntry) -> ApplyResult:
             previous_durations=signal_result.previous_durations,
             previous_cycle_length_s=signal_result.previous_cycle_length_s,
             new_cycle_length_s=signal_result.new_cycle_length_s,
+            validity=_validity(signal_result.net_xml),
         )
 
     if entry.type == "new_connector":
@@ -197,6 +246,7 @@ def apply_intervention(net_xml: str, entry: CatalogEntry) -> ApplyResult:
             connectable_from=connector_result.connectable_from,
             connectable_to=connector_result.connectable_to,
             newly_reachable_junctions=connector_result.newly_reachable_junctions,
+            validity=_validity(connector_result.net_xml),
         )
 
     if entry.type in _UNSUPPORTED_TYPES:

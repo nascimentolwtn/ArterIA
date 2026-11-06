@@ -68,6 +68,29 @@ def test_bus_lane_entry_restricts_every_target_edge() -> None:
             assert "allow" not in line
 
 
+def test_apply_intervention_attaches_a_validity_report() -> None:
+    entry = _catalog_entry("busline-x-one-way")
+
+    result = apply_intervention(_toy_net(), entry)
+
+    assert result.validity.disconnected_junctions == []
+    assert result.validity.is_valid is True
+
+
+def test_apply_intervention_checks_named_routes() -> None:
+    entry = _catalog_entry("busline-x-bus-lane")
+
+    result = apply_intervention(
+        _toy_net(),
+        entry,
+        emergency_routes={"hospital-access": ["edgeA", "edgeC"]},
+    )
+
+    assert "hospital-access" in result.validity.emergency_route_breaks
+    assert result.validity.emergency_route_breaks["hospital-access"].is_continuous is False
+    assert result.validity.is_valid is False
+
+
 def test_does_not_mutate_the_input() -> None:
     original = _toy_net()
 

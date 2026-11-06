@@ -69,19 +69,19 @@ None open.
    P3.4 is buildable without it (not even mechanics-only, since P2.6's own GTFS-import
    wrapper, roadmap L12, is itself unbuilt and belongs to the already-closed Phase 2, not
    Phase 3). Wait for a feed or owner direction before touching this.
-4. **[2026-11-06] Wire P5.4's `validity.py` into `apply.py`'s catalog-entry dispatcher** (small)
-   Do instead: `arteria/interventions/validity.py`'s `check_validity()` exists and is tested,
-   but nothing calls it — `apply_intervention()` returns a transform's result without checking
-   it. Needs a design call this session didn't make: which named emergency/transit/pedestrian
-   routes to check against for a given city (probably a `cities/<city>/` config addition, not a
-   hardcoded list), and whether a broken-validity result should raise or just annotate the
-   `ApplyResult`.
-5. **[2026-11-06] Phase 7 optimizer: ADR 0008 unwritten; optuna/baselines, parallel evaluation, MLflow tracking all still open** (medium)
-   Do instead: `arteria/optimize/{problem,nsga2,cache}.py` (R9) cover P7.1-P7.3/P7.6/P7.7 only
-   as far as "NSGA-II + a stub evaluator + a package cache" — see `docs/roadmap.md`'s P7.x
-   status notes for the exact gaps. Worth drafting ADR 0008 (optimization architecture) now that
-   there's a real implementation to document, before adding optuna/BoTorch, random/greedy
-   baselines, a process-pool backend, or MLflow-style tracking on top.
+4. **[2026-11-06] Phase 7 optimizer: optuna/BoTorch, parallel evaluation backend, MLflow-style tracking still open** (medium)
+   Do instead: `arteria/optimize/{problem,nsga2,cache,baselines}.py` (R9) now cover NSGA-II +
+   random/greedy baselines + a stub evaluator + a package cache (ADR 0008 documents this
+   architecture and its seams). Still open: a Bayesian-optimization backend (`optuna`/`BoTorch`)
+   against the same `PackageProblem`, a process-pool/cluster parallel evaluation backend (P7.3's
+   other half), and MLflow-style experiment tracking beyond the cache's own JSON (P7.7). All
+   remote-doable against the existing stub evaluator, per ADR 0008's "Consequences."
+5. **[2026-11-06] Two more remote-doable report/parsing candidates spotted, not yet built**
+   Do instead: **P5.6** catalog review report (table of catalog entries for planner review,
+   same style as `arteria/report/generator.py`/`arteria/calibration/report.py`) and **P6.2**'s
+   actual `tripinfo.xml` parser (today `arteria/evaluate/metrics.py` only consumes already-
+   parsed `TripRecord`s; the XML-parsing glue itself is unwritten and testable against a
+   synthetic `tripinfo.xml` fixture, no real SUMO run needed). Neither requires real SJC data.
 
 ## User Directives
 

@@ -2,6 +2,14 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.12] - 2026-11-06
+
+### Added
+
+- **P5.4's validity checks wired into the catalog-entry dispatcher.** `arteria/interventions/apply.py`'s `apply_intervention()` now runs `validity.check_validity()` against every transform's output and attaches the result as `ApplyResult.validity` — annotated, never raised on: whether a disconnected junction or a broken named route is acceptable is a planner/optimizer judgment call, not something this dispatcher vetoes. New `emergency_routes`/`transit_routes`/`pedestrian_routes` keyword arguments let a caller name which routes to check; there is still no per-city hardcoded route list (none was ever intended — that belongs in a `cities/<city>/` config).
+- **ADR 0008 (optimization architecture).** Documents the decision to build `PackageProblem` (search space) and the search backend (`nsga2.py`) as separate concerns joined only by an injectable `Evaluator` callable and `PackageCache`, why NSGA-II was picked as the first backend over Bayesian optimization (no surrogate model needed, a real front for free, at the cost of more evaluations per candidate — fine while the evaluator is a free synthetic stub, revisited once P6.1 wires in a real, expensive SUMO-backed one), and what is deliberately still open (optuna/BoTorch, a parallel/distributed evaluation backend, MLflow-style tracking).
+- **Random-search and greedy baseline optimizers (roadmap P7.2).** `arteria/optimize/baselines.py`'s `random_search_baseline()` (sampled feasible packages, non-dominated subset kept) and `greedy_baseline()` (cheapest-catalog-entry-first walk, non-dominated packages along that one path) give NSGA-II's Pareto front something to be compared against, against the same `PackageProblem`/`Evaluator` seam `nsga2.py` uses and the same synthetic stub evaluator (ADR 0009) — not yet run against a real one.
+
 ## [1.11] - 2026-11-06
 
 ### Added
