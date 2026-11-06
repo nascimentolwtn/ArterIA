@@ -116,7 +116,9 @@ A importância desse mecanismo para esta trilha é direta: um ambiente de RL e u
 
 ## 3.6 Ambiente de controle do simulador, agentes e GNN (stub)
 
-TODO(evidência): nada implementado. Contrato ação → transformação de rede: ver `arteria/interventions/apply.py` (`apply_intervention()`), sete dos dez tipos de catálogo despachados (após `2624762`); `reversible_lane`, `new_connector` e `transit_signal_priority` sem transformação.
+TODO(evidência): nada implementado quanto a agente, política ou substituto em grafo. O contrato entre decisão e transformação de rede avançou: oito dos dez tipos de catálogo já contam com mecanismo de transformação despachado, restando sem mecanismo apenas a faixa reversível e a prioridade semafórica para transporte público — a primeira estrutural, central a esta dissertação; a segunda, de sinalização, correlata. O catálogo estrutural está, assim, pela primeira vez, mais completo do que o de sinalização, o que reforça, sem ainda comprová-lo por resultado, o enquadramento desta trilha.
+
+Registra-se, ademais, que o próprio ArterIA passou a dispor de um primeiro otimizador de nível superior sobre esse catálogo, baseado em busca evolutiva multiobjetivo, operando por ora sobre um avaliador de impacto inteiramente sintético. Tal otimizador não constitui aprendizado por reforço nem rede neural em grafos, mas é o primeiro concorrente de código real, dentro do próprio projeto, ao papel que esta dissertação reserva ao aprendizado por reforço multiagente — pergunta de pesquisa ainda sem evidência, por depender de um avaliador real de tráfego que nenhum dos dois lados da comparação possui até aqui. TODO(evidência): revisitar quando houver avaliador real de tráfego disponível para comparar as duas abordagens sobre o mesmo espaço de decisão.
 
 ## 3.7 Síntese e limitações do capítulo
 

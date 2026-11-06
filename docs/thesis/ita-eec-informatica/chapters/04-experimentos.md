@@ -35,6 +35,8 @@ As estimativas do próprio levantamento indicam que lotes de 10 sementes são vi
 
 Decorre daí uma implicação para esta trilha: o treinamento de aprendizado por reforço multiagente (*Multi-Agent Reinforcement Learning*, MARL), que exige muitos episódios, enfrentará restrição ainda mais severa. O protocolo experimental deve, por isso, prever um simulador reduzido (corredor) ou adotar o surrogate em GNN como motivação central, e declarar a limitação de hardware. Tais valores são estimativas do produto, e não medições de treinamento. TODO(evidência): medir passos/s de SUMO na rede unificada e consumo de memória por execução.
 
+O otimizador evolutivo de nível superior, mencionado na Seção 3.6 como primeiro candidato de código real ao papel reservado ao aprendizado por reforço multiagente, reaproveita avaliações já vistas por meio de um mecanismo de memória, mas, numa execução retomada após interrupção, reinicia do zero a população da busca evolutiva. Tal política de retomada é um segundo fator, independente do hardware, a considerar no desenho de uma campanha de busca dentro do orçamento computacional já descrito: mesmo com memória de avaliações, o custo de uma campanha interrompida e retomada não se reduz na mesma proporção que o custo de avaliação individual evitada.
+
 ## 4.3 Calibração, métricas e execuções (stub)
 
 TODO(evidência): contagens de tráfego (`deferred`), GEH/RMSE (`arteria/calibration/goodness_of_fit.py`), métricas (`arteria/evaluate/metrics.py`; leitura de `tripinfo.xml` real ainda por fazer).
