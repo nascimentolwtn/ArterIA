@@ -87,11 +87,17 @@ None open.
 
 1. **[2026-10-24] Keep responses concise; avoid trailing summaries**
    Do instead: State results directly and focus on relevant updates only.
-2. **[2026-10-24] Don't contact SJC agencies yet**
+2. **[2026-11-06] No PR: merge the designated branch straight into `main` and push**
+   Do instead: the owner reviews from the phone app, not via GitHub PR review — opening a PR
+   adds a step they can't act on there. Once the designated branch's work is committed, pushed,
+   and tests pass, merge it directly into `main` (fast-forward when possible) and push `main`,
+   rather than stopping at a pushed branch waiting for a PR. The owner reviews after the fact and
+   asks for changes/a revert if needed.
+3. **[2026-10-24] Don't contact SJC agencies yet**
    Do instead: use open/self-service data (OSM, Geosanja, IBGE — see
    `cities/sjc/data-manifest.yaml`) for now; the drafts in
    `cities/sjc/data-requests.md` stay unsent until the owner says otherwise.
-3. **[2026-10-24] Scope stays SJC-only; multi-city is an option, not a plan**
+4. **[2026-10-24] Scope stays SJC-only; multi-city is an option, not a plan**
    Do instead: `arteria city new` (ADR 0002) makes a second city cheap to add, but don't
    onboard one unprompted. The owner decides if/when — either on their own as the
    project evolves, or to offer an advisor once accepted into a program. Don't treat
