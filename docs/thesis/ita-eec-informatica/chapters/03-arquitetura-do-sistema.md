@@ -1,6 +1,6 @@
 # Capítulo 3 — Arquitetura do Sistema
 
-> Status: **rascunho parcial** (apenas as Seções 3.2 a 3.5 têm prosa; 3.1 e 3.6 em `stub`).
+> Status: **rascunho parcial** (as Seções 3.2 a 3.6 têm prosa; apenas 3.1 em `stub`).
 > RASCUNHO: texto sujeito a revisão com orientador(a), ainda não contatado(a). Nenhum resultado de RL/GNN existe; as seções abaixo descrevem a construção e a verificação da **rede de simulação**, pré-condição do grafo de RL/GNN.
 > Rastreabilidade: os caminhos de arquivo, comandos e commits que lastreiam cada afirmação estão registrados no `progress-log.md` e no `progress.md` desta trilha, e não no corpo do capítulo. Itens sem lastro estão como `TODO(evidência)` ou `TODO(citação)`.
 
