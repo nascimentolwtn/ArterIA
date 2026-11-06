@@ -31,6 +31,9 @@ geo = [
     "sumolib>=1.28",
     "pillow>=10.0",
 ]
+optimize = [
+    "pymoo>=0.6",
+]
 
 [build-system]
 requires = ["setuptools>=68"]
