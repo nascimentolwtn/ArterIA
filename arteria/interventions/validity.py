@@ -9,12 +9,14 @@ routes, assembled into one `ValidityReport` a caller can run after any
 transform.
 
 Deliberately standalone: it does not import from `one_way.py`,
-`turn_restriction.py`, or `lane_restriction.py`, and nothing wires it into
-`apply.py` yet (separate work). Like those modules, it only reads the plain
-XML with the standard-library `xml.etree.ElementTree` -- no `sumolib` and
-no real `netconvert`/`sumo` binary, per the remote-session boundary
-(ADR 0009). The real build and visual check of a city's actual network
-stay at the desk (L9-L11); this operates on hand-written toy fixtures.
+`turn_restriction.py`, or `lane_restriction.py`. `apply.py`'s
+`apply_intervention()` calls `check_validity()` after every transform and
+attaches the result as `ApplyResult.validity`, but this module still
+knows nothing about that caller -- it only reads the plain XML with the
+standard-library `xml.etree.ElementTree` -- no `sumolib` and no real
+`netconvert`/`sumo` binary, per the remote-session boundary (ADR 0009).
+The real build and visual check of a city's actual network stay at the
+desk (L9-L11); this operates on hand-written toy fixtures.
 """
 
 from __future__ import annotations
