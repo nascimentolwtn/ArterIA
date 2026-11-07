@@ -5,6 +5,16 @@ Profundidade: completo (promovido em 2026-10-26 por autorização explícita do 
 
 ---
 
+## 2026-11-07 (27)
+
+Três commits novos no `main` desde a entrada anterior: `6fb8b49`, `0cba1fb`, `8ebfa99`.
+
+O primeiro, `6fb8b49`, corrige exatamente a inconsistência documental que a própria entrada (26) havia sinalizado: o comentário de cabeçalho do módulo de checagens de validade, que ainda descrevia o módulo como desconectado do despachante de aplicação de intervenções, mesmo já depois da integração registrada naquela mesma entrada. A correção é puramente de docstring, sem qualquer alteração de comportamento, e fecha, no nível de documentação interna do próprio ArterIA, uma nota que esta trilha já havia classificado como não afetando nenhum resultado nem nenhuma decisão de formulação, a corrigir por quem mantém o código. Não há, portanto, conteúdo novo para o Capítulo 3 ou o Capítulo 4 além do que a entrada (26) já registrou: a decisão de arquitetura de anotar, e não rejeitar, uma quebra de validade permanece exatamente como descrita, e a lista de evidência ainda necessária não se altera.
+
+Os outros dois commits, `0cba1fb` e `8ebfa99`, pertencem à mesma trilha hobby de comunicação visual via Cities: Skylines 1 já tratada nas entradas (23) e (24), desta vez cobrindo o preparo scriptado de cinco mapas de Orlando (cidade explicitamente não onboarded ao ArterIA) e correções de importação de heightmap no mesmo motor de jogo, incluindo o esculpimento de uma bacia lacustre para realismo visual. Pelo mesmo critério já aplicado àquelas entradas — a ADR 0015 desacopla essa camada da pesquisa, e Cities: Skylines nunca é evidência quantitativa, só comunicação com stakeholders —, nenhum dos dois gera conteúdo para esta trilha: não há dado de São José dos Campos envolvido, não há pipeline SUMO/`netconvert` tocado, e nenhuma decisão de formulação é alterada. Os três arquivos tocados por ambos os commits (`.claude/napkin.md`, `CHANGELOG.md`, `docs/local/cities-skylines.md`) ficam fora do escopo de leitura obrigatória desta trilha.
+
+Nenhuma edição em `chapters/`, `outline.md` ou `pre-projeto.md` foi feita nesta rodada. Os riscos e perguntas abertas seguem exatamente como consolidados na entrada (26).
+
 ## 2026-11-06 (26)
 
 Commit `fc282cf`, já no `main`. A versão do ArterIA avançou para 1.12. O commit soma três peças ao mesmo otimizador de nível superior registrado na entrada anterior (25), fechando parte das lacunas que aquela própria entrada havia deixado em aberto, sem, contudo, tocar o oráculo real de nível inferior nem qualquer dado de São José dos Campos.
