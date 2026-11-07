@@ -2,6 +2,72 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.16] - 2026-11-07
+
+### Added
+
+- **`orlando-minimized` terrain: real, deeper lake basins.** The heightmap
+  was a flat bicubic upsample of a 60x60 SRTM grid, so its lakes were
+  nearly invisible. Rebuilt with a precisely-recomputed 18 km tile bbox
+  (the first attempt only described it as "near" a centroid, with no
+  bbox recorded) and carved real basins, from actual OSM water-polygon
+  geometry, for all 14 named lakes in the area (the Dr. Phillips/Bay
+  Hill/Celebration chain plus Disney's own 5), each ramping from the
+  real shoreline down to 15 m deep. Per-lake rim/floor elevations (for
+  setting the in-game water level) are in
+  `data/cs/orlando/minimized/map-prep.md`.
+- **Quick-reference table for Cimtographer's Bounding Box field**, at the
+  top of `docs/local/cities-skylines.md` — every map's ready-to-paste
+  `south,west,north,east` string, heightmap filename, and way/node count
+  in one table, instead of scattered across each worked example's prose.
+- Corrected the Bounding Box field guidance in section 2c: it's needed
+  even when loading `map.osm` from file, not just for the live-fetch
+  buttons — Cimtographer doesn't read the file's own `<bounds>` tag for
+  this.
+
+### Fixed
+
+- 4 per-map `map-prep.md` notes (`disney`, `universal`, `seaworld_vineland`,
+  `celebration`) recorded the wider 18 km heightmap-fetch tile bbox as the
+  "Overpass bbox paste" value, instead of the actual smaller crop bbox
+  baked into each real `map.osm`. Corrected all 4 to distinguish the two
+  and give the right paste value.
+
+## [1.15] - 2026-11-07
+
+### Fixed
+
+- **C:S 1 Heightmaps must be flat files, not subfolders.** Play-testing
+  found the Map Editor's heightmap picker never lists a
+  `Heightmaps/<tag>/heightmap.png` file — it only reads flat `.png` files
+  sitting directly in the `Heightmaps` folder. All existing heightmaps
+  (SJC corridor B, all 4 real Orlando crops, the composite) were
+  reorganized to `Heightmaps/<tag>.png`, and `docs/local/cities-skylines.md`
+  updated so this doesn't get rebuilt into a subfolder again.
+- **`orlando-minimized` rebuilt: a single connected fetch, uniformly
+  scaled down, instead of 4 crops collaged together.** Play-testing also
+  found the first attempt's roads unconnected (4 independent Overpass
+  fetches share no nodes) and the real geography hard to recognize (an
+  invented grid layout, even one keeping rough compass directions). The
+  replacement fetches one bbox enclosing all 4 landmark areas
+  (19.4 x 22.3 km) and rigidly scales every node toward its centre by
+  0.6934, shrinking the whole real layout to fit the 18 km tile
+  (~14.8 x 16.1 km) while keeping every landmark's true relative direction
+  and distance — any real road already connecting two landmarks (I-4,
+  International Drive, US-192) stays in the file and keeps them linked.
+  Filtered to the `secondary`-and-above road classes (4,465 ways / 21,733
+  nodes, close to SJC's own final playable crop) after a `tertiary`-
+  inclusive variant (30,629 nodes) came too close to the ~32,768 node/
+  segment hard cap for comfort. Checked programmatically: 99.8% of kept
+  nodes form one connected component, and every landmark sits within
+  1.5 km of a kept road. Full numbers in
+  `data/cs/orlando/minimized/map-prep.md`. The first write of this rebuild
+  omitted the `<bounds>` element every other working `map.osm` in this
+  project has (the documented section 2b script always writes one; this
+  ad hoc rebuild script initially didn't) — Cimtographer null-refs on
+  "Load OSM From File" without it. Fixed by computing and writing it from
+  the post-scale bbox.
+
 ## [1.14] - 2026-11-06
 
 ### Added

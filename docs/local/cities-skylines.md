@@ -9,12 +9,41 @@ WSL2's `/mnt/c` bridge. Steps are written city-agnostic; SJC's own numbers
 (corridors B and D, the first corridor actually taken end-to-end to a
 playable city) are given as a worked example after step 6.
 
+## Quick reference — Bounding Box paste values
+
+Copy/paste straight into Cimtographer's **Bounding Box field** (format
+`south,west,north,east`) when loading any of these files — confirmed
+needed even for "Load OSM From File" (see 2c). These are the *actual*
+`<bounds>` baked into each real `map.osm` on disk, not the wider step-0
+heightmap-tile bbox some of the `map-prep.md` notes also mention.
+
+| Map | Bounding Box paste (south,west,north,east) | Heightmap file | Ways / Nodes |
+|---|---|---|---|
+| SJC corridors B+D (the one actually played) | `-23.244254,-45.925442,-23.189994,-45.866762` | `sjc-corridor-b.png` | 4,537 / 17,130 |
+| Orlando — Disney parks + Pop Century Resort | `28.348955,-81.608029,28.421304,-81.526343` | `orlando-disney.png` | 4,500 / 28,721 |
+| Orlando — Universal + Hard Rock + I-Drive Outlets | `28.456476,-81.481785,28.492651,-81.440908` | `orlando-universal.png` | 3,288 / 14,887 |
+| Orlando — SeaWorld + Vineland Outlets | `28.371759,-81.507922,28.426022,-81.446649` | `orlando-seaworld_vineland.png` | 4,148 / 18,964 |
+| Orlando — Celebration Suites (standalone) | `28.317631,-81.529805,28.344763,-81.499189` | `orlando-disney.png` (reused) | 916 / 5,755 |
+| Orlando — minimized (all 4, single tile) | `28.331520,-81.597761,28.477252,-81.446843` | `orlando-minimized.png` | 4,465 / 21,733 |
+
+All heightmap files live flat in `.../MapEditor/Heightmaps/` (see the next
+note); all road files live in `data/cs/<city>/<area>/map.osm`, mirrored to
+`OneDrive/Documents/<NAME>_01.osm` on Windows.
+
 **File naming:** version road-data files sequentially (`SJC_01.osm`,
 `SJC_02.osm`, ...) instead of overwriting the one you're actively testing —
 each import attempt is cheap to redo but expensive to re-diagnose blind.
 Keep one "current" file (e.g. `map.osm`/`map`, matching whatever default the
 importer's Path field shows) for the import you're about to try next, and
 rename anything you want to keep as a numbered version before overwriting it.
+
+**Heightmaps must be flat files directly inside the `Heightmaps` folder —
+no subfolders.** The Map Editor's heightmap picker only lists `.png` files
+sitting directly in `.../MapEditor/Heightmaps/`; it does not recurse into
+subfolders (confirmed empirically — a heightmap placed at
+`Heightmaps/<tag>/heightmap.png` never showed up in-game, regardless of
+filename). Always write/copy the file to `Heightmaps/<tag>.png` (e.g.
+`Heightmaps/orlando-disney.png`), never into a `Heightmaps/<tag>/` subfolder.
 
 ## 0. Prep (scripted)
 
@@ -23,7 +52,7 @@ Run, from the repo, with `ARTERIA_DATA` set:
 ```
 arteria cs prepare-map --city sjc --corridor A       # or B / C / D
 arteria cs fetch-heightmap --city sjc --corridor A \
-  --out "/mnt/c/Users/<you>/AppData/Local/Colossal Order/Cities_Skylines/Addons/MapEditor/Heightmaps/sjc-<corridor>/heightmap.png"
+  --out "/mnt/c/Users/<you>/AppData/Local/Colossal Order/Cities_Skylines/Addons/MapEditor/Heightmaps/sjc-<corridor>.png"
 ```
 
 The first writes `$ARTERIA_DATA/cs/sjc/<corridor>/map-prep.md` with the
@@ -163,10 +192,14 @@ rule above.
    blob. Prefer shrinking the bbox or dropping more road classes (2b) over
    raising this, and only raise it as a last resort, checking the result
    visually.
-3. **Bounding Box field** (only used by the live-fetch buttons, not needed
-   if loading from file): inferred format `south,west,north,east`, matching
-   Overpass QL's own `[bbox:...]` convention — inferred from behavior, not
-   confirmed from the mod's source.
+3. **Bounding Box field** — confirmed needed even when loading from file
+   (not just the live-fetch buttons, correcting this doc's earlier guess):
+   paste the file's own bbox here as `south,west,north,east` (matching
+   Overpass QL's own `[bbox:...]` convention) and the import works, even
+   though the file's `<bounds>` element already states the same values —
+   Cimtographer doesn't read `<bounds>` for this, you still have to paste
+   it by hand. Each `map-prep.md` note has this string ready
+   ("Overpass bbox paste") — use it as-is.
 
 **Fallback — an OSM Import mod:** if the Cimtographer fork still fails, try
 the "OpenStreetMap Import Mod" by grilly86 (confirm its current Workshop id
@@ -300,39 +333,62 @@ road crop sits entirely inside `disney`'s 18 km tile**, so it reuses
 `disney`'s heightmap rather than fetching a fourth one — same reasoning as
 SJC's corridor B/D reuse. All four written to
 `data/cs/orlando/<cluster>/{map.osm,heightmap.png,map-prep.md}` and mirrored
-into the Windows game folders (`AppData/.../Heightmaps/orlando-<cluster>/`,
+into the Windows game folders (`AppData/.../Heightmaps/orlando-<cluster>.png`
+— flat, no subfolder, see the "File naming" note above —
 `OneDrive/Documents/ORLANDO_<CLUSTER>_01.osm`).
 
 Not yet done: the GUI import/play steps (1-6 above) for any of the four —
 this session only ran the scripted step-0 prep, same division of labour as
 SJC's first pass.
 
-### `orlando-minimized` — a fifth, composite map (2026-11-06)
+### `orlando-minimized` — a fifth, single-tile map (2026-11-06, revised 2026-11-07)
 
 A fifth variant, built after the owner started playing one of the four real
-crops: a single map collaging all 4 Orlando clusters together instead of
-four separate maps. **Not a real-geography crop** — each cluster's own
-road geometry is translated as a rigid block (no rotation/resizing) to a
-new position chosen to (a) keep the 4 clusters' real relative compass
-directions and (b) fit all 4 inside one 18 km tile without their crop
-bounding boxes overlapping. All 4 translations are small (under ~3 km),
-since the real clusters already sit within about 19 km of each other.
+crops: fits all 4 Orlando landmark areas onto one 18 km tile instead of
+four separate maps.
 
-Combining the 4 clusters' already-filtered crops as-is would have summed to
-12,852 ways — over the practical ceiling (section 2a) and in SJC's own
-confirmed-crashing range (12,173). Dropping `highway=service` (parking-lot/
-resort access roads — a much larger share of the graph in these
-theme-park/resort areas than in SJC) from each cluster first brought the
-total to **4,140 ways / 24,737 nodes**, close to SJC's own final combined
-B+D crop (4,537 ways). Full placement table, translation deltas, and the
-master centre point (whose real SRTM terrain was used for this map's
-heightmap, since the composite itself has no single real location) are in
-`data/cs/orlando/minimized/map-prep.md`.
+**First attempt (collage, abandoned):** translated each cluster's already-
+filtered crop as a rigid block to a new, non-overlapping position chosen to
+preserve real relative compass directions. This imported without crashing
+(4,140 ways/24,737 nodes) but was rejected on actual play-testing: the 4
+clusters came from 4 independent Overpass fetches, so their roads shared no
+nodes and were never connected to each other, and relocating them onto an
+invented grid (even one preserving rough compass directions) made the real
+geography hard to recognize in-game.
 
-No connector roads were added between the 4 relocated clusters — there's a
-checked (programmatic, no bounding-box overlap) gap of at least ~1-2 km
-between any two, left for the owner to hand-draw if wanted, same as any
-other junction-cleanup (3b).
+**Current approach (single connected fetch, uniformly scaled down):**
+instead of cropping 4 separate areas and collaging them, fetch *one*
+Overpass query over a bbox enclosing all 4 landmark areas plus a ~1.5 km
+margin (`28.304066,-81.623352,28.506217,-81.425604` — south,west,north,east
+— 19.4 x 22.3 km real extent, centred at `-81.524478, 28.405141`), then
+rigidly scale every node's coordinates toward that same centre point by a
+factor of **0.6934** (`new = centre + (old - centre) * 0.6934`), shrinking
+the whole real layout down to fit inside the 18 km tile (final scaled bbox
+~14.8 x 16.1 km) with margin to spare. No translation, no splitting into
+separate fetches, no rotation — just a uniform shrink, so every landmark
+keeps its true relative direction and distance from every other one, only
+smaller, and any real road that already connects two landmarks (I-4,
+International Drive, US-192, etc.) survives in the file and keeps them
+connected.
+
+Even after highway-class filtering, the full enclosing bbox has far more
+raw ways than any single cluster (dropping `service`/`residential`/
+`unclassified`/`living_street` and keeping only `motorway`/`trunk`/
+`primary`/`secondary` + their `_link` variants — i.e. everything *except*
+`tertiary` and below — already got it down to **4,465 ways / 21,733
+nodes**, close to SJC's own final playable combined crop (4,537 ways) and
+comfortably under both the ~7,000-8,000-way practical ceiling and the
+~32,768 node/segment hard cap (section 2a) — keeping `tertiary` as well
+would have reached 6,042 ways / 30,629 nodes, too close to the node cap for
+comfort). Checked programmatically after filtering: 99.8% of the kept nodes
+form a single connected component (a few single-digit stray fragments are
+normal junction-cleanup noise, same as 3b), and all 4 landmarks have a kept
+road within 1.5 km. Written to `data/cs/orlando/minimized/map.osm` and
+mirrored to the Windows game folders; full method and numbers in
+`data/cs/orlando/minimized/map-prep.md`. Reuses the same heightmap tile as
+before — the terrain still doesn't correspond to the (now compressed) road
+positions, same caveat as the first attempt, acceptable for an
+illustrative-only hobby map.
 
 ## Open / unverified
 
