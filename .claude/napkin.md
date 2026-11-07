@@ -49,20 +49,22 @@ None open.
    (`traffic-counts` in the data manifest) are still `deferred`, no agency contact
    authorized — needed for `routeSampler`'s counts-driven calibration. Don't build any of
    P3.2/P3.3/P3.6 against placeholder data; don't scaffold a fake `scenario.yaml` either.
-2. **[2026-11-04] Next C:S 1 hobby-track reproduction target: Orlando, FL theme-park/resort corridors**
-   Do instead: apply `docs/local/cities-skylines.md`'s reproducible procedure to the owner's named
-   areas — Parks (Disney, Universal, SeaWorld), Park hotels (Disney's Pop Century, Celebration
-   Suites, Universal's Hard Rock Hotel), Outlets (Premium, Vineland). **C:S 1 hobby-track
-   reproduction only** (ADR 0011/0015, illustrative, never SUMO evidence) — not a decision to
-   onboard Orlando as a second real ArterIA city/pipeline (the "scope stays SJC-only" directive
-   below still governs the actual evidence pipeline). Size deliberately before building: these
-   named areas are spread far wider than one compact corridor and are landmark footprints, not
-   a priori street corridors, so expect (a) geocoding each landmark first to even pick bboxes,
-   and (b) several separate crops/saves (one per park/hotel/outlet cluster, or a few combined
-   like SJC's B+D) rather than one map — same ~7,000-8,000-way practical import ceiling and
-   ~32,768 segment/node hardcoded cap apply (docs/local/cities-skylines.md, ADR 0011 third
-   revision), and Orlando's resort-and-parking-lot road density won't obviously scale the same
-   way SJC's did.
+2. **[2026-11-06] Orlando C:S 1 hobby-track: scripted prep done (5 maps), GUI import/play still open**
+   Do instead: step-0 prep (geocode landmarks via Nominatim, cluster, Overpass fetch+filter
+   each under the way-count ceiling, build/reuse heightmap tiles) is done for 5 maps — see
+   `docs/local/cities-skylines.md`'s Orlando worked example and
+   `data/cs/orlando/<cluster>/{map.osm,heightmap.png,map-prep.md}` (also mirrored into the
+   Windows game folders). As suspected, Orlando's resort/parking-lot road density needed much
+   tighter crops than SJC (4-8 km, not SJC's 9 km) to stay under the ~7,000-8,000-way ceiling:
+   4 real-geography crops (Disney parks+Pop Century 8 km/4,500 ways, Universal+Hard Rock+
+   I-Drive Outlets 4 km/3,288 ways, SeaWorld+Vineland Outlets 6 km/4,148 ways, Celebration
+   Suites standalone 3 km/916 ways reusing Disney's heightmap), plus a 5th composite,
+   `orlando-minimized`, collaging all 4 onto one tile (rigid per-cluster translation into a
+   checked non-overlapping layout, `highway=service` dropped from each first to clear the
+   12,852-way combined total down to 4,140). Remaining: the GUI import/play/capture steps
+   (1-6) for each, at the desk — owner has started on one of the 4 real crops. Still
+   **hobby-track only** (ADR 0011/0015) — the "scope stays SJC-only" directive below still
+   governs the real evidence pipeline.
 3. **[2026-10-29] P3.4 (transit demand) has nothing to build: no public SJC GTFS feed**
    Do instead: P3.4 depends on P2.6 (public-transport layer), already recorded as
    "blocked on data, not implemented" — no public SJC GTFS feed was found. Nothing in

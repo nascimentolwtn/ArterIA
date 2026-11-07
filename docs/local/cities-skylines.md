@@ -265,6 +265,75 @@ smaller combined B+D crop too, since both are centered on nearly the same
 point — no need to re-fetch terrain when narrowing the road-data bbox
 afterward, as long as the new area stays inside the original tile.
 
+## Worked example — Orlando, FL theme-park/resort corridors (2026-11-06)
+
+**Hobby-track reproduction only** (ADR 0011/0015) — Orlando was never onboarded
+as an ArterIA city (no `cities/orlando/`); the landmarks below were geocoded
+ad hoc (Nominatim) and fed straight into `compute_map_prep`/`build_heightmap`
+without a `corridors.geojson`, since step 2's scripted prep only needs a
+bbox, not the production pipeline.
+
+These named areas (Disney/Universal/SeaWorld parks, their hotels, two
+outlet malls) are landmark footprints spread far wider than one corridor,
+confirming the backlog note's expectation: four separate crops, grouped by
+which landmarks sit within a few km of each other, rather than one map.
+
+**Orlando's resort/parking-lot road density is markedly higher than SJC's**
+per corridor-equivalent area — the 18 km tile centred on Universal alone hit
+**39,873 ways** after the same highway-class filtering that kept SJC's full
+18x18 km tile to 19,295, and even dropping `highway=service` (parking-lot
+access roads, a much larger share of the graph here than in SJC) only cut
+it to 15,298 — still crash-tier. Every crop below needed to shrink much
+further than SJC's corridors did before landing safely under the
+~7,000-8,000-way ceiling.
+
+| Area | Road-crop bbox (west, south, east, north) | Result |
+|---|---|---|
+| Universal Orlando (Universal Studios, Islands of Adventure, Hard Rock Hotel, Orlando International Premium Outlets — all within ~2 km of each other) | `-81.481785, 28.456476, -81.440908, 28.492651` (4 km) | 3,288 ways / 14,887 nodes. |
+| Disney parks + Pop Century Resort (Magic Kingdom, EPCOT, Hollywood Studios, Animal Kingdom, Disney's Pop Century Resort) | `-81.608029, 28.348955, -81.526343, 28.421304` (8 km) | 4,500 ways / 28,721 nodes. |
+| SeaWorld + Orlando Vineland Premium Outlets (~4 km apart) | `-81.507922, 28.371759, -81.446649, 28.426022` (6 km) | 4,148 ways / 18,964 nodes. |
+| Celebration Suites (Kissimmee), standalone — ~6.6 km south of the Disney cluster, clipped out of every Disney tile up to 9 km | `-81.529805, 28.317631, -81.499189, 28.344763` (3 km) | 916 ways / 5,755 nodes. |
+
+Heightmap tiles (18 km, centred on each cluster's own centroid): built one
+each for `disney`, `universal`, `seaworld_vineland`. **`celebration`'s own
+road crop sits entirely inside `disney`'s 18 km tile**, so it reuses
+`disney`'s heightmap rather than fetching a fourth one — same reasoning as
+SJC's corridor B/D reuse. All four written to
+`data/cs/orlando/<cluster>/{map.osm,heightmap.png,map-prep.md}` and mirrored
+into the Windows game folders (`AppData/.../Heightmaps/orlando-<cluster>/`,
+`OneDrive/Documents/ORLANDO_<CLUSTER>_01.osm`).
+
+Not yet done: the GUI import/play steps (1-6 above) for any of the four —
+this session only ran the scripted step-0 prep, same division of labour as
+SJC's first pass.
+
+### `orlando-minimized` — a fifth, composite map (2026-11-06)
+
+A fifth variant, built after the owner started playing one of the four real
+crops: a single map collaging all 4 Orlando clusters together instead of
+four separate maps. **Not a real-geography crop** — each cluster's own
+road geometry is translated as a rigid block (no rotation/resizing) to a
+new position chosen to (a) keep the 4 clusters' real relative compass
+directions and (b) fit all 4 inside one 18 km tile without their crop
+bounding boxes overlapping. All 4 translations are small (under ~3 km),
+since the real clusters already sit within about 19 km of each other.
+
+Combining the 4 clusters' already-filtered crops as-is would have summed to
+12,852 ways — over the practical ceiling (section 2a) and in SJC's own
+confirmed-crashing range (12,173). Dropping `highway=service` (parking-lot/
+resort access roads — a much larger share of the graph in these
+theme-park/resort areas than in SJC) from each cluster first brought the
+total to **4,140 ways / 24,737 nodes**, close to SJC's own final combined
+B+D crop (4,537 ways). Full placement table, translation deltas, and the
+master centre point (whose real SRTM terrain was used for this map's
+heightmap, since the composite itself has no single real location) are in
+`data/cs/orlando/minimized/map-prep.md`.
+
+No connector roads were added between the 4 relocated clusters — there's a
+checked (programmatic, no bounding-box overlap) gap of at least ~1-2 km
+between any two, left for the owner to hand-draw if wanted, same as any
+other junction-cleanup (3b).
+
 ## Open / unverified
 
 - Exact way-count breakpoint between 7,378 (works) and 12,173 (crashes) for

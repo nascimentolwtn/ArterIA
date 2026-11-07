@@ -2,6 +2,49 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.14] - 2026-11-06
+
+### Added
+
+- **`orlando-minimized`: a fifth, single-map composite of the 4 Orlando
+  crops.** Collages `disney`, `celebration`, `universal`, and
+  `seaworld_vineland` onto one 18 km C:S 1 tile instead of 4 separate maps,
+  by rigidly translating each cluster's own road geometry (no
+  rotation/resizing) to a new, non-overlapping position that keeps their
+  real relative compass directions. Combining the 4 crops as originally
+  filtered would have summed to 12,852 ways — in SJC's own confirmed-
+  crashing range — so `highway=service` (parking-lot/resort access roads)
+  was dropped from each cluster first, bringing the total to 4,140 ways /
+  24,737 nodes, close to SJC's own final playable combined crop. Written to
+  `data/cs/orlando/minimized/` and mirrored to the Windows game folders.
+  See `docs/local/cities-skylines.md`'s new sub-section for the placement
+  table and translation deltas.
+
+## [1.13] - 2026-11-06
+
+### Added
+
+- **C:S 1 hobby-track scripted prep done for Orlando, FL.** Next reproduction
+  target after SJC's corridors B+D. Orlando's named theme-park/resort areas
+  (Disney, Universal, SeaWorld parks and hotels, two outlet malls) are
+  landmark footprints spread wider than one corridor, so they were geocoded
+  (Nominatim) and split into 4 separate crops rather than one map: Disney
+  parks + Pop Century Resort (8 km, 4,500 ways), Universal Orlando + Hard
+  Rock Hotel + International Drive Premium Outlets (4 km, 3,288 ways),
+  SeaWorld + Orlando Vineland Premium Outlets (6 km, 4,148 ways), and
+  Celebration Suites standalone (3 km, 916 ways, reusing the Disney
+  heightmap tile — it sits entirely inside it). Confirmed the backlog's
+  hunch that Orlando's resort/parking-lot road density is much higher than
+  SJC's per unit area: the 18x18 km tile centred on Universal alone hit
+  39,873 ways after the usual highway-class filter (SJC's full tile was
+  19,295), so every Orlando crop needed to shrink much further than SJC's
+  did to land under the ~7,000-8,000-way practical ceiling. `docs/local/
+  cities-skylines.md` has the full worked example; `data/cs/orlando/`
+  (gitignored, ADR 0004) and the Windows game folders now hold each
+  cluster's heightmap and filtered OSM file, ready for the manual GUI
+  import/play steps at the desk. Not yet onboarded as an ArterIA city —
+  this is hobby-track reproduction only (ADR 0011/0015).
+
 ## [1.12] - 2026-11-06
 
 ### Added
