@@ -1,6 +1,6 @@
 # AGENTS.md — Trilhas de mestrado (docs/thesis/)
 
-Este arquivo documenta os agentes de Claude Code dedicados a explorar, em paralelo, quatro possíveis trilhas de mestrado ligadas ao tema do ArterIA (otimização de rede viária urbana com IA), já que cada programa tem um período de inscrição diferente e a decisão de qual seguir só será tomada quando a inscrição efetivamente abrir. As definições executáveis estão em `.claude/agents/*.md`; este arquivo é o mapa de alto nível. `CLAUDE.md` invoca apenas o orquestrador; o orquestrador decide quais das 4 trilhas chamar.
+Este arquivo documenta os agentes de Claude Code dedicados a explorar, em paralelo, quatro possíveis trilhas de mestrado ligadas ao tema do ArterIA (otimização de rede viária urbana com IA), já que cada programa tem um período de inscrição diferente e a decisão de qual seguir só será tomada quando a inscrição efetivamente abrir. Há, além dessas 4, duas trilhas derivadas — reescritas simplificadas ASD-STE100 de duas delas (EEC e PO), não programas de mestrado à parte (ver "Trilhas derivadas" abaixo). As definições executáveis estão em `.claude/agents/*.md`; este arquivo é o mapa de alto nível. `CLAUDE.md` invoca apenas o orquestrador; o orquestrador decide quais trilhas chamar.
 
 ## Orquestrador
 
@@ -21,9 +21,18 @@ Este arquivo documenta os agentes de Claude Code dedicados a explorar, em parale
 
 Estes 4 agentes absorveram as regras de redação do antigo agente `thesis-student` (removido): nunca inventar resultado/citação/dado, profundidade acompanhando evidência, voz acadêmica em pt-BR, decisões viram capítulo. A diferença é que cada trilha vive isolada na sua própria pasta em vez de um `thesis/` único genérico — porque hoje nenhum programa foi escolhido ainda.
 
+## Trilhas derivadas: reescrita ASD-STE100
+
+| Agente (`subagent_type`) | O que é | Pasta exclusiva | Relação com a trilha-fonte |
+| :-- | :-- | :-- | :-- |
+| `thesis-asd-ste100-ita-eec` | Reescrita em linguagem controlada ASD-STE100 (pt-BR), via skill `explain` | `docs/thesis/asd-ste100-ita-eec/` | Espelha `thesis-ita-eec`/`docs/thesis/ita-eec-informatica/`. Não decide pesquisa nem conteúdo por conta própria — só simplifica o que a trilha-fonte já escreveu, sem perder fato. |
+| `thesis-asd-ste100-ita-po` | Reescrita em linguagem controlada ASD-STE100 (pt-BR), via skill `explain` | `docs/thesis/asd-ste100-ita-po/` | Espelha `thesis-ita-po`/`docs/thesis/ita-po/`. Mesmo princípio: só simplifica, nunca inventa ou decide pesquisa. |
+
+Estas trilhas não concorrem com as 4 acima para a escolha de programa de mestrado — são uma camada de acessibilidade sobre a trilha correspondente, voltada a leitores sem o background técnico de cada uma (IA/RL/GNN para EEC; pesquisa operacional/otimização para PO). O orquestrador chama cada uma sempre junto da sua trilha-fonte, nunca isoladamente.
+
 ## Regra de isolamento
 
-Cada um dos 4 agentes de trilha só lê e escreve dentro da sua própria subpasta em `docs/thesis/`. Nenhum edita a pasta de outro, nem código do produto ArterIA (`cities/`, código-fonte quando existir). O orquestrador não edita nenhuma pasta de trilha diretamente. Isso permite rodar as 4 trilhas em paralelo sem conflito.
+Cada um dos agentes de trilha (as 4 acima, mais `thesis-asd-ste100-ita-eec` e `thesis-asd-ste100-ita-po`) só lê e escreve dentro da sua própria subpasta em `docs/thesis/`. Nenhum edita a pasta de outro, nem código do produto ArterIA (`cities/`, código-fonte quando existir). A única exceção é de leitura: cada trilha ASD-STE100 lê a sua trilha-fonte correspondente para saber o que espelhar, mas nunca escreve lá. O orquestrador não edita nenhuma pasta de trilha diretamente. Isso permite rodar as trilhas em paralelo sem conflito.
 
 ## Dois eixos de estágio: Status e Profundidade
 
@@ -43,4 +52,4 @@ Cada `docs/thesis/<trilha>/progress.md` tem dois campos no topo:
 
 - **Rotina normal (após commits):** deixe o `CLAUDE.md` chamar `thesis-orchestrator`; ele decide quais trilhas tocar.
 - **Atualizar uma trilha específica na mão:** use a ferramenta Agent com `subagent_type` igual ao nome na tabela (ex.: `thesis-ita-po`).
-- **Atualizar as 4 de uma vez manualmente:** chame as 4 em paralelo numa única mensagem — elas não têm dependência entre si (ou simplesmente invoque `thesis-orchestrator`, que faz essa seleção por você).
+- **Atualizar todas de uma vez manualmente:** chame as 4 trilhas-fonte mais `thesis-asd-ste100-ita-eec` e `thesis-asd-ste100-ita-po` em paralelo numa única mensagem (ou simplesmente invoque `thesis-orchestrator`, que faz essa seleção por você). Cada trilha ASD-STE100 depende, na prática, do que a sua trilha-fonte acabou de escrever — por isso cada par é chamado junto, mesmo rodando na mesma leva paralela.

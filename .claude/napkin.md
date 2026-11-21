@@ -34,7 +34,6 @@ When adding new backlog items:
 None open.
 
 ## Backlog Features
-
 1. **[2026-10-29] P3.2/P3.3/P3.6 real run blocked on two inputs: Geosanja attraction layer and traffic counts**
    Do instead: production weights (`arteria demand population --city sjc`, real IBGE
    Censo 2022 data), P3.3's `od2trips`/`duarouter`/`routeSampler` mechanics

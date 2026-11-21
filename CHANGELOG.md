@@ -2,6 +2,31 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.18] - 2026-11-18
+
+### Added
+
+- **New agent `thesis-asd-ste100-ita-po`**, maintaining a plain-language,
+  ASD-STE100-controlled Portuguese rewrite of the ITA PG/PO (Pesquisa
+  Operacional) thesis track (`docs/thesis/asd-ste100-ita-po/`), using the
+  `explain` skill's Simplified Technical English rules. It mirrors
+  `docs/thesis/ita-po/` — never invents content of its own — and is now
+  wired into `thesis-orchestrator` so it runs alongside `thesis-ita-po`
+  and the other thesis-track agents (`AGENTS.md`,
+  `.claude/agents/thesis-*.md`).
+
+## [1.17] - 2026-11-18
+
+### Added
+
+- **New agent `thesis-asd-ste100-ita-eec`**, maintaining a plain-language,
+  ASD-STE100-controlled Portuguese rewrite of the ITA PG/EEC-Informática
+  thesis track (`docs/thesis/asd-ste100-ita-eec/`), using the `explain`
+  skill's Simplified Technical English rules. It mirrors
+  `docs/thesis/ita-eec-informatica/` — never invents content of its own —
+  and is now wired into `thesis-orchestrator` so it runs alongside the
+  other 4 thesis-track agents (`AGENTS.md`, `.claude/agents/thesis-*.md`).
+
 ## [1.16] - 2026-11-07
 
 ### Added
