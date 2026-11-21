@@ -2,6 +2,19 @@
 
 All notable changes to ArterIA are documented in this file, in plain language for anyone following the project (not just contributors). Versioning follows [Semantic Versioning](https://semver.org/). 1.0 marks the first runnable release (first real SJC network built and rendered); before that, versions marked planning milestones.
 
+## [1.19] - 2026-11-21
+
+### Added
+
+- **Catalog review report (P5.6)**, `arteria/report/catalog_report.py`'s
+  `render_catalog_review_report`: turns an intervention catalog (P5.1) into
+  a Markdown report for planners — a summary table (one row per candidate,
+  with a blank approve/reject checkbox) plus a detail section per entry
+  carrying the free-text legal/safety/equity notes a planner reviews by
+  hand. Tested against the toy catalog fixture only; no real city catalog
+  exists yet. The map half of "table + map" is still future desk-session
+  work (no plotting library available remotely).
+
 ## [1.18] - 2026-11-18
 
 ### Added

@@ -84,12 +84,12 @@ None open.
    against the same `PackageProblem`, a process-pool/cluster parallel evaluation backend (P7.3's
    other half), and MLflow-style experiment tracking beyond the cache's own JSON (P7.7). All
    remote-doable against the existing stub evaluator, per ADR 0008's "Consequences."
-5. **[2026-11-06] Two more remote-doable report/parsing candidates spotted, not yet built**
-   Do instead: **P5.6** catalog review report (table of catalog entries for planner review,
-   same style as `arteria/report/generator.py`/`arteria/calibration/report.py`) and **P6.2**'s
-   actual `tripinfo.xml` parser (today `arteria/evaluate/metrics.py` only consumes already-
-   parsed `TripRecord`s; the XML-parsing glue itself is unwritten and testable against a
-   synthetic `tripinfo.xml` fixture, no real SUMO run needed). Neither requires real SJC data.
+5. **[2026-11-21] P6.2's `tripinfo.xml` parser still unbuilt** (P5.6 catalog review report done — see CHANGELOG 1.19)
+   Do instead: today `arteria/evaluate/metrics.py` only consumes already-parsed
+   `TripRecord`s; the XML-parsing glue itself (`tripinfo.xml` -> `TripRecord`) is unwritten
+   and testable against a synthetic `tripinfo.xml` fixture (schema at
+   `.venv/lib/python3.12/site-packages/sumo/data/xsd/tripinfo_file.xsd`), no real SUMO run
+   needed. Doesn't require real SJC data.
 
 ## User Directives
 
