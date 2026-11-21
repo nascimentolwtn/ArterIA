@@ -543,3 +543,24 @@ No `outline.md`, notas de rastreio foram adicionadas aos Capítulos 3 e 4, cobri
 5. O(A) orientador(a) ainda não foi contatado(a). A arquitetura de agentes continua não validada. A escolha acadêmica de corredor segue pendente.
 
 ---
+
+## 2026-11-21 — Avaliação (sem reescrita de capítulo): relatório de revisão de catálogo para planejadores (P5.6)
+
+**Commit:** `495cca6` ("feat: add catalog review report for planners (P5.6)"). Resumo repassado pelo agente orquestrador; o módulo não foi lido diretamente nesta sessão.
+
+**Nota sobre esta entrada.** A trilha-fonte (`docs/thesis/ita-eec-informatica/progress-log.md`) ainda não tinha, no momento desta sessão, nenhuma entrada cobrindo o commit `495cca6`; a entrada mais recente lá é a de 2026-11-06 (lote de seis itens), que termina antes deste commit. Como as duas trilhas rodam em paralelo, e não em sequência, a decisão abaixo foi tomada por conta própria desta trilha, por analogia ao precedente já registrado neste mesmo log (entrada de 2026-11-06, itens segundo a quarto do lote). Fica como pendência confirmar, quando a trilha-fonte registrar sua própria entrada sobre este commit, que a avaliação dela coincide com a desta entrada; se não coincidir, o responsável precisa decidir, não esta trilha.
+
+**O que foi feito.** O commit adiciona um módulo novo que transforma um catálogo de intervenções (já tratado nesta trilha pelas notas sobre a ADR 0006) num relatório em Markdown para planejadores. O relatório tem uma tabela-resumo — id, tipo, complexidade, estimativa de custo, arestas/junções-alvo, exclusões mútuas, e uma coluna de caixa de seleção em branco para aprovar ou rejeitar — seguida de uma seção de detalhe por item do catálogo. Essa seção de detalhe expõe os campos de texto livre sobre aspectos legais, de segurança, de acesso de emergência e de equidade. A própria ADR 0006 já havia deixado esses campos, de forma deliberada, como prosa de julgamento humano, não como regra estruturada.
+
+O commit cobre só a metade de tabela do item P5.6 do roteiro; a metade de mapa fica para trabalho futuro em sessão de desktop, pela mesma restrição de biblioteca de plotagem já registrada para o relatório de antes/depois (P6.6, entrada de 2026-11-06 deste log). Seis testes novos cobrem o módulo, contra uma fixture de brinquedo; não existe, ainda, nenhum catálogo real de SJC para testar contra dado real.
+
+**Por que importa, e por que não há reescrita de capítulo nesta entrada.** Este item é, pelo tipo de entrega, análogo aos itens segundo a quarto do lote de 2026-11-06 (checagem de validade isolada; relatório de calibração; relatório de antes/depois): infraestrutura de relato, sem nenhuma ligação com RL, GNN, TraCI ou dado real de SJC. Por esse motivo, pelo mesmo padrão já aplicado àqueles três itens, esta entrada não altera `chapters/03-arquitetura-do-sistema.md`, `chapters/04-experimentos.md`, `outline.md` nem `pre-projeto.md`.
+
+Há, contudo, um paralelo conceitual que vale registrar aqui, sem promovê-lo a prosa de capítulo: o relatório de revisão de catálogo reforça, por um segundo ângulo, o mesmo argumento de desenho já discutido na Seção 3.6 a respeito da ADR 0008 (checagem de validade anotada, não rejeitada, no despachante de catálogo). Os dois artefatos — a anotação de validade, e agora este relatório — deixam o julgamento sobre o que é um pacote aceitável com quem decide o pacote (hoje, o planejador humano; no futuro, possivelmente, uma política de aprendizado por reforço ou o otimizador), não com a camada de infraestrutura. Esse paralelo é, porém, uma leitura desta trilha, não um fato já registrado em capítulo pela trilha-fonte; cabe revisão antes de entrar em prosa.
+
+**Perguntas abertas/riscos.**
+1. Esta avaliação foi feita sem leitura direta do módulo (`arteria/report/catalog_report.py`) nem do teste novo; os detalhes vêm inteiramente do resumo repassado pelo orquestrador.
+2. Fica pendente confirmar, na próxima leitura da trilha-fonte, se ela registrou este mesmo commit e com qual avaliação; se a trilha-fonte decidir que este commit merece prosa de capítulo (por exemplo, ligando-o à Seção 3.6), esta trilha precisará espelhar essa prosa numa próxima rodada, não decidir por conta própria.
+3. O(A) orientador(a) ainda não foi contatado(a). A arquitetura de agentes continua não validada. A escolha acadêmica de corredor segue pendente.
+
+---

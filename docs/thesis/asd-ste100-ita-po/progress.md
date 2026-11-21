@@ -5,6 +5,22 @@ Profundidade: completo (herdado da trilha-fonte `docs/thesis/ita-po/`, promovida
 
 ---
 
+## 2026-11-21 (2) — commit `495cca6`, sem cobertura ainda na trilha-fonte nesta leitura
+
+Commit novo no `main` do ArterIA: `495cca6`, "feat: add catalog review report for planners (P5.6)".
+
+**Estado da trilha-fonte lido nesta rodada:** a entrada mais recente de `docs/thesis/ita-po/progress.md` continua sendo **2026-11-07 (27)**, que não menciona `495cca6` — o agente `thesis-ita-po` roda em paralelo nesta mesma leva de orquestração e pode ainda não ter processado este commit no momento desta leitura. Nenhuma entrada da trilha-fonte cobrindo `495cca6` foi encontrada para espelhar.
+
+**Decisão tomada por conta própria, pelo critério de precedente já estabelecido na trilha-fonte:** o commit soma um novo módulo, `arteria/report/catalog_report.py` (função `render_catalog_review_report`), que transforma um catálogo de intervenções (esquema do item de roteiro P5.1, decisão de arquitetura ADR 0006) num relatório em Markdown para planejadores: uma tabela-resumo (identificador, tipo, complexidade, estimativa de custo, arestas/junções-alvo, exclusões mútuas, e uma caixa de marcação em branco "Aprovar/Rejeitar"), seguida de uma seção de detalhe por item do catálogo, que expõe os campos de texto livre de aspectos legais, de segurança, de acesso de emergência e de equidade — campos que a ADR 0006 deixou, de propósito, como texto para julgamento humano, não como regra estruturada e checável por máquina. É o item P5.6 do roteiro, só a metade de tabela; a metade de mapa fica para trabalho futuro em sessão de mesa (mesma restrição de biblioteca de plotagem já registrada, na trilha-fonte, para o relatório antes/depois existente, ADR 0009). O commit também soma um arquivo de teste (6 testes) contra um catálogo de brinquedo — não existe ainda nenhum catálogo real de São José dos Campos.
+
+Este padrão — uma peça de instrumentação testada só contra dados de brinquedo, sem execução real, sem tocar nenhuma decisão de formulação — já tem precedente direto na trilha-fonte: o gerador de relatório comparativo antes/depois (item de roteiro P6.6, entrada da trilha-fonte sobre uma leva de cinco peças de instrumento) foi registrado só no log de progresso da trilha-fonte, nunca como reescrita de capítulo, com a mesma nota de fronteira ("mapas e gráficos ficam fora", "nenhuma execução contra dados reais"). O Capítulo 4, tanto na fonte quanto nesta trilha, já diz explicitamente que a infraestrutura de transformações de rede e do catálogo de intervenções fica descrita no log de progresso, não na prosa do capítulo. Por esse critério, `495cca6` é tratado aqui do mesmo jeito: uma entrada de log, sem alteração de `pre-projeto.md`, `outline.md` ou qualquer arquivo em `chapters/` desta trilha.
+
+**O que foi espelhado:** nada em prosa de capítulo. Só este registro de log, nesta trilha.
+
+**O que NÃO foi espelhado, e por quê:** nenhuma mudança em `pre-projeto.md` (nenhuma seção do pré-projeto-fonte foi alterada por este commit), `outline.md` (nenhum status de capítulo muda) ou `chapters/*.md` (o Capítulo 4 já defere detalhe de infraestrutura ao log, nesta trilha e na fonte).
+
+**Risco de dessincronia a observar:** se, numa rodada futura, a entrada da trilha-fonte sobre `495cca6` (quando ela existir) classificar este commit de forma diferente da aqui adotada — por exemplo, se vier a ligá-lo a alguma decisão de formulação sobre o catálogo $\mathcal{I}$ que esta leitura não capturou —, esta entrada deve ser revisada para alinhar com a trilha-fonte. Não há, até esta leitura, nenhum sinal disso: a classificação acima segue só o precedente já registrado para peças de instrumentação equivalentes.
+
 ## 2026-11-18 (1) — bootstrap inicial desta trilha derivada
 
 Primeira rodada desta trilha. A pasta `docs/thesis/asd-ste100-ita-po/` estava vazia (sem `pre-projeto.md`/`outline.md`/`progress.md`), conforme o fluxo de bootstrap previsto nas instruções do agente.
